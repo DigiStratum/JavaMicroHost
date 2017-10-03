@@ -1,15 +1,14 @@
-package com.digistratum.microhost;
+package com.digistratum.microhost.Controller;
 
 import com.digistratum.microhost.Endpoint.Endpoint;
 import com.digistratum.microhost.Endpoint.EndpointErrorDocument;
 import com.digistratum.microhost.Exception.MHException;
+import com.digistratum.microhost.RequestResponse;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import com.sun.org.apache.regexp.internal.RE;
 import org.apache.commons.io.IOUtils;
-
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,14 +19,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static javax.imageio.ImageIO.read;
-
 /**
- * @todo Switch to use RequestResponse instance to transfer request/response info to/from an Endpoint
- *
  * ref: http://docs.oracle.com/javase/8/docs/jre/api/net/httpserver/spec/com/sun/net/httpserver/package-summary.html
  */
-public class MHHttpHandler implements HttpHandler {
+public abstract class Controller implements HttpHandler {
 	// RequestMethod, <URIregex, Endpoint>
 	protected Map<String, Map<Pattern, Endpoint>> requestMap;
 	protected Map<Integer, Endpoint> errorMap;
@@ -35,7 +30,7 @@ public class MHHttpHandler implements HttpHandler {
 	/**
 	 * Default Constructor
 	 */
-	public MHHttpHandler() {
+	public Controller() {
 		// ref: https://www.javatpoint.com/java-regex
 		requestMap = new HashMap<>();
 		errorMap = new HashMap<>();
@@ -104,23 +99,13 @@ public class MHHttpHandler implements HttpHandler {
 		try {
 			response = endpoint.handle(request);
 		} catch (MHException e) {
-			throw new IOException("Error handling RequestResponse", e);
+			String msg = "Error handling RequestResponse: " + e.getMessage();
+			System.out.println(msg);
+			throw new IOException(msg);
 		}
 
 		// Send the RequestResponse out
 		sendResponse(t, response);
-
-/*
-		InputStream is = t.getRequestBody();
-		read(is); // .. read the request body
-		String response = "You requested <b>" + requestUri + "</b>";
-		Headers responseHeaders = t.getResponseHeaders();
-		responseHeaders.add("Content-Type", "text/html");
-		t.sendResponseHeaders(200, response.length());
-		OutputStream os = t.getResponseBody();
-		os.write(response.getBytes());
-		os.close();
-		*/
 	}
 
 	protected Endpoint getEndpoint(HttpExchange t) {

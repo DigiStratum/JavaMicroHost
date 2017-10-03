@@ -53,8 +53,8 @@ public class RequestResponse {
 		uri = requestUri;
 
 		// Check the headers
-		if ((null == requestHeaders) || requestHeaders.isEmpty()) {
-			throw new MHException("RequestResponse() - supplied headers were empty");
+		if (null == requestHeaders) {
+			throw new MHException("RequestResponse() - headers were not supplied");
 		}
 		headers = requestHeaders;
 
@@ -107,8 +107,8 @@ public class RequestResponse {
 		code = responseCode;
 
 		// Check the headers
-		if ((null == responseHeaders) || responseHeaders.isEmpty()) {
-			throw new MHException("RequestResponse() - supplied headers were empty");
+		if (null == responseHeaders) {
+			throw new MHException("RequestResponse() - headers were not supplied");
 		}
 		headers = responseHeaders;
 

@@ -1,21 +1,26 @@
 package com.digistratum.microhost;
 
+import com.digistratum.microhost.Controller.Controller;
+import com.digistratum.microhost.Exception.MHException;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
-public class MHHttpServer {
+public class Server {
 	HttpServer server;
+	Map<String, Controller> controllerMap;
 
 	/**
 	 * Default constructor
 	 *
 	 * @throws IOException
 	 */
-	public MHHttpServer() throws IOException {
-		this(54321, 10, "/");
+	public Server() throws IOException {
+		this(54321, 10);
 	}
 
 	/**
@@ -23,20 +28,27 @@ public class MHHttpServer {
 	 *
 	 * @param port Listening port for our MicroHost HTTP service
 	 * @param threadPoolSize Count of threads for our pool (concurrency limit)
-	 * @param context Mapping which we should handle requests for
 	 *
 	 * @throws IOException
 	 */
-	public MHHttpServer(int port, int threadPoolSize, String context) throws IOException {
+	public Server(int port, int threadPoolSize) throws IOException {
 		server = HttpServer.create(new InetSocketAddress(port), 0);
-
-		// Set up a base controller context
-		server.createContext(context, new MHHttpHandler());
 
 		// ref: http://docs.oracle.com/javase/1.5.0/docs/api/java/util/concurrent/Executors.html#newFixedThreadPool(int)
 		server.setExecutor(Executors.newFixedThreadPool(threadPoolSize));
-		server.start();
+
+		controllerMap = new HashMap<>();
 	}
+
+	public void addControllerContext(Controller ctrl, String ctx) throws MHException {
+		if ((null == ctrl) || (null == ctx) || ctx.isEmpty()) {
+			throw new MHException("Attempted to add invalid controller context for: '" + ctx + "'");
+		}
+		controllerMap.put(ctx, ctrl);
+		server.createContext(ctx, ctrl);
+	}
+
+	public void start() { server.start(); }
 
 	/**
 	 * Server stopper

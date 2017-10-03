@@ -1,5 +1,8 @@
 package com.digistratum.microhost;
 
+import com.digistratum.microhost.Controller.ControllerMicroHost;
+import com.digistratum.microhost.Exception.MHException;
+
 import java.io.IOException;
 
 /**
@@ -7,7 +10,7 @@ import java.io.IOException;
  * @todo Configuration data from properties file
  * @todo Log output (log4j)
  * @todo Database connection pool
- * @todo URL context mapping for different endpoint handler methods
+ * @todo Isolate all IOExceptions to exclusively code required to interface with HttpServer*
  *
  * INTERMEDIATE:
  * @todo Built-in endpoint to reflect health/status
@@ -27,7 +30,13 @@ public class MicroHost {
 
 			// Stand up a new HttpServer
 			System.out.print("MicroHost HTTP Server starting...");
-			final MHHttpServer mhHttpServer = new MHHttpServer();
+			final Server server = new Server();
+
+			// Set up default controller for microhost endpoints
+			// TODO: Make this optional in configuration
+			server.addControllerContext(new ControllerMicroHost(), "/microhost");
+
+			server.start();
 			System.out.println(" started!");
 
 			// Register a shut-down hook so that we can clean up our business
@@ -36,7 +45,7 @@ public class MicroHost {
 				@Override
 				public void run() {
 					System.out.print("MicroHost HTTP Server stopping...");
-					mhHttpServer.stop();
+					server.stop();
 					System.out.println(" stopped!");
 				}
 			});
@@ -50,6 +59,8 @@ public class MicroHost {
 			System.out.println("\nMicroHost HTTP Server failed to initialize : " + e.getMessage());
 		} catch (InterruptedException e) {
 			System.out.println("\nMicroHost HTTP Server was interrupted: " + e.getMessage());
+		} catch (MHException e) {
+			System.out.println("\nMicroHost HTTP Server failed: " + e.getMessage());
 		}
 	}
 }
