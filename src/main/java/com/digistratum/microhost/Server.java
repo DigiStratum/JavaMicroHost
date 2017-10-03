@@ -15,15 +15,6 @@ public class Server {
 	Map<String, Controller> controllerMap;
 
 	/**
-	 * Default constructor
-	 *
-	 * @throws IOException
-	 */
-	public Server() throws IOException {
-		this(54321, 10);
-	}
-
-	/**
 	 * Configuration-injected constructor
 	 *
 	 * @param config
@@ -51,8 +42,22 @@ public class Server {
 		server.setExecutor(Executors.newFixedThreadPool(threadPoolSize));
 
 		controllerMap = new HashMap<>();
+
+		// Start the MicroHost HttpServer; Note that we can still add/remove
+		// controller contexts on-the-fly while the server is running
+		server.start();
 	}
 
+	/**
+	 * Add a controller context to this server
+	 *
+	 * A controller is responsible for all request URIs relative to the context path
+	 *
+	 * @param ctrl Controller instance to do the work
+	 * @param ctx String context base URI to map this controller to
+	 *
+	 * @throws MHException
+	 */
 	public void addControllerContext(Controller ctrl, String ctx) throws MHException {
 		if ((null == ctrl) || (null == ctx) || ctx.isEmpty()) {
 			throw new MHException("Attempted to add invalid controller context for: '" + ctx + "'");
@@ -60,8 +65,6 @@ public class Server {
 		controllerMap.put(ctx, ctrl);
 		server.createContext(ctx, ctrl);
 	}
-
-	public void start() { server.start(); }
 
 	/**
 	 * Server stopper

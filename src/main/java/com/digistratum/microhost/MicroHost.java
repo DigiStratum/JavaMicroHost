@@ -7,14 +7,11 @@ import java.io.IOException;
 
 /**
  * BASIC:
- * @todo Configuration data from properties file
  * @todo Log output (log4j)
- * @todo Database connection pool
  * @todo Isolate all IOExceptions to exclusively code required to interface with HttpServer*
+ * @todo Database connection pool
  *
  * INTERMEDIATE:
- * @todo Built-in endpoint to reflect health/status
- * @todo Abstract base class(es) for RESTful API, controller, endpoint
  * @todo Built-in support for common requirements like authentication, CORS, OPTIONS/HEAD responses
  *
  * ADVANCED:
@@ -38,10 +35,9 @@ public class MicroHost {
 			final Server server = new Server(config);
 
 			// Set up default controller for microhost endpoints
-			// TODO: Make this optional in configuration
-			server.addControllerContext(new ControllerMicroHost(), "/microhost");
-
-			server.start();
+			if ("on".equals(config.get("endpoints.microhost", "off"))) {
+				server.addControllerContext(new ControllerMicroHost(), "/microhost");
+			}
 			System.out.println(" started!");
 
 			// Register a shut-down hook so that we can clean up our business
