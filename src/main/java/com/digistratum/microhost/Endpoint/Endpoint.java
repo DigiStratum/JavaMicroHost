@@ -1,9 +1,8 @@
-package com.digistratum.microhost;
+package com.digistratum.microhost.Endpoint;
 
-import com.sun.net.httpserver.HttpExchange;
-
-import java.io.IOException;
+import com.digistratum.microhost.Exception.MHException;
+import com.digistratum.microhost.RequestResponse;
 
 public interface Endpoint {
-	public void handleRequest(HttpExchange t) throws IOException;
+	public RequestResponse handle(RequestResponse request) throws MHException;
 }

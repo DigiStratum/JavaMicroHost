@@ -1,14 +1,10 @@
-package com.digistratum.microhost.Endpoints;
+package com.digistratum.microhost.Endpoint;
 
-import com.digistratum.microhost.Endpoint;
+import com.digistratum.microhost.Exception.MHException;
+import com.digistratum.microhost.RequestResponse;
 
-import com.sun.net.httpserver.HttpExchange;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import static javax.imageio.ImageIO.read;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EndpointErrorDocument implements Endpoint {
 	Integer code;
@@ -25,18 +21,10 @@ public class EndpointErrorDocument implements Endpoint {
 		this.message = message;
 	}
 
-	/**
-	 * Request handler
-	 *
-	 * @param t
-	 * @throws IOException
-	 */
-	public void handleRequest(HttpExchange t) throws IOException {
-		InputStream is = t.getRequestBody();
-		read(is); // .. read the request body
-		t.sendResponseHeaders(code, message.length());
-		OutputStream os = t.getResponseBody();
-		os.write(message.getBytes());
-		os.close();
+	public RequestResponse handle(RequestResponse request) throws MHException {
+		Map<String, String> responseHeaders = new HashMap<>();
+		// TODO: check if we really need this content-length header... may be duplicate from default output in MHHttpHandler
+		responseHeaders.put("content-length", Integer.toString(message.length()));
+		return new RequestResponse(code, responseHeaders, message);
 	}
 }

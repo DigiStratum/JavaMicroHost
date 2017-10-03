@@ -1,10 +1,20 @@
 package com.digistratum.microhost;
 
-import com.digistratum.microhost.Endpoints.EndpointErrorDocument;
+import com.digistratum.microhost.Endpoint.Endpoint;
+import com.digistratum.microhost.Endpoint.EndpointErrorDocument;
+import com.digistratum.microhost.Exception.MHException;
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
+import com.sun.org.apache.regexp.internal.RE;
+import org.apache.commons.io.IOUtils;
+
+
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -13,7 +23,7 @@ import java.util.regex.Pattern;
 import static javax.imageio.ImageIO.read;
 
 /**
- *
+ * @todo Switch to use RequestResponse instance to transfer request/response info to/from an Endpoint
  *
  * ref: http://docs.oracle.com/javase/8/docs/jre/api/net/httpserver/spec/com/sun/net/httpserver/package-summary.html
  */
@@ -82,33 +92,24 @@ public class MHHttpHandler implements HttpHandler {
 	 */
 	public void handle(HttpExchange t) throws IOException {
 
-		// Get the URI for this request
-		String requestUri = t.getRequestURI().toString();
-		String requestMethod = t.getRequestMethod().toLowerCase();
+		Endpoint endpoint = getEndpoint(t);
 
-		// Does the requested URI match anything in our methodMap?
-		Map<Pattern, Endpoint> methodMap = requestMap.get(requestMethod);
-		if (null == methodMap) {
-			// Do a 404 response!
-			errorDocument(t, 404);
-			return;
-		}
-		// ref: https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
-		Iterator it = methodMap.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry entry = (Map.Entry)it.next();
-			Pattern pattern = (Pattern) entry.getKey();
-			if (pattern.matcher(requestUri).matches()) {
-				// Found a match! This method will handle the request!
-				Endpoint requestHandler = (Endpoint) entry.getValue();
-				// TODO: Extract some useful bits from the URI and pass as arguments
-				requestHandler.handleRequest(t);
-				break;
-			}
+		// TODO: Extract some useful bits from the URI and pass as arguments to request
+
+		// Convert the HttpExchange into a RequestResponse
+		RequestResponse request = fromHttpExchange(t);
+
+		// Get a response from the endpoint
+		RequestResponse response;
+		try {
+			response = endpoint.handle(request);
+		} catch (MHException e) {
+			throw new IOException("Error handling RequestResponse", e);
 		}
 
-		// No mapping was found for this URI - do a 404 response!
-		errorDocument(t, 404);
+		// Send the RequestResponse out
+		sendResponse(t, response);
+
 /*
 		InputStream is = t.getRequestBody();
 		read(is); // .. read the request body
@@ -122,19 +123,65 @@ public class MHHttpHandler implements HttpHandler {
 		*/
 	}
 
-	/**
-	 * Handle error documents
-	 *
-	 * @param t HttpExchange instance we are working with
-	 * @param code HTTP error code we want to handle
-	 *
-	 * @throws Exception
-	 */
-	protected void errorDocument(HttpExchange t, Integer code) throws IOException {
-		Endpoint errorHandler = errorMap.get(code);
-		if (null == errorHandler) {
-			throw new IOException("Missing error map handler for error code: " + code);
+	protected Endpoint getEndpoint(HttpExchange t) {
+		// Get the URI for this request
+		String requestUri = t.getRequestURI().toString();
+		String requestMethod = t.getRequestMethod().toLowerCase();
+
+		// Does the requested URI match anything in our methodMap?
+		Map<Pattern, Endpoint> methodMap = requestMap.get(requestMethod);
+		if (null == methodMap) {
+			// Do a 404 response!
+			return errorMap.get(404);
 		}
-		errorHandler.handleRequest(t);
+
+		// ref: https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
+		Iterator it = methodMap.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry entry = (Map.Entry) it.next();
+			Pattern pattern = (Pattern) entry.getKey();
+			if (pattern.matcher(requestUri).matches()) {
+				// Found a match; this endpoint will handle the request!
+				return (Endpoint) entry.getValue();
+			}
+		}
+		return errorMap.get(404);
+	}
+
+	protected RequestResponse fromHttpExchange(HttpExchange t) throws IOException {
+		// Convert the HttpExchange headers to RequestResponse headers
+		Headers originalRequestHeaders = t.getRequestHeaders();
+		Map<String, String> requestHeaders = new HashMap<>();
+		for (String name : originalRequestHeaders.keySet()) {
+			requestHeaders.put(name, originalRequestHeaders.getFirst(name));
+		}
+
+		// Convert the HttpExchange into a RequestResponse
+		RequestResponse request;
+		InputStream is = t.getRequestBody();
+		String requestBody = IOUtils.toString(is, StandardCharsets.UTF_8);
+		is.close();
+		try {
+			return new RequestResponse(
+					t.getRequestMethod(),
+					t.getRequestURI().toString(),
+					requestHeaders,
+					requestBody
+			);
+		} catch (MHException e) {
+			throw new IOException("Error converting HttpExchange to RequestResponse", e);
+		}
+	}
+
+	protected void sendResponse(HttpExchange t, RequestResponse response) throws IOException {
+		// Send the RequestResponse out (headers via HttpExchange, body via output stream)
+		Headers responseHeaders = t.getResponseHeaders();
+		for (String name : response.getHeaders().keySet()) {
+			responseHeaders.add(name, response.getHeader(name));
+		}
+		t.sendResponseHeaders(response.getCode(), response.getBody().length());
+		OutputStream os = t.getResponseBody();
+		os.write(response.getBody().getBytes());
+		os.close();
 	}
 }
