@@ -1,18 +1,13 @@
 package com.digistratum.microhost;
 
-import com.digistratum.microhost.Endpoints.Endpoint404;
-import com.sun.net.httpserver.Headers;
+import com.digistratum.microhost.Endpoints.EndpointErrorDocument;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
 
 import static javax.imageio.ImageIO.read;
@@ -34,7 +29,7 @@ public class MHHttpHandler implements HttpHandler {
 		// ref: https://www.javatpoint.com/java-regex
 		requestMap = new HashMap<>();
 		errorMap = new HashMap<>();
-		errorMap.put(404, new Endpoint404());
+		errorMap.put(404, new EndpointErrorDocument(404, "404 Not Found"));
 	}
 
 	/**

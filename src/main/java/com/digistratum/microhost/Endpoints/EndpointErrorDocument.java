@@ -10,14 +10,33 @@ import java.io.OutputStream;
 
 import static javax.imageio.ImageIO.read;
 
-public class Endpoint404 implements Endpoint {
+public class EndpointErrorDocument implements Endpoint {
+	Integer code;
+	String message;
+
+	/**
+	 * Constructor
+	 *
+	 * @param code
+	 * @param message
+	 */
+	public EndpointErrorDocument(Integer code, String message) {
+		this.code = code;
+		this.message = message;
+	}
+
+	/**
+	 * Request handler
+	 *
+	 * @param t
+	 * @throws IOException
+	 */
 	public void handleRequest(HttpExchange t) throws IOException {
 		InputStream is = t.getRequestBody();
 		read(is); // .. read the request body
-		String response = "404 Not Found";
-		t.sendResponseHeaders(404, response.length());
+		t.sendResponseHeaders(code, message.length());
 		OutputStream os = t.getResponseBody();
-		os.write(response.getBytes());
+		os.write(message.getBytes());
 		os.close();
 	}
 }
