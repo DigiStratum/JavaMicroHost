@@ -22,8 +22,8 @@ public class Server {
 	 */
 	public Server(Config config) throws IOException {
 		this(
-				Integer.parseInt(config.get("port","54321")),
-				Integer.parseInt(config.get("threads","10"))
+				Integer.parseInt(config.get("microhost.port","54321")),
+				Integer.parseInt(config.get("microhost.threads","10"))
 		);
 	}
 

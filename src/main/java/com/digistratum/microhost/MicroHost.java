@@ -34,8 +34,8 @@ public class MicroHost {
 			System.out.print("MicroHost HTTP Server starting...");
 			final Server server = new Server(config);
 
-			// Set up default controller for microhost endpoints
-			if ("on".equals(config.get("endpoints.microhost", "off"))) {
+			// Set up default controller for microhost context endpoints
+			if ("on".equals(config.get("microhost.context.microhost", "off"))) {
 				server.addControllerContext(new ControllerMicroHost(), "/microhost");
 			}
 			System.out.println(" started!");
