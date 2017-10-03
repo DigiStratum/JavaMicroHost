@@ -59,11 +59,48 @@ public class Server {
 	 * @throws MHException
 	 */
 	public void addControllerContext(Controller ctrl, String ctx) throws MHException {
+
+		// If the controller or context are bogus...
 		if ((null == ctrl) || (null == ctx) || ctx.isEmpty()) {
-			throw new MHException("Attempted to add invalid controller context for: '" + ctx + "'");
+			throw new MHException("Attempted to add invalid controller for context: '" + ctx + "'");
 		}
+
+		// If the context is already defined, it must be removed before we attempt to replace it
+		if (hasContext(ctx)) {
+			throw new MHException("Attempted to add duplicate controller for context: '" + ctx + "'");
+		}
+
+		// Add it!
 		controllerMap.put(ctx, ctrl);
 		server.createContext(ctx, ctrl);
+	}
+
+	/**
+	 * Remove a context which is already defined
+	 *
+	 * @param ctx String context base URI to which this controller is mapped
+	 *
+	 * @throws MHException
+	 */
+	public void removeContext(String ctx) throws MHException {
+		if (! hasContext(ctx)) {
+			throw new MHException("Attempted to remove undefined context: '" + ctx + "'");
+		}
+		server.removeContext(ctx);
+		controllerMap.remove(ctx);
+	}
+
+	/**
+	 * Check whether the specified context is already defined
+	 *
+	 * Note that this does not evaluate the URI to see if some other less specific context maps to this...
+	 *
+	 * @param ctx String context base URI which we want to check
+	 *
+	 * @return boolean true if the context is defined, else false
+	 */
+	public boolean hasContext(String ctx) {
+		return controllerMap.containsKey(ctx);
 	}
 
 	/**
