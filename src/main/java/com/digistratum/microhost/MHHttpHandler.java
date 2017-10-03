@@ -1,5 +1,6 @@
 package com.digistratum.microhost;
 
+import com.digistratum.microhost.Endpoints.Endpoint404;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -22,8 +23,9 @@ import static javax.imageio.ImageIO.read;
  * ref: http://docs.oracle.com/javase/8/docs/jre/api/net/httpserver/spec/com/sun/net/httpserver/package-summary.html
  */
 public class MHHttpHandler implements HttpHandler {
-	// RequestMethod, <URIregex, HandlerMethodName>
-	protected Map<String, Map<Pattern, String>> requestMap;
+	// RequestMethod, <URIregex, Endpoint>
+	protected Map<String, Map<Pattern, Endpoint>> requestMap;
+	protected Map<Integer, Endpoint> errorMap;
 
 	/**
 	 * Default Constructor
@@ -31,6 +33,8 @@ public class MHHttpHandler implements HttpHandler {
 	public MHHttpHandler() {
 		// ref: https://www.javatpoint.com/java-regex
 		requestMap = new HashMap<>();
+		errorMap = new HashMap<>();
+		errorMap.put(404, new Endpoint404());
 	}
 
 	/**
@@ -40,8 +44,8 @@ public class MHHttpHandler implements HttpHandler {
 	 * @param requestUriPattern Regex pattern to use to match a given request URI
 	 * @param requestHandler The method in THIS class to call if the URI regex pattern matches
 	 */
-	protected void setRequestHandler(String requestMethod, String requestUriPattern, String requestHandler) {
-		Map<Pattern, String> methodMap = requestMap.get(requestMethod);
+	protected void setRequestHandler(String requestMethod, String requestUriPattern, Endpoint requestHandler) {
+		Map<Pattern, Endpoint> methodMap = requestMap.get(requestMethod);
 		boolean allNew = (null == methodMap);
 		if (allNew) {
 			methodMap = new HashMap<>();
@@ -52,6 +56,13 @@ public class MHHttpHandler implements HttpHandler {
 		}
 	}
 
+	/**
+	 * Handle a given HTTP request
+	 *
+	 * @param t HttpExchange which we are given with to work
+	 *
+	 * @throws IOException
+	 */
 	public void handle(HttpExchange t) throws IOException {
 
 		// Get the URI for this request
@@ -59,10 +70,10 @@ public class MHHttpHandler implements HttpHandler {
 		String requestMethod = t.getRequestMethod().toLowerCase();
 
 		// Does the requested URI match anything in our methodMap?
-		Map<Pattern, String> methodMap = requestMap.get(requestMethod);
+		Map<Pattern, Endpoint> methodMap = requestMap.get(requestMethod);
 		if (null == methodMap) {
 			// Do a 404 response!
-			errorDocument404(t);
+			errorDocument(t, 404);
 			return;
 		}
 		// ref: https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
@@ -72,23 +83,15 @@ public class MHHttpHandler implements HttpHandler {
 			Pattern pattern = (Pattern) entry.getKey();
 			if (pattern.matcher(requestUri).matches()) {
 				// Found a match! This method will handle the request!
-				String requestHandler = (String) entry.getValue();
-				try {
-					// TODO: Extract some useful bits from the URI and pass as arguments
-					this.getClass().getMethod(requestHandler).invoke(t);
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (NoSuchMethodException e) {
-					e.printStackTrace();
-				}
+				Endpoint requestHandler = (Endpoint) entry.getValue();
+				// TODO: Extract some useful bits from the URI and pass as arguments
+				requestHandler.handleRequest(t);
 				break;
 			}
 		}
 
 		// No mapping was found for this URI - do a 404 response!
-		errorDocument404(t);
+		errorDocument(t, 404);
 /*
 		InputStream is = t.getRequestBody();
 		read(is); // .. read the request body
@@ -102,13 +105,19 @@ public class MHHttpHandler implements HttpHandler {
 		*/
 	}
 
-	protected void errorDocument404(HttpExchange t) throws IOException {
-		InputStream is = t.getRequestBody();
-		read(is); // .. read the request body
-		String response = "404 Not Found";
-		t.sendResponseHeaders(404, response.length());
-		OutputStream os = t.getResponseBody();
-		os.write(response.getBytes());
-		os.close();
+	/**
+	 * Handle error documents
+	 *
+	 * @param t HttpExchange instance we are working with
+	 * @param code HTTP error code we want to handle
+	 *
+	 * @throws Exception
+	 */
+	protected void errorDocument(HttpExchange t, Integer code) throws IOException {
+		Endpoint errorHandler = errorMap.get(code);
+		if (null == errorHandler) {
+			throw new IOException("Missing error map handler for error code: " + code);
+		}
+		errorHandler.handleRequest(t);
 	}
 }
