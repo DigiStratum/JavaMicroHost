@@ -2,6 +2,7 @@ package com.digistratum.microhost;
 
 import com.digistratum.microhost.Controller.ControllerMicroHost;
 import com.digistratum.microhost.Exception.MHException;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 
@@ -18,6 +19,7 @@ import java.io.IOException;
  * @todo Register with service registry server
  */
 public class MicroHost {
+	final static Logger log = Logger.getLogger(MicroHost.class);
 
 	/*
 	 * Application entry point
@@ -31,23 +33,23 @@ public class MicroHost {
 			Config config = new Config(propsFile);
 
 			// Stand up a new HttpServer
-			System.out.print("MicroHost HTTP Server starting...");
+			log.info("MicroHost HTTP Server starting...");
 			final Server server = new Server(config);
 
 			// Set up default controller for microhost context endpoints
 			if ("on".equals(config.get("microhost.context.microhost", "off"))) {
 				server.addControllerContext(new ControllerMicroHost(), "/microhost");
 			}
-			System.out.println(" started!");
+			log.info("started!");
 
 			// Register a shut-down hook so that we can clean up our business
 			// ref: https://stackoverflow.com/questions/2921945/useful-example-of-a-shutdown-hook-in-java
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				@Override
 				public void run() {
-					System.out.print("MicroHost HTTP Server stopping...");
+					log.info("MicroHost HTTP Server stopping...");
 					server.stop();
-					System.out.println(" stopped!");
+					log.info(" stopped!");
 				}
 			});
 
@@ -57,11 +59,11 @@ public class MicroHost {
 			}
 
 		} catch (IOException e) {
-			System.out.println("\nMicroHost HTTP Server failed to initialize : " + e.getMessage());
+			log.error("MicroHost HTTP Server failed to initialize", e);
 		} catch (InterruptedException e) {
-			System.out.println("\nMicroHost HTTP Server was interrupted: " + e.getMessage());
+			log.error("MicroHost HTTP Server was interrupted", e);
 		} catch (MHException e) {
-			System.out.println("\nMicroHost HTTP Server failed: " + e.getMessage());
+			log.error("MicroHost HTTP Server failed", e);
 		}
 	}
 }
