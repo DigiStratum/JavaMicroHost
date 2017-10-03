@@ -2,6 +2,7 @@ package com.digistratum.microhost;
 
 import com.digistratum.microhost.Exception.MHException;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class RequestResponse {
@@ -69,6 +70,25 @@ public class RequestResponse {
 	 */
 	public RequestResponse(int responseCode, Map<String, String> responseHeaders) throws MHException {
 		this(responseCode, responseHeaders, null);
+	}
+
+	/**
+	 * Headerless Response Constructor
+	 *
+	 * @param responseCode Integer HTTP response code
+	 * @param responseBody HTTP response body (optional)
+	 */
+	public RequestResponse(int responseCode, String responseBody) throws MHException {
+		this(responseCode, new HashMap<String, String>(), responseBody);
+	}
+
+	/**
+	 * Headerless, Bodyless Response Constructor (code-only)
+	 *
+	 * @param responseCode Integer HTTP response code
+	 */
+	public RequestResponse(int responseCode) throws MHException {
+		this(responseCode, new HashMap<String, String>(), null);
 	}
 
 	/**
