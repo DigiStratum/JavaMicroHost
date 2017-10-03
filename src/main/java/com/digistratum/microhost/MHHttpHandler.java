@@ -29,7 +29,29 @@ public class MHHttpHandler implements HttpHandler {
 		// ref: https://www.javatpoint.com/java-regex
 		requestMap = new HashMap<>();
 		errorMap = new HashMap<>();
+		errorMap.put(400, new EndpointErrorDocument(400, "400 Bad Request"));
+		errorMap.put(401, new EndpointErrorDocument(401, "401 Unauthorized"));
+		errorMap.put(403, new EndpointErrorDocument(403, "403 Forbidden"));
 		errorMap.put(404, new EndpointErrorDocument(404, "404 Not Found"));
+		errorMap.put(405, new EndpointErrorDocument(405, "405 Method Not Allowed"));
+		errorMap.put(406, new EndpointErrorDocument(406, "406 Not Acceptable"));
+		errorMap.put(409, new EndpointErrorDocument(409, "409 Conflict"));
+		errorMap.put(410, new EndpointErrorDocument(410, "410 Gone"));
+		errorMap.put(411, new EndpointErrorDocument(411, "411 Length Required"));
+		errorMap.put(412, new EndpointErrorDocument(412, "412 Precondition Failed"));
+		errorMap.put(413, new EndpointErrorDocument(413, "413 Request Entity Too Large"));
+		errorMap.put(415, new EndpointErrorDocument(415, "415 Unsupported Media Type"));
+		errorMap.put(416, new EndpointErrorDocument(416, "416 Requested Range Not Satisfiable"));
+		errorMap.put(417, new EndpointErrorDocument(417, "417 Expectation Failed"));
+		errorMap.put(428, new EndpointErrorDocument(428, "428 Precondition Required"));
+		errorMap.put(429, new EndpointErrorDocument(429, "429 Too Many Requests"));
+		errorMap.put(500, new EndpointErrorDocument(500, "500 Internal Server Error"));
+		errorMap.put(501, new EndpointErrorDocument(501, "501 Not Implemented"));
+		errorMap.put(502, new EndpointErrorDocument(502, "502 Bad Gateway"));
+		errorMap.put(503, new EndpointErrorDocument(503, "503 Service Unavailable"));
+		errorMap.put(504, new EndpointErrorDocument(504, "504 Gateway Timeout"));
+		errorMap.put(598, new EndpointErrorDocument(598, "598 Network Read Timeout Error"));
+		errorMap.put(599, new EndpointErrorDocument(599, "599 Network Connect Timeout Error"));
 	}
 
 	/**
