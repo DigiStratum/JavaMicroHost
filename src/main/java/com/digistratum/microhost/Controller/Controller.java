@@ -125,6 +125,7 @@ public abstract class Controller implements HttpHandler {
 		while (it.hasNext()) {
 			Map.Entry entry = (Map.Entry) it.next();
 			Pattern pattern = (Pattern) entry.getKey();
+			// ref: https://www.javatpoint.com/java-regex
 			if (pattern.matcher(requestUri).matches()) {
 				// Found a match; this endpoint will handle the request!
 				return (Endpoint) entry.getValue();
