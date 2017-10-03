@@ -24,6 +24,19 @@ public class Server {
 	}
 
 	/**
+	 * Configuration-injected constructor
+	 *
+	 * @param config
+	 * @throws IOException
+	 */
+	public Server(Config config) throws IOException {
+		this(
+				Integer.parseInt(config.get("port","54321")),
+				Integer.parseInt(config.get("threads","10"))
+		);
+	}
+
+	/**
 	 * Parametric constructor
 	 *
 	 * @param port Listening port for our MicroHost HTTP service

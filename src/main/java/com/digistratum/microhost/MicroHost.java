@@ -28,9 +28,14 @@ public class MicroHost {
 	public static void main(String[] args) {
 		try {
 
+			// Read in configuration properties
+			String userDir = System.getProperty("user.dir");
+			String propsFile = userDir + "/MicroHost.properties";
+			Config config = new Config(propsFile);
+
 			// Stand up a new HttpServer
 			System.out.print("MicroHost HTTP Server starting...");
-			final Server server = new Server();
+			final Server server = new Server(config);
 
 			// Set up default controller for microhost endpoints
 			// TODO: Make this optional in configuration
