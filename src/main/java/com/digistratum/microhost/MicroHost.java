@@ -31,6 +31,7 @@ public class MicroHost {
 			System.out.println(" started!");
 
 			// Register a shut-down hook so that we can clean up our business
+			// ref: https://stackoverflow.com/questions/2921945/useful-example-of-a-shutdown-hook-in-java
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				@Override
 				public void run() {

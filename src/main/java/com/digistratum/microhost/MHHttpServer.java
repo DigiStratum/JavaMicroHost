@@ -29,7 +29,10 @@ public class MHHttpServer {
 	 */
 	public MHHttpServer(int port, int threadPoolSize, String context) throws IOException {
 		server = HttpServer.create(new InetSocketAddress(port), 0);
+
+		// Set up a base controller context
 		server.createContext(context, new MHHttpHandler());
+
 		// ref: http://docs.oracle.com/javase/1.5.0/docs/api/java/util/concurrent/Executors.html#newFixedThreadPool(int)
 		server.setExecutor(Executors.newFixedThreadPool(threadPoolSize));
 		server.start();
