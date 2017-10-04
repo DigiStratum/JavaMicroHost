@@ -20,7 +20,7 @@ public class Server {
 	 * @param config
 	 * @throws IOException
 	 */
-	public Server(Config config) throws IOException {
+	public Server(MHConfig config) throws IOException {
 		this(
 				Integer.parseInt(config.get("microhost.port","54321")),
 				Integer.parseInt(config.get("microhost.threads","10"))

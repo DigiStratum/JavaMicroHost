@@ -8,13 +8,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-public class Config {
+public class MHConfig {
 	protected Map<String, String> config;
 
 	/**
 	 * Default constructor
 	 */
-	public Config() {
+	public MHConfig() {
 		config = new HashMap<>();
 	}
 
@@ -23,7 +23,7 @@ public class Config {
 	 *
 	 * @param path String path to the properties file we want to load from
 	 */
-	public Config(String path) {
+	public MHConfig(String path) {
 		this();
 		loadProperties(path);
 	}
@@ -58,13 +58,33 @@ public class Config {
 	}
 
 	/**
-	 * Get the named config entry, and supply default if undefined
+	 * Get the named config entry (String), and supply default if undefined
 	 *
-	 * @param name
-	 * @param def
+	 * @param name String name of the config entry that we want
+	 * @param def String default to use if the entry is not found (optional)
 	 */
 	public String get(String name, String def) {
 		return (config.containsKey(name)) ? config.get(name) : def;
+	}
+
+	/**
+	 * Get the named config entry (Integer), and supply default if undefined
+	 *
+	 * @param name String name of the config entry that we want
+	 * @param def Integer default to use if the entry is not found (optional)
+	 */
+	public Integer get(String name, Integer def) {
+		return (config.containsKey(name)) ? Integer.parseInt(config.get(name)) : def;
+	}
+
+	/**
+	 * Get the named config entry (boolean), and supply default if undefined
+	 *
+	 * @param name String name of the config entry that we want
+	 * @param def Boolean default to use if the entry is not found (optional)
+	 */
+	public Boolean get(String name, Boolean def) {
+		return (config.containsKey(name)) ? Boolean.parseBoolean(config.get(name)) : def;
 	}
 
 	/**
