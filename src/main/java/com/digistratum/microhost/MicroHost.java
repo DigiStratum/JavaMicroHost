@@ -13,6 +13,7 @@ import java.io.IOException;
  *  ref: https://www.jumpingbean.co.za/hibernate-4.0.1-pom.xml
  *  ref: https://www.tutorialspoint.com/hibernate/hibernate_examples.htm
  *  ref: https://examples.javacodegeeks.com/enterprise-java/hibernate/hibernate-annotations-example/
+ *  ref: https://www.mkyong.com/hibernate/hibernate-native-sql-queries-examples/
  *
  * INTERMEDIATE:
  * @todo Built-in support for common requirements like authentication, CORS, OPTIONS/HEAD responses
