@@ -8,8 +8,6 @@ import java.io.IOException;
 
 /**
  * BASIC:
- * @todo Log output (log4j)
- * @todo Isolate all IOExceptions to exclusively code required to interface with HttpServer*
  * @todo Database connection pool
  *
  * INTERMEDIATE:
