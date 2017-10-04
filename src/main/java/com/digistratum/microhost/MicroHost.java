@@ -9,6 +9,10 @@ import java.io.IOException;
 /**
  * BASIC:
  * @todo Database connection pool
+ *  >>> Hibernate?
+ *  ref: https://www.jumpingbean.co.za/hibernate-4.0.1-pom.xml
+ *  ref: https://www.tutorialspoint.com/hibernate/hibernate_examples.htm
+ *  ref: https://examples.javacodegeeks.com/enterprise-java/hibernate/hibernate-annotations-example/
  *
  * INTERMEDIATE:
  * @todo Built-in support for common requirements like authentication, CORS, OPTIONS/HEAD responses
