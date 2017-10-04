@@ -9,6 +9,7 @@ import java.io.IOException;
 /**
  * BASIC:
  * @todo Database connection pool
+ *  >>> ActiveJDBC from JavaLite; ref: http://javalite.io/activejdbc
  *
  * INTERMEDIATE:
  * @todo Built-in support for common requirements like authentication, CORS, OPTIONS/HEAD responses
