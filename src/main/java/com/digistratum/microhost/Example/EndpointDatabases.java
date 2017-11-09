@@ -32,6 +32,7 @@ public class EndpointDatabases implements Endpoint {
 	@Override
 	public RequestResponse handle(RequestResponse request) throws MHException {
 		try (MySqlConnection conn = pool.getConnection()) {
+
 			return new RequestResponse(200, "Hello, World!");
 		}
 	}
