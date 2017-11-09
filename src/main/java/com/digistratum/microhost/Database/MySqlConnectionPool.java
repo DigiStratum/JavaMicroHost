@@ -13,6 +13,7 @@ import java.sql.Connection;
 
 /**
  * ref: http://www.rndblog.com/how-to-set-up-a-mysql-connection-pool-in-java/
+ * ref: https://commons.apache.org/proper/commons-pool/api-1.6/org/apache/commons/pool/ObjectPool.html#returnObject(T)
  */
 public class MySqlConnectionPool {
 	protected MHConfig config;
@@ -59,15 +60,16 @@ public class MySqlConnectionPool {
 	}
 
 	/**
-	 * Get a connection from the pool
+	 * Get a wrapped connection from the pool
 	 *
-	 * @return Connection instance from the pool
+	 * @return MySqlConnection instance wrapping a Connection from the pool
 	 *
 	 * @throws MHDatabaseException if something goes sideways...
 	 */
-	public Connection getConnection() throws MHDatabaseException {
+	public MySqlConnection getConnection() throws MHDatabaseException {
 		try {
-			return (Connection) pool.borrowObject();
+			Connection conn = (Connection) pool.borrowObject();
+			return new MySqlConnection(this, conn);
 		} catch (Exception e) {
 			throw new MHDatabaseException("Failed to borrow a connection from the pool", e);
 		}
@@ -75,8 +77,6 @@ public class MySqlConnectionPool {
 
 	/**
 	 * Return a connection to the pool
-	 *
-	 * @todo How can we lease these out and then return known good instances instead of accepting whatever gets passed to us?
 	 *
 	 * @param conn Connection instance to be returned to the pool
 	 *

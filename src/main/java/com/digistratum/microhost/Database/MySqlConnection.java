@@ -14,19 +14,20 @@ import java.sql.Statement;
 public class MySqlConnection implements AutoCloseable {
 	final static Logger log = Logger.getLogger(MySqlConnection.class);
 
-	Connection conn;
-	MySqlConnectionPool pool;
+	protected Connection conn;
+	protected MySqlConnectionPool pool;
 
 	/**
 	 * Constructor
 	 *
-	 * @param pool MySqlConnection pool from which we should get our connection
+	 * @param pool MySqlConnection pool to which we should return our connection
+	 * @param conn Connection JDBC connection that we will wrap
 	 *
 	 * @throws MHDatabaseException
 	 */
-	public MySqlConnection(MySqlConnectionPool pool) throws MHDatabaseException {
+	public MySqlConnection(MySqlConnectionPool pool, Connection conn) throws MHDatabaseException {
 		this.pool = pool;
-		conn = this.pool.getConnection();
+		this.conn = conn;
 	}
 
 	/**
@@ -57,12 +58,11 @@ public class MySqlConnection implements AutoCloseable {
 	public void close() {
 		try {
 			pool.returnConnection(conn);
-
-			// ... and null out our working bits to guarantee nobody can abuse our connection
-			conn = null;
-			pool = null;
 		} catch (MHDatabaseException e) {
 			log.error("Failed to return DB connection to pool", e);
+			// null out our working bits to guarantee nobody can abuse us
+			conn = null;
+			pool = null;
 		}
 	}
 }
