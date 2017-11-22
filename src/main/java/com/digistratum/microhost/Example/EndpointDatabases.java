@@ -40,10 +40,9 @@ public class EndpointDatabases implements Endpoint {
 		try (MySqlConnection conn = pool.getConnection()) {
 			ModelMysqlDatabase modelMysqlDatabase = mysqlModelFactory.newModel(ModelMysqlDatabase.class, conn);
 			List<ModelMysqlDatabase> databases = modelMysqlDatabase.getDatabases();
-			//TODO: List out the databases we found in HTML
 			Gson gson = new Gson();
 			String responseBody = gson.toJson(databases);
-			return new RequestResponse(200, "Hello, World!");
+			return new RequestResponse(200, responseBody);
 		}
 	}
 }

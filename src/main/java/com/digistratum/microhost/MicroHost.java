@@ -2,6 +2,7 @@ package com.digistratum.microhost;
 
 import com.digistratum.microhost.Controller.ControllerMicroHost;
 import com.digistratum.microhost.Database.Mysql.MySqlConnectionPool;
+import com.digistratum.microhost.Database.Mysql.MySqlConnectionPoolFactory;
 import com.digistratum.microhost.Example.ControllerExample;
 import com.digistratum.microhost.Exception.MHException;
 import org.apache.log4j.Logger;
@@ -9,11 +10,6 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 
 /**
- * BASIC:
- * @todo Database connection pool
- *  >>> Perhaps use hibernate instead?
- *  ref: https://www.tutorialspoint.com/hibernate/hibernate_examples.htm
- *
  * INTERMEDIATE:
  * @todo Built-in support for common requirements like authentication, CORS, OPTIONS/HEAD responses
  *
@@ -27,19 +23,27 @@ public class MicroHost {
 	 * Application entry point
 	 */
 	public static void main(String[] args) {
+		MicroHost microHost = new MicroHost();
+		MHConfigFactory mhConfigFactory = new MHConfigFactory();
+		MySqlConnectionPoolFactory mySqlConnectionPoolFactory = new MySqlConnectionPoolFactory();
+		ServerFactory serverFactory = new ServerFactory();
+		microHost.run(mhConfigFactory, mySqlConnectionPoolFactory, serverFactory);
+	}
+
+	protected void run(MHConfigFactory mhConfigFactory, MySqlConnectionPoolFactory mySqlConnectionPoolFactory, ServerFactory serverFactory) {
 		try {
 
 			// Read in configuration properties
 			String userDir = System.getProperty("user.dir");
 			String propsFile = userDir + "/MicroHost.properties";
-			MHConfig config = new MHConfig(propsFile);
+			MHConfig config = mhConfigFactory.createMHConfig(propsFile);
 
 			// Set up database connection pool
-			MySqlConnectionPool pool = new MySqlConnectionPool(config);
+			MySqlConnectionPool pool = mySqlConnectionPoolFactory.createMySqlConnectionPool(config);
 
 			// Stand up a new HttpServer
 			log.info("MicroHost HTTP Server starting...");
-			final Server server = new Server(config);
+			final Server server = serverFactory.createServer(config);
 
 			// Set up default controller for microhost context endpoints
 			if ("on".equals(config.get("microhost.context.microhost", "off"))) {
