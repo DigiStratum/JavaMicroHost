@@ -6,13 +6,13 @@ import org.apache.log4j.Logger;
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * ref: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
  * ref: https://docs.oracle.com/javase/tutorial/jdbc/basics/retrieving.html
+ *
+ * @todo Add support for transaction begin/commit, auto-commit, rollback
  */
 public class MySqlConnection implements AutoCloseable {
 	final static Logger log = Logger.getLogger(MySqlConnection.class);
@@ -34,7 +34,9 @@ public class MySqlConnection implements AutoCloseable {
 	}
 
 	/**
-	 * Execute some SQL as a prepared statement
+	 * Execute some SQL as a normal statement
+	 *
+	 * @todo Make a variant of this with prepared statement
 	 *
 	 * ref: http://www.java2novice.com/java-generics/simple-class/
 	 *
