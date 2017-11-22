@@ -1,4 +1,4 @@
-package com.digistratum.microhost.Database;
+package com.digistratum.microhost.Database.Mysql;
 
 import com.digistratum.microhost.Exception.MHDatabaseException;
 import org.apache.log4j.Logger;

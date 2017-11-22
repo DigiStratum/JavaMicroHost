@@ -1,7 +1,7 @@
 package com.digistratum.microhost;
 
 import com.digistratum.microhost.Controller.ControllerMicroHost;
-import com.digistratum.microhost.Database.MySqlConnectionPool;
+import com.digistratum.microhost.Database.Mysql.MySqlConnectionPool;
 import com.digistratum.microhost.Example.ControllerExample;
 import com.digistratum.microhost.Exception.MHException;
 import org.apache.log4j.Logger;

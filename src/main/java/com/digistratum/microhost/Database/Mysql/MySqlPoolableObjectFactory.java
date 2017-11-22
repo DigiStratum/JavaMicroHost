@@ -1,4 +1,4 @@
-package com.digistratum.microhost.Database;
+package com.digistratum.microhost.Database.Mysql;
 
 import java.sql.DriverManager;
 import org.apache.commons.pool.BasePoolableObjectFactory;
