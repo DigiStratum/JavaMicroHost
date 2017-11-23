@@ -10,6 +10,11 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 
 /**
+ * BASIC
+ * @todo separate example from reusable classes; build separate jars for them
+ * @todo bring in Dagger for dependency injection; get rid of factories
+ * @todo 90+% unit test coverage
+ *
  * INTERMEDIATE:
  * @todo Built-in support for common requirements like authentication, CORS, OPTIONS/HEAD responses
  *

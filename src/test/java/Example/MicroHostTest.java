@@ -1,10 +1,9 @@
-package com.digistratum.microhost;
+package Example;
 
+import com.digistratum.microhost.*;
 import com.digistratum.microhost.Database.Mysql.MySqlConnectionPool;
 import com.digistratum.microhost.Database.Mysql.MySqlConnectionPoolFactory;
 import org.junit.jupiter.api.*;
-
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -47,7 +46,7 @@ class MicroHostTest {
 	public void testThatRunLoopsUntilStopped() {
 		// FIXME - run enters a perpetual loop (by design), but it's the JUnit test thread
 		// which is looping, so it needs to happen asynchronously... or something
-		sut.run(mockMHConfigFactory, mockMySqlConnectionPoolFactory, mockServerFactory);
+		sut.testRun(mockMHConfigFactory, mockMySqlConnectionPoolFactory, mockServerFactory);
 		try {
 			Thread.sleep(1000);
 			assertTrue(sut.isRunning());
@@ -60,7 +59,7 @@ class MicroHostTest {
 		}
 	}
 
-	private class TestableMicroHost extends MicroHost {
+	private class TestableMicroHost extends com.digistratum.microhost.MicroHost {
 		public void testRun(MHConfigFactory mhcf, MySqlConnectionPoolFactory mscpf, ServerFactory sf) {
 			run(mhcf, mscpf, sf);
 		}
