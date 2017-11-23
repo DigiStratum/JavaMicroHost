@@ -1,10 +1,13 @@
-package com.digistratum.microhost;
+package Example;
 
 import com.digistratum.microhost.Controller.ControllerMicroHost;
 import com.digistratum.microhost.Database.Mysql.MySqlConnectionPool;
 import com.digistratum.microhost.Database.Mysql.MySqlConnectionPoolFactory;
-import com.digistratum.microhost.Example.ControllerExample;
 import com.digistratum.microhost.Exception.MHException;
+import com.digistratum.microhost.MHConfig;
+import com.digistratum.microhost.MHConfigFactory;
+import com.digistratum.microhost.Server;
+import com.digistratum.microhost.ServerFactory;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -14,6 +17,7 @@ import java.io.IOException;
  * @todo separate example from reusable classes; build separate jars for them
  * @todo bring in Dagger for dependency injection; get rid of factories
  * @todo 90+% unit test coverage
+ * @todo Set up inversion of control (IoC) using interface/implementation for better structure, DI, testability, DI, etc.
  *
  * INTERMEDIATE:
  * @todo Built-in support for common requirements like authentication, CORS, OPTIONS/HEAD responses
