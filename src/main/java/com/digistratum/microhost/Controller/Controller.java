@@ -119,7 +119,7 @@ public abstract class Controller implements HttpHandler {
 		RequestResponse response;
 		try {
 			response = endpoint.handle(request);
-		} catch (MHException e) {
+		} catch (Exception e) {
 			String msg = "Error handling RequestResponse";
 			log.error(msg, e);
 			throw new IOException(msg, e);

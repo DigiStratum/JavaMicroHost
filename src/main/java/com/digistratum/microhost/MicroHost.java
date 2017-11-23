@@ -14,10 +14,11 @@ import java.io.IOException;
  * @todo Built-in support for common requirements like authentication, CORS, OPTIONS/HEAD responses
  *
  * ADVANCED:
- * @todo Register with service registry server
+ * @todo Register service with registry service
  */
 public class MicroHost {
-	final static Logger log = Logger.getLogger(MicroHost.class);
+	protected final static Logger log = Logger.getLogger(MicroHost.class);
+	protected boolean amRunning = false;
 
 	/*
 	 * Application entry point
@@ -30,6 +31,30 @@ public class MicroHost {
 		microHost.run(mhConfigFactory, mySqlConnectionPoolFactory, serverFactory);
 	}
 
+	/**
+	 * Determine from the outside whether we are running
+	 *
+	 * @return boolean true if we are running, else false
+	 */
+	public boolean isRunning() {
+		return amRunning;
+	}
+
+	/**
+	 * Stop the main loop from running any longer
+	 */
+	public void stop() {
+		log.info("Stop requested!");
+		amRunning = false;
+	}
+
+	/**
+	 * Run the main loop
+	 *
+	 * @param mhConfigFactory Object instance of MHConfigFactory to retrieve configuration data
+	 * @param mySqlConnectionPoolFactory Object instance of MySqlConnectionPoolFactory to get connected to a database
+	 * @param serverFactory Object instance of ServerFactory to stand up our restful server/controller host
+	 */
 	protected void run(MHConfigFactory mhConfigFactory, MySqlConnectionPoolFactory mySqlConnectionPoolFactory, ServerFactory serverFactory) {
 		try {
 
@@ -66,10 +91,10 @@ public class MicroHost {
 			});
 
 			// Do-nothing run loop
-			while (true) {
+			amRunning = true;
+			while (amRunning) {
 				Thread.sleep(1000);
 			}
-
 		} catch (IOException e) {
 			log.error("MicroHost HTTP Server failed to initialize", e);
 		} catch (InterruptedException e) {
