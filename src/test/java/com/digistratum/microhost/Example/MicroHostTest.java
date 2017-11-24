@@ -1,4 +1,4 @@
-package Example;
+package com.digistratum.microhost.Example;
 
 import com.digistratum.microhost.*;
 import com.digistratum.microhost.Database.Mysql.MySqlConnectionPool;

@@ -1,5 +1,6 @@
-package Example;
+package com.digistratum.microhost.Example;
 
+import com.digistratum.microhost.Example.Api.ControllerExample;
 import com.digistratum.microhost.Controller.ControllerMicroHost;
 import com.digistratum.microhost.Database.Mysql.MySqlConnectionPool;
 import com.digistratum.microhost.Database.Mysql.MySqlConnectionPoolFactory;
@@ -34,9 +35,12 @@ public class MicroHost {
 	 */
 	public static void main(String[] args) {
 		MicroHost microHost = new MicroHost();
+
+		// @todo: get rid of these factories, use interfaces/implementations and dependency injection framework instead
 		MHConfigFactory mhConfigFactory = new MHConfigFactory();
 		MySqlConnectionPoolFactory mySqlConnectionPoolFactory = new MySqlConnectionPoolFactory();
 		ServerFactory serverFactory = new ServerFactory();
+
 		microHost.run(mhConfigFactory, mySqlConnectionPoolFactory, serverFactory);
 	}
 

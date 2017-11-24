@@ -1,5 +1,7 @@
-package com.digistratum.microhost.Example;
+package com.digistratum.microhost.Example.Api;
 
+import com.digistratum.microhost.Example.Api.EndpointHello;
+import com.digistratum.microhost.Example.Api.EndpointDatabases;
 import com.digistratum.microhost.Controller.Controller;
 import com.digistratum.microhost.Database.Mysql.MySqlConnectionPool;
 import com.digistratum.microhost.Database.Mysql.MysqlModelFactory;
