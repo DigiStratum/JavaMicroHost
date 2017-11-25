@@ -1,6 +1,6 @@
 package com.digistratum.microhost;
 
-import com.digistratum.microhost.Controller.Controller;
+import com.digistratum.microhost.Controller.ControllerBaseImpl;
 import com.digistratum.microhost.Exception.MHException;
 import com.sun.net.httpserver.HttpServer;
 
@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 
 public class Server {
 	HttpServer server;
-	Map<String, Controller> controllerMap;
+	Map<String, ControllerBaseImpl> controllerMap;
 
 	/**
 	 * Configuration-injected constructor
@@ -53,12 +53,12 @@ public class Server {
 	 *
 	 * A controller is responsible for all request URIs relative to the context path
 	 *
-	 * @param ctrl Controller instance to do the work
+	 * @param ctrl ControllerBaseImpl instance to do the work
 	 * @param ctx String context base URI to map this controller to
 	 *
 	 * @throws MHException
 	 */
-	public void addControllerContext(Controller ctrl, String ctx) throws MHException {
+	public void addControllerContext(ControllerBaseImpl ctrl, String ctx) throws MHException {
 
 		// If the controller or context are bogus...
 		if ((null == ctrl) || (null == ctx) || ctx.isEmpty()) {

@@ -1,7 +1,7 @@
 package com.digistratum.microhost.Example;
 
-import com.digistratum.microhost.Example.Api.ControllerExample;
-import com.digistratum.microhost.Controller.ControllerMicroHost;
+import com.digistratum.microhost.Controller.ControllerMicroHostImpl;
+import com.digistratum.microhost.Example.Api.ControllerBaseImplExample;
 import com.digistratum.microhost.Database.Mysql.MySqlConnectionPool;
 import com.digistratum.microhost.Database.Mysql.MySqlConnectionPoolFactory;
 import com.digistratum.microhost.Exception.MHException;
@@ -85,10 +85,10 @@ public class MicroHost {
 
 			// Set up default controller for microhost context endpoints
 			if ("on".equals(config.get("microhost.context.microhost", "off"))) {
-				server.addControllerContext(new ControllerMicroHost(), "/microhost");
+				server.addControllerContext(new ControllerMicroHostImpl(), "/microhost");
 			}
 			if ("on".equals(config.get("microhost.context.example", "off"))) {
-				server.addControllerContext(new ControllerExample(pool), "/example");
+				server.addControllerContext(new ControllerBaseImplExample(pool), "/example");
 			}
 			log.info("started!");
 

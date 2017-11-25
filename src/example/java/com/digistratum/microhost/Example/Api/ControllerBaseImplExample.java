@@ -1,18 +1,16 @@
 package com.digistratum.microhost.Example.Api;
 
-import com.digistratum.microhost.Example.Api.EndpointHello;
-import com.digistratum.microhost.Example.Api.EndpointDatabases;
-import com.digistratum.microhost.Controller.Controller;
+import com.digistratum.microhost.Controller.ControllerBaseImpl;
 import com.digistratum.microhost.Database.Mysql.MySqlConnectionPool;
 import com.digistratum.microhost.Database.Mysql.MysqlModelFactory;
 import com.digistratum.microhost.Exception.MHException;
 
 /**
- * ControllerExample example controller
+ * ControllerBaseImplExample example controller
  */
-public class ControllerExample extends Controller {
+public class ControllerBaseImplExample extends ControllerBaseImpl {
 
-	public ControllerExample(MySqlConnectionPool pool) throws MHException {
+	public ControllerBaseImplExample(MySqlConnectionPool pool) throws MHException {
 		super();
 
 		// Respond to http://localhost:54321/hello
