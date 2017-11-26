@@ -1,7 +1,8 @@
-package com.digistratum.microhost;
+package com.digistratum.microhost.RestServer;
 
 import com.digistratum.microhost.Controller.ControllerBaseImpl;
 import com.digistratum.microhost.Exception.MHException;
+import com.digistratum.microhost.Config.ConfigImpl;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
@@ -10,20 +11,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
-public class Server {
+public class RestServerImpl {
 	HttpServer server;
 	Map<String, ControllerBaseImpl> controllerMap;
 
 	/**
 	 * Configuration-injected constructor
 	 *
-	 * @param config
+	 * @param configImpl
 	 * @throws IOException
 	 */
-	public Server(MHConfig config) throws IOException {
+	public RestServerImpl(ConfigImpl configImpl) throws IOException {
 		this(
-				Integer.parseInt(config.get("microhost.port","54321")),
-				Integer.parseInt(config.get("microhost.threads","10"))
+				Integer.parseInt(configImpl.get("microhost.port","54321")),
+				Integer.parseInt(configImpl.get("microhost.threads","10"))
 		);
 	}
 
@@ -35,7 +36,7 @@ public class Server {
 	 *
 	 * @throws IOException
 	 */
-	public Server(int port, int threadPoolSize) throws IOException {
+	public RestServerImpl(int port, int threadPoolSize) throws IOException {
 		server = HttpServer.create(new InetSocketAddress(port), 0);
 
 		// ref: http://docs.oracle.com/javase/1.5.0/docs/api/java/util/concurrent/Executors.html#newFixedThreadPool(int)
@@ -104,7 +105,7 @@ public class Server {
 	}
 
 	/**
-	 * Server stopper
+	 * RestServerImpl stopper
 	 */
 	public void stop() {
 		server.stop(0);

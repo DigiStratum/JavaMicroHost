@@ -1,18 +1,18 @@
 package com.digistratum.microhost.Example.Model;
 
-import com.digistratum.microhost.Database.Mysql.MySqlConnection;
-import com.digistratum.microhost.Database.Mysql.MysqlModel;
+import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionImpl;
+import com.digistratum.microhost.Database.Mysql.Model.MysqlModelImpl;
 
 import java.util.List;
 
-public class ModelMysqlDatabase extends MysqlModel {
+public class ModelMysqlDatabaseImpl extends MysqlModelImpl {
 	public String Database;
 
 	/**
 	 *
 	 * @param conn
 	 */
-	public ModelMysqlDatabase(MySqlConnection conn) {
+	public ModelMysqlDatabaseImpl(MySqlConnectionImpl conn) {
 		super(conn);
 	}
 
@@ -34,9 +34,9 @@ public class ModelMysqlDatabase extends MysqlModel {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<ModelMysqlDatabase> getDatabases() throws Exception {
+	public List<ModelMysqlDatabaseImpl> getDatabases() throws Exception {
 		return conn.query(
-			ModelMysqlDatabase.class,
+			ModelMysqlDatabaseImpl.class,
 			"show databases;"
 		);
 	}

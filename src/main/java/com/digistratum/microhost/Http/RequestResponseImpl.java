@@ -1,11 +1,11 @@
-package com.digistratum.microhost;
+package com.digistratum.microhost.Http;
 
 import com.digistratum.microhost.Exception.MHException;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class RequestResponse {
+public class RequestResponseImpl implements RequestResponse {
 	private enum Type {request, response };
 	private Type type;
 
@@ -22,7 +22,7 @@ public class RequestResponse {
 	 * @param requestUri HTTP request URI string
 	 * @param requestHeaders Map<name, value> HTTP request headers
 	 */
-	public RequestResponse(String requestMethod, String requestUri, Map<String, String> requestHeaders) throws MHException {
+	public RequestResponseImpl(String requestMethod, String requestUri, Map<String, String> requestHeaders) throws MHException {
 		this(requestMethod, requestUri, requestHeaders, null);
 	}
 
@@ -34,27 +34,27 @@ public class RequestResponse {
 	 * @param requestHeaders Map<name, value> HTTP request headers
 	 * @param requestBody HTTP request body (optional)
 	 */
-	public RequestResponse(String requestMethod, String requestUri, Map<String, String> requestHeaders, String requestBody) throws MHException {
+	public RequestResponseImpl(String requestMethod, String requestUri, Map<String, String> requestHeaders, String requestBody) throws MHException {
 
 		// This is a REQUEST
 		type = Type.request;
 
 		// Check the request method
 		if ((null == requestMethod) || requestMethod.isEmpty()) {
-			throw new MHException("RequestResponse() - supplied request method was empty");
+			throw new MHException("RequestResponseImpl() - supplied request method was empty");
 		}
 		// TODO: Check that the request method is one which we support
 		method = requestMethod;
 
 		// Check the URI
 		if ((null == requestUri) || requestUri.isEmpty()) {
-			throw new MHException("RequestResponse() - supplied URI was empty");
+			throw new MHException("RequestResponseImpl() - supplied URI was empty");
 		}
 		uri = requestUri;
 
 		// Check the headers
 		if (null == requestHeaders) {
-			throw new MHException("RequestResponse() - headers were not supplied");
+			throw new MHException("RequestResponseImpl() - headers were not supplied");
 		}
 		headers = requestHeaders;
 
@@ -68,7 +68,7 @@ public class RequestResponse {
 	 * @param responseCode Integer HTTP response code
 	 * @param responseHeaders Map<name, value> HTTP response headers
 	 */
-	public RequestResponse(int responseCode, Map<String, String> responseHeaders) throws MHException {
+	public RequestResponseImpl(int responseCode, Map<String, String> responseHeaders) throws MHException {
 		this(responseCode, responseHeaders, null);
 	}
 
@@ -78,7 +78,7 @@ public class RequestResponse {
 	 * @param responseCode Integer HTTP response code
 	 * @param responseBody HTTP response body (optional)
 	 */
-	public RequestResponse(int responseCode, String responseBody) throws MHException {
+	public RequestResponseImpl(int responseCode, String responseBody) throws MHException {
 		this(responseCode, new HashMap<String, String>(), responseBody);
 	}
 
@@ -87,7 +87,7 @@ public class RequestResponse {
 	 *
 	 * @param responseCode Integer HTTP response code
 	 */
-	public RequestResponse(int responseCode) throws MHException {
+	public RequestResponseImpl(int responseCode) throws MHException {
 		this(responseCode, new HashMap<String, String>(), null);
 	}
 
@@ -98,7 +98,7 @@ public class RequestResponse {
 	 * @param responseHeaders Map<name, value> HTTP response headers
 	 * @param responseBody HTTP response body (optional)
 	 */
-	public RequestResponse(int responseCode, Map<String, String> responseHeaders, String responseBody) throws MHException {
+	public RequestResponseImpl(int responseCode, Map<String, String> responseHeaders, String responseBody) throws MHException {
 
 		// This is a RESPONSE
 		type = Type.response;
@@ -108,7 +108,7 @@ public class RequestResponse {
 
 		// Check the headers
 		if (null == responseHeaders) {
-			throw new MHException("RequestResponse() - headers were not supplied");
+			throw new MHException("RequestResponseImpl() - headers were not supplied");
 		}
 		headers = responseHeaders;
 
@@ -116,89 +116,47 @@ public class RequestResponse {
 		body = responseBody;
 	}
 
-	/**
-	 * Check whether this instance represents a REQUEST
-	 *
-	 * @return boolean true if it does, else false (if it's a RESPONSE!)
-	 */
+	@Override
 	public boolean isRequest() {
 		return (type == Type.request);
 	}
 
-	/**
-	 * Check whether this instance represents a RESPONSE
-	 *
-	 * @return boolean true if it does, else false (if it's a REQUEST!)
-	 */
+	@Override
 	public boolean isResponse() {
 		return (type == Type.response);
 	}
 
-	/**
-	 * Check whether we have a specifically named header
-	 *
-	 * @param name String name of the header we want to check for
-	 *
-	 * @return boolean true if the named header is defined, else false
-	 */
+	@Override
 	public boolean hasHeader(String name) {
 		return headers.containsKey(name);
 	}
 
-	/**
-	 * Get the value of the specifically named header
-	 *
-	 * Note that casing is not enforced here, but all lower-case is recommended to avoid inconsistency.
-	 *
-	 * @param name String name of the header we want the value for
-	 *
-	 * @return String value of the header (may be null, especially if undefined)
-	 */
+	@Override
 	public String getHeader(String name) {
 		return headers.get(name);
 	}
 
-	/**
-	 * Get the entire collection of headers
-	 *
-	 * @return Header map
-	 */
+	@Override
 	public Map<String, String> getHeaders() {
 		return headers;
 	}
 
-	/**
-	 * Get the value of the body
-	 *
-	 * @return String body (may be null!)
-	 */
+	@Override
 	public String getBody() {
 		return body;
 	}
 
-	/**
-	 * Get the value of the method
-	 *
-	 * @return String method (may be null!)
-	 */
+	@Override
 	public String getRequestMethod() {
 		return method;
 	}
 
-	/**
-	 * Get the value of the URI
-	 *
-	 * @return String URI (may be null!)
-	 */
+	@Override
 	public String getUri() {
 		return uri;
 	}
 
-	/**
-	 * Get the value of the status code
-	 *
-	 * @return Integer status code (may be null!)
-	 */
+	@Override
 	public Integer getCode() {
 		return code;
 	}

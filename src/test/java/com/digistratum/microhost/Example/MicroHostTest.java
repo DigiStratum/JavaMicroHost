@@ -1,8 +1,11 @@
 package com.digistratum.microhost.Example;
 
-import com.digistratum.microhost.*;
-import com.digistratum.microhost.Database.Mysql.MySqlConnectionPool;
-import com.digistratum.microhost.Database.Mysql.MySqlConnectionPoolFactory;
+import com.digistratum.microhost.Config.ConfigImpl;
+import com.digistratum.microhost.Config.ConfigFactory;
+import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
+import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolFactory;
+import com.digistratum.microhost.RestServer.RestServerImpl;
+import com.digistratum.microhost.RestServer.ServerFactory;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -13,14 +16,14 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 class MicroHostTest {
-	MHConfigFactory mockMHConfigFactory;
-	MHConfig mockMHConfig;
+	ConfigFactory mockMHConfigFactory;
+	ConfigImpl mockMHConfigImpl;
 
-	MySqlConnectionPool mockMySqlConnectionPool;
+	MySqlConnectionPoolImpl mockMySqlConnectionPoolImpl;
 	MySqlConnectionPoolFactory mockMySqlConnectionPoolFactory;
 
 	ServerFactory mockServerFactory;
-	Server mockServer;
+	RestServerImpl mockServer;
 
 	TestableMicroHost sut;
 
@@ -28,17 +31,17 @@ class MicroHostTest {
 	public void setup() throws Exception {
 
 		// Mock our various factories and their prducts
-		mockMHConfigFactory = mock(MHConfigFactory .class);
-		mockMHConfig = mock(MHConfig.class);
-		doReturn(mockMHConfig).when(mockMHConfigFactory).createMHConfig(anyString());
+		mockMHConfigFactory = mock(ConfigFactory.class);
+		mockMHConfigImpl = mock(ConfigImpl.class);
+		doReturn(mockMHConfigImpl).when(mockMHConfigFactory).createMHConfig(anyString());
 
 		mockServerFactory = mock(ServerFactory.class);
-		mockServer = mock(Server.class);
+		mockServer = mock(RestServerImpl.class);
 		doReturn(mockServer).when(mockServerFactory).createServer(anyObject());
 
 		mockMySqlConnectionPoolFactory = mock(MySqlConnectionPoolFactory.class);
-		mockMySqlConnectionPool = mock(MySqlConnectionPool.class);
-		doReturn(mockMySqlConnectionPool).when(mockMySqlConnectionPoolFactory).createMySqlConnectionPool(anyObject());
+		mockMySqlConnectionPoolImpl = mock(MySqlConnectionPoolImpl.class);
+		doReturn(mockMySqlConnectionPoolImpl).when(mockMySqlConnectionPoolFactory).createMySqlConnectionPool(anyObject());
 
 		sut = new TestableMicroHost();
 	}
@@ -59,8 +62,8 @@ class MicroHostTest {
 		}
 	}
 
-	private class TestableMicroHost extends com.digistratum.microhost.MicroHost {
-		public void testRun(MHConfigFactory mhcf, MySqlConnectionPoolFactory mscpf, ServerFactory sf) {
+	private class TestableMicroHost extends MicroHost {
+		public void testRun(ConfigFactory mhcf, MySqlConnectionPoolFactory mscpf, ServerFactory sf) {
 			run(mhcf, mscpf, sf);
 		}
 	}

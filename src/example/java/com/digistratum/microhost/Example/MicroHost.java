@@ -1,14 +1,14 @@
 package com.digistratum.microhost.Example;
 
-import com.digistratum.microhost.Controller.ControllerMicroHostImpl;
+import com.digistratum.microhost.Config.ConfigFactory;
+import com.digistratum.microhost.Config.ConfigImpl;
+import com.digistratum.microhost.Controller.ControllerBaseMicroHostImpl;
 import com.digistratum.microhost.Example.Api.ControllerBaseImplExample;
-import com.digistratum.microhost.Database.Mysql.MySqlConnectionPool;
-import com.digistratum.microhost.Database.Mysql.MySqlConnectionPoolFactory;
+import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
+import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolFactory;
 import com.digistratum.microhost.Exception.MHException;
-import com.digistratum.microhost.MHConfig;
-import com.digistratum.microhost.MHConfigFactory;
-import com.digistratum.microhost.Server;
-import com.digistratum.microhost.ServerFactory;
+import com.digistratum.microhost.RestServer.RestServerImpl;
+import com.digistratum.microhost.RestServer.ServerFactory;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -37,7 +37,7 @@ public class MicroHost {
 		MicroHost microHost = new MicroHost();
 
 		// @todo: get rid of these factories, use interfaces/implementations and dependency injection framework instead
-		MHConfigFactory mhConfigFactory = new MHConfigFactory();
+		ConfigFactory mhConfigFactory = new ConfigFactory();
 		MySqlConnectionPoolFactory mySqlConnectionPoolFactory = new MySqlConnectionPoolFactory();
 		ServerFactory serverFactory = new ServerFactory();
 
@@ -64,30 +64,30 @@ public class MicroHost {
 	/**
 	 * Run the main loop
 	 *
-	 * @param mhConfigFactory Object instance of MHConfigFactory to retrieve configuration data
+	 * @param mhConfigFactory Object instance of ConfigFactory to retrieve configuration data
 	 * @param mySqlConnectionPoolFactory Object instance of MySqlConnectionPoolFactory to get connected to a database
 	 * @param serverFactory Object instance of ServerFactory to stand up our restful server/controller host
 	 */
-	protected void run(MHConfigFactory mhConfigFactory, MySqlConnectionPoolFactory mySqlConnectionPoolFactory, ServerFactory serverFactory) {
+	protected void run(ConfigFactory mhConfigFactory, MySqlConnectionPoolFactory mySqlConnectionPoolFactory, ServerFactory serverFactory) {
 		try {
 
 			// Read in configuration properties
 			String userDir = System.getProperty("user.dir");
 			String propsFile = userDir + "/MicroHost.properties";
-			MHConfig config = mhConfigFactory.createMHConfig(propsFile);
+			ConfigImpl configImpl = mhConfigFactory.createMHConfig(propsFile);
 
 			// Set up database connection pool
-			MySqlConnectionPool pool = mySqlConnectionPoolFactory.createMySqlConnectionPool(config);
+			MySqlConnectionPoolImpl pool = mySqlConnectionPoolFactory.createMySqlConnectionPool(configImpl);
 
 			// Stand up a new HttpServer
-			log.info("MicroHost HTTP Server starting...");
-			final Server server = serverFactory.createServer(config);
+			log.info("MicroHost HTTP RestServerImpl starting...");
+			final RestServerImpl server = serverFactory.createServer(configImpl);
 
 			// Set up default controller for microhost context endpoints
-			if ("on".equals(config.get("microhost.context.microhost", "off"))) {
-				server.addControllerContext(new ControllerMicroHostImpl(), "/microhost");
+			if ("on".equals(configImpl.get("microhost.context.microhost", "off"))) {
+				server.addControllerContext(new ControllerBaseMicroHostImpl(), "/microhost");
 			}
-			if ("on".equals(config.get("microhost.context.example", "off"))) {
+			if ("on".equals(configImpl.get("microhost.context.example", "off"))) {
 				server.addControllerContext(new ControllerBaseImplExample(pool), "/example");
 			}
 			log.info("started!");
@@ -97,7 +97,7 @@ public class MicroHost {
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				@Override
 				public void run() {
-					log.info("MicroHost HTTP Server stopping...");
+					log.info("MicroHost HTTP RestServerImpl stopping...");
 					server.stop();
 					log.info(" stopped!");
 				}
@@ -109,11 +109,11 @@ public class MicroHost {
 				Thread.sleep(1000);
 			}
 		} catch (IOException e) {
-			log.error("MicroHost HTTP Server failed to initialize", e);
+			log.error("MicroHost HTTP RestServerImpl failed to initialize", e);
 		} catch (InterruptedException e) {
-			log.error("MicroHost HTTP Server was interrupted", e);
+			log.error("MicroHost HTTP RestServerImpl was interrupted", e);
 		} catch (MHException e) {
-			log.error("MicroHost HTTP Server failed", e);
+			log.error("MicroHost HTTP RestServerImpl failed", e);
 		}
 	}
 }

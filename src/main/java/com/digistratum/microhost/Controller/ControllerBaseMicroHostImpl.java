@@ -1,16 +1,16 @@
 package com.digistratum.microhost.Controller;
 
-import com.digistratum.microhost.Endpoint.EndpointStatus;
+import com.digistratum.microhost.Endpoint.EndpointStatusImpl;
 import com.digistratum.microhost.Exception.MHException;
 
-public class ControllerMicroHostImpl extends ControllerBaseImpl {
-	public ControllerMicroHostImpl() throws MHException {
+public class ControllerBaseMicroHostImpl extends ControllerBaseImpl {
+	public ControllerBaseMicroHostImpl() throws MHException {
 		super();
 		// Respond to http://localhost:54321/microhost/status
 		mapEndpoint(
 				"get",
 				"^/microhost/status$",
-				new EndpointStatus()
+				new EndpointStatusImpl()
 		);
 	}
 }

@@ -1,12 +1,12 @@
 package com.digistratum.microhost.Example.Api;
 
-import com.digistratum.microhost.Database.Mysql.MySqlConnection;
-import com.digistratum.microhost.Database.Mysql.MySqlConnectionPool;
-import com.digistratum.microhost.Database.Mysql.MysqlModelFactory;
+import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionImpl;
+import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
+import com.digistratum.microhost.Database.Mysql.Model.MysqlModelFactory;
 import com.digistratum.microhost.Endpoint.Endpoint;
-import com.digistratum.microhost.Example.Model.ModelMysqlDatabase;
+import com.digistratum.microhost.Example.Model.ModelMysqlDatabaseImpl;
 import com.digistratum.microhost.Exception.MHException;
-import com.digistratum.microhost.RequestResponse;
+import com.digistratum.microhost.Http.RequestResponseImpl;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
  * Get a list of mysql databases
  */
 public class EndpointDatabases implements Endpoint {
-	MySqlConnectionPool pool;
+	MySqlConnectionPoolImpl pool;
 	MysqlModelFactory mysqlModelFactory;
 
 	/**
@@ -24,7 +24,7 @@ public class EndpointDatabases implements Endpoint {
 	 * @param pool Dependency injected database connection pool
 	 * @param mysqlModelFactory
 	 */
-	public EndpointDatabases(MySqlConnectionPool pool, MysqlModelFactory mysqlModelFactory) {
+	public EndpointDatabases(MySqlConnectionPoolImpl pool, MysqlModelFactory mysqlModelFactory) {
 		this.pool = pool;
 		this.mysqlModelFactory = mysqlModelFactory;
 	}
@@ -36,13 +36,13 @@ public class EndpointDatabases implements Endpoint {
 	 * @throws MHException
 	 */
 	@Override
-	public RequestResponse handle(RequestResponse request) throws Exception {
-		try (MySqlConnection conn = pool.getConnection()) {
-			ModelMysqlDatabase modelMysqlDatabase = mysqlModelFactory.newModel(ModelMysqlDatabase.class, conn);
-			List<ModelMysqlDatabase> databases = modelMysqlDatabase.getDatabases();
+	public RequestResponseImpl handle(RequestResponseImpl request) throws Exception {
+		try (MySqlConnectionImpl conn = pool.getConnection()) {
+			ModelMysqlDatabaseImpl modelMysqlDatabase = mysqlModelFactory.newModel(ModelMysqlDatabaseImpl.class, conn);
+			List<ModelMysqlDatabaseImpl> databases = modelMysqlDatabase.getDatabases();
 			Gson gson = new Gson();
 			String responseBody = gson.toJson(databases);
-			return new RequestResponse(200, responseBody);
+			return new RequestResponseImpl(200, responseBody);
 		}
 	}
 }

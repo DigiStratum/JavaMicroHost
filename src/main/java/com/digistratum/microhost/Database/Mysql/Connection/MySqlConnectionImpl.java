@@ -1,4 +1,4 @@
-package com.digistratum.microhost.Database.Mysql;
+package com.digistratum.microhost.Database.Mysql.Connection;
 
 import com.digistratum.microhost.Exception.MHDatabaseException;
 import org.apache.log4j.Logger;
@@ -14,33 +14,27 @@ import java.util.List;
  *
  * @todo Add support for transaction begin/commit, auto-commit, rollback
  */
-public class MySqlConnection implements AutoCloseable {
-	final static Logger log = Logger.getLogger(MySqlConnection.class);
+public class MySqlConnectionImpl implements MySqlConnection, AutoCloseable {
+	final static Logger log = Logger.getLogger(MySqlConnectionImpl.class);
 
 	protected Connection conn;
-	protected MySqlConnectionPool pool;
+	protected MySqlConnectionPoolImpl pool;
 
 	/**
 	 * Constructor
 	 *
-	 * @param pool MySqlConnection pool to which we should return our connection
+	 * @param pool MySqlConnectionImpl pool to which we should return our connection
 	 * @param conn Connection JDBC connection that we will wrap
 	 *
 	 * @throws MHDatabaseException
 	 */
-	public MySqlConnection(MySqlConnectionPool pool, Connection conn) throws MHDatabaseException {
+	public MySqlConnectionImpl(MySqlConnectionPoolImpl pool, Connection conn) throws MHDatabaseException {
 		this.pool = pool;
 		this.conn = conn;
 	}
 
 	/**
-	 * Execute some SQL as a normal statement
-	 *
 	 * @todo Make a variant of this with prepared statement
-	 *
-	 * ref: http://www.java2novice.com/java-generics/simple-class/
-	 *
-	 * @param sql
 	 */
 	public <T> List<T> query(Class<T> type, String sql) throws Exception {
 		try (

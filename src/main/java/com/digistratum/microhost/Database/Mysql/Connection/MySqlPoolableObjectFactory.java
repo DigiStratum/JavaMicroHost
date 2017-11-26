@@ -1,8 +1,11 @@
-package com.digistratum.microhost.Database.Mysql;
+package com.digistratum.microhost.Database.Mysql.Connection;
 
 import java.sql.DriverManager;
 import org.apache.commons.pool.BasePoolableObjectFactory;
 
+/**
+ * @todo Get rid of this factory if possible in favor of DI/interface model
+ */
 public class MySqlPoolableObjectFactory extends BasePoolableObjectFactory {
 	private String host;
 	private int port;
