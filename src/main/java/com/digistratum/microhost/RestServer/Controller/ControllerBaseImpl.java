@@ -40,6 +40,43 @@ public abstract class ControllerBaseImpl implements HttpHandler {
 		mapErrors();
 	}
 
+	@Override
+	public void handle(HttpExchange t) throws IOException {
+
+		Endpoint endpoint = getEndpoint(t);
+
+		// TODO: Extract some useful bits from the URI and pass as arguments to request
+
+		// Convert the HttpExchange into a RequestResponseImpl
+		RequestResponse request = null;
+		try {
+			request = fromHttpExchange(t);
+		} catch (MHException e) {
+			String msg = "Error converting RequestResponse";
+			log.error(msg, e);
+			throw new IOException(msg, e);
+		}
+
+		// Get a response from the endpoint
+		RequestResponseImpl response;
+		try {
+			response = (RequestResponseImpl) endpoint.handle(request);
+		} catch (Exception e) {
+			String msg = "Error handling RequestResponse";
+			log.error(msg, e);
+			throw new IOException(msg, e);
+		}
+
+		// Send the RequestResponse out
+		try {
+			sendResponse(t, response);
+		} catch (MHException e) {
+			String msg = "Error sending response";
+			log.error(msg, e);
+			throw new IOException(msg, e);
+		}
+	}
+
 	/**
 	 * Add a mapping for the requestMethod/URI to a named requestHandler method
 	 *
@@ -87,53 +124,6 @@ public abstract class ControllerBaseImpl implements HttpHandler {
 		}
 		// TODO make sure that requestMethod is one which we support
 		return true;
-	}
-
-	/**
-	 * Handle a given HTTP request
-	 *
-	 * This comes from 	the HttpHandler interface; we never call this method directly
-	 * as it is called automatically by the HttpServer's context handler.
-	 *
-	 * @param t HttpExchange which we are given with to work
-	 *
-	 * @throws IOException If anything goes wrong which HttpServer should know about
-	 */
-	@Override
-	public void handle(HttpExchange t) throws IOException {
-
-		Endpoint endpoint = getEndpoint(t);
-
-		// TODO: Extract some useful bits from the URI and pass as arguments to request
-
-		// Convert the HttpExchange into a RequestResponseImpl
-		RequestResponse request = null;
-		try {
-			request = fromHttpExchange(t);
-		} catch (MHException e) {
-			String msg = "Error converting RequestResponse";
-			log.error(msg, e);
-			throw new IOException(msg, e);
-		}
-
-		// Get a response from the endpoint
-		RequestResponseImpl response;
-		try {
-			response = (RequestResponseImpl) endpoint.handle(request);
-		} catch (Exception e) {
-			String msg = "Error handling RequestResponse";
-			log.error(msg, e);
-			throw new IOException(msg, e);
-		}
-
-		// Send the RequestResponse out
-		try {
-			sendResponse(t, response);
-		} catch (MHException e) {
-			String msg = "Error sending response";
-			log.error(msg, e);
-			throw new IOException(msg, e);
-		}
 	}
 
 	/**
