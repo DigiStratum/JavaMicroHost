@@ -1,8 +1,8 @@
 package com.digistratum.microhost.RestServer.Endpoint;
 
 import com.digistratum.microhost.Exception.MHException;
-import com.digistratum.microhost.RestServer.Http.RequestResponse;
-import com.digistratum.microhost.RestServer.Http.RequestResponseImpl;
+import com.digistratum.microhost.RestServer.Http.RequestResponse.RequestResponse;
+import com.digistratum.microhost.RestServer.Http.RequestResponse.RequestResponseImpl;
 
 import java.util.HashMap;
 import java.util.Map;

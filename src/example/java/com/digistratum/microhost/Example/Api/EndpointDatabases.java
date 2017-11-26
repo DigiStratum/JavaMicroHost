@@ -6,7 +6,7 @@ import com.digistratum.microhost.Database.Mysql.Model.MysqlModelFactory;
 import com.digistratum.microhost.RestServer.Endpoint.Endpoint;
 import com.digistratum.microhost.Example.Model.ModelMysqlDatabaseImpl;
 import com.digistratum.microhost.Exception.MHException;
-import com.digistratum.microhost.RestServer.Http.RequestResponseImpl;
+import com.digistratum.microhost.RestServer.Http.RequestResponse.RequestResponseImpl;
 import com.google.gson.Gson;
 
 import java.util.List;

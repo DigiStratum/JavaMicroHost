@@ -1,4 +1,4 @@
-package com.digistratum.microhost.RestServer.Http;
+package com.digistratum.microhost.RestServer.Http.RequestResponse;
 
 import java.util.Map;
 

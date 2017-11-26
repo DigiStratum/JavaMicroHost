@@ -1,6 +1,6 @@
 package com.digistratum.microhost.RestServer.Endpoint;
 
-import com.digistratum.microhost.RestServer.Http.RequestResponse;
+import com.digistratum.microhost.RestServer.Http.RequestResponse.RequestResponse;
 
 public interface Endpoint {
 
