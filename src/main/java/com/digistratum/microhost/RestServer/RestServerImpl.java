@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
-public class RestServerImpl {
+public class RestServerImpl implements RestServer {
 	HttpServer server;
 	Map<String, ControllerBaseImpl> controllerMap;
 
@@ -49,16 +49,7 @@ public class RestServerImpl {
 		server.start();
 	}
 
-	/**
-	 * Add a controller context to this server
-	 *
-	 * A controller is responsible for all request URIs relative to the context path
-	 *
-	 * @param ctrl ControllerBaseImpl instance to do the work
-	 * @param ctx String context base URI to map this controller to
-	 *
-	 * @throws MHException
-	 */
+	@Override
 	public void addControllerContext(ControllerBaseImpl ctrl, String ctx) throws MHException {
 
 		// If the controller or context are bogus...
@@ -76,13 +67,7 @@ public class RestServerImpl {
 		server.createContext(ctx, ctrl);
 	}
 
-	/**
-	 * Remove a context which is already defined
-	 *
-	 * @param ctx String context base URI to which this controller is mapped
-	 *
-	 * @throws MHException
-	 */
+	@Override
 	public void removeContext(String ctx) throws MHException {
 		if (! hasContext(ctx)) {
 			throw new MHException("Attempted to remove undefined context: '" + ctx + "'");
@@ -91,22 +76,12 @@ public class RestServerImpl {
 		controllerMap.remove(ctx);
 	}
 
-	/**
-	 * Check whether the specified context is already defined
-	 *
-	 * Note that this does not evaluate the URI to see if some other less specific context maps to this...
-	 *
-	 * @param ctx String context base URI which we want to check
-	 *
-	 * @return boolean true if the context is defined, else false
-	 */
+	@Override
 	public boolean hasContext(String ctx) {
 		return controllerMap.containsKey(ctx);
 	}
 
-	/**
-	 * RestServerImpl stopper
-	 */
+	@Override
 	public void stop() {
 		server.stop(0);
 	}

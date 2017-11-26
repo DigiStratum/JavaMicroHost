@@ -7,8 +7,8 @@ import com.digistratum.microhost.Example.Api.ControllerBaseImplExample;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolFactory;
 import com.digistratum.microhost.Exception.MHException;
+import com.digistratum.microhost.RestServer.RestServerFactory;
 import com.digistratum.microhost.RestServer.RestServerImpl;
-import com.digistratum.microhost.RestServer.ServerFactory;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -39,9 +39,9 @@ public class MicroHost {
 		// @todo: get rid of these factories, use interfaces/implementations and dependency injection framework instead
 		ConfigFactory mhConfigFactory = new ConfigFactory();
 		MySqlConnectionPoolFactory mySqlConnectionPoolFactory = new MySqlConnectionPoolFactory();
-		ServerFactory serverFactory = new ServerFactory();
+		RestServerFactory restServerFactory = new RestServerFactory();
 
-		microHost.run(mhConfigFactory, mySqlConnectionPoolFactory, serverFactory);
+		microHost.run(mhConfigFactory, mySqlConnectionPoolFactory, restServerFactory);
 	}
 
 	/**
@@ -66,9 +66,9 @@ public class MicroHost {
 	 *
 	 * @param mhConfigFactory Object instance of ConfigFactory to retrieve configuration data
 	 * @param mySqlConnectionPoolFactory Object instance of MySqlConnectionPoolFactory to get connected to a database
-	 * @param serverFactory Object instance of ServerFactory to stand up our restful server/controller host
+	 * @param restServerFactory Object instance of RestServerFactory to stand up our restful server/controller host
 	 */
-	protected void run(ConfigFactory mhConfigFactory, MySqlConnectionPoolFactory mySqlConnectionPoolFactory, ServerFactory serverFactory) {
+	protected void run(ConfigFactory mhConfigFactory, MySqlConnectionPoolFactory mySqlConnectionPoolFactory, RestServerFactory restServerFactory) {
 		try {
 
 			// Read in configuration properties
@@ -81,7 +81,7 @@ public class MicroHost {
 
 			// Stand up a new HttpServer
 			log.info("MicroHost HTTP RestServerImpl starting...");
-			final RestServerImpl server = serverFactory.createServer(configImpl);
+			final RestServerImpl server = restServerFactory.createServer(configImpl);
 
 			// Set up default controller for microhost context endpoints
 			if ("on".equals(configImpl.get("microhost.context.microhost", "off"))) {

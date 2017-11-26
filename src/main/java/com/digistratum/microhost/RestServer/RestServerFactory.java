@@ -4,7 +4,10 @@ import com.digistratum.microhost.Config.ConfigImpl;
 
 import java.io.IOException;
 
-public class ServerFactory {
+/**
+ * @todo - get rid of this... obviously has  no value with no implementation
+ */
+public class RestServerFactory {
 	public RestServerImpl createServer(ConfigImpl configImpl) throws IOException {
 		return new RestServerImpl(configImpl);
 	}

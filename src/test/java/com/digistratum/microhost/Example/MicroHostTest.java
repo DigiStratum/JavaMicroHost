@@ -5,7 +5,7 @@ import com.digistratum.microhost.Config.ConfigFactory;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolFactory;
 import com.digistratum.microhost.RestServer.RestServerImpl;
-import com.digistratum.microhost.RestServer.ServerFactory;
+import com.digistratum.microhost.RestServer.RestServerFactory;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -22,7 +22,7 @@ class MicroHostTest {
 	MySqlConnectionPoolImpl mockMySqlConnectionPoolImpl;
 	MySqlConnectionPoolFactory mockMySqlConnectionPoolFactory;
 
-	ServerFactory mockServerFactory;
+	RestServerFactory mockRestServerFactory;
 	RestServerImpl mockServer;
 
 	TestableMicroHost sut;
@@ -35,9 +35,9 @@ class MicroHostTest {
 		mockMHConfigImpl = mock(ConfigImpl.class);
 		doReturn(mockMHConfigImpl).when(mockMHConfigFactory).createMHConfig(anyString());
 
-		mockServerFactory = mock(ServerFactory.class);
+		mockRestServerFactory = mock(RestServerFactory.class);
 		mockServer = mock(RestServerImpl.class);
-		doReturn(mockServer).when(mockServerFactory).createServer(anyObject());
+		doReturn(mockServer).when(mockRestServerFactory).createServer(anyObject());
 
 		mockMySqlConnectionPoolFactory = mock(MySqlConnectionPoolFactory.class);
 		mockMySqlConnectionPoolImpl = mock(MySqlConnectionPoolImpl.class);
@@ -49,7 +49,7 @@ class MicroHostTest {
 	public void testThatRunLoopsUntilStopped() {
 		// FIXME - run enters a perpetual loop (by design), but it's the JUnit test thread
 		// which is looping, so it needs to happen asynchronously... or something
-		sut.testRun(mockMHConfigFactory, mockMySqlConnectionPoolFactory, mockServerFactory);
+		sut.testRun(mockMHConfigFactory, mockMySqlConnectionPoolFactory, mockRestServerFactory);
 		try {
 			Thread.sleep(1000);
 			assertTrue(sut.isRunning());
@@ -63,7 +63,7 @@ class MicroHostTest {
 	}
 
 	private class TestableMicroHost extends MicroHost {
-		public void testRun(ConfigFactory mhcf, MySqlConnectionPoolFactory mscpf, ServerFactory sf) {
+		public void testRun(ConfigFactory mhcf, MySqlConnectionPoolFactory mscpf, RestServerFactory sf) {
 			run(mhcf, mscpf, sf);
 		}
 	}
