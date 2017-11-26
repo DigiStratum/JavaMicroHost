@@ -1,7 +1,7 @@
 package com.digistratum.microhost.RestServer.Endpoint;
 
-import com.digistratum.microhost.RestServer.Http.RequestResponseImpl;
+import com.digistratum.microhost.RestServer.Http.RequestResponse;
 
 public interface Endpoint {
-	public RequestResponseImpl handle(RequestResponseImpl request) throws Exception;
+	public RequestResponse handle(RequestResponse request) throws Exception;
 }

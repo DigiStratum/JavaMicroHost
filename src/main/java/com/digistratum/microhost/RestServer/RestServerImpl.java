@@ -2,7 +2,7 @@ package com.digistratum.microhost.RestServer;
 
 import com.digistratum.microhost.RestServer.Controller.Controller;
 import com.digistratum.microhost.Exception.MHException;
-import com.digistratum.microhost.Config.ConfigImpl;
+import com.digistratum.microhost.Config.Config;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
@@ -18,13 +18,13 @@ public class RestServerImpl implements RestServer {
 	/**
 	 * Configuration-injected constructor
 	 *
-	 * @param configImpl
+	 * @param config
 	 * @throws IOException
 	 */
-	public RestServerImpl(ConfigImpl configImpl) throws IOException {
+	public RestServerImpl(Config config) throws IOException {
 		this(
-				Integer.parseInt(configImpl.get("microhost.port","54321")),
-				Integer.parseInt(configImpl.get("microhost.threads","10"))
+				Integer.parseInt(config.get("microhost.port","54321")),
+				Integer.parseInt(config.get("microhost.threads","10"))
 		);
 	}
 

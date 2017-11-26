@@ -3,6 +3,7 @@ package com.digistratum.microhost.RestServer.Controller;
 import com.digistratum.microhost.RestServer.Endpoint.Endpoint;
 import com.digistratum.microhost.RestServer.Endpoint.EndpointErrorDocumentImpl;
 import com.digistratum.microhost.Exception.MHException;
+import com.digistratum.microhost.RestServer.Http.RequestResponse;
 import com.digistratum.microhost.RestServer.Http.RequestResponseImpl;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -91,7 +92,7 @@ public abstract class ControllerBaseImpl implements HttpHandler {
 	/**
 	 * Handle a given HTTP request
 	 *
-	 * This comes from the HttpHandler interface; we never call this method directly
+	 * This comes from 	the HttpHandler interface; we never call this method directly
 	 * as it is called automatically by the HttpServer's context handler.
 	 *
 	 * @param t HttpExchange which we are given with to work
@@ -106,11 +107,11 @@ public abstract class ControllerBaseImpl implements HttpHandler {
 		// TODO: Extract some useful bits from the URI and pass as arguments to request
 
 		// Convert the HttpExchange into a RequestResponseImpl
-		RequestResponseImpl request = null;
+		RequestResponse request = null;
 		try {
 			request = fromHttpExchange(t);
 		} catch (MHException e) {
-			String msg = "Error converting RequestResponseImpl";
+			String msg = "Error converting RequestResponse";
 			log.error(msg, e);
 			throw new IOException(msg, e);
 		}
@@ -118,14 +119,14 @@ public abstract class ControllerBaseImpl implements HttpHandler {
 		// Get a response from the endpoint
 		RequestResponseImpl response;
 		try {
-			response = endpoint.handle(request);
+			response = (RequestResponseImpl) endpoint.handle(request);
 		} catch (Exception e) {
-			String msg = "Error handling RequestResponseImpl";
+			String msg = "Error handling RequestResponse";
 			log.error(msg, e);
 			throw new IOException(msg, e);
 		}
 
-		// Send the RequestResponseImpl out
+		// Send the RequestResponse out
 		try {
 			sendResponse(t, response);
 		} catch (MHException e) {
@@ -169,25 +170,24 @@ public abstract class ControllerBaseImpl implements HttpHandler {
 	}
 
 	/**
-	 * Convert an HttpExchange into a RequestResponseImpl
+	 * Convert an HttpExchange into a RequestResponse
 	 *
 	 * @param t HttpExchange instance that we're working with
 	 *
-	 * @return RequestResponseImpl instance populated with details from the HttpExchange
+	 * @return RequestResponse instance populated with details from the HttpExchange
 	 *
 	 * @throws MHException If anything goes sideways...
 	 */
-	protected RequestResponseImpl fromHttpExchange(HttpExchange t) throws MHException {
+	protected RequestResponse fromHttpExchange(HttpExchange t) throws MHException {
 
-		// Convert the HttpExchange headers to RequestResponseImpl headers
+		// Convert the HttpExchange headers to RequestResponse headers
 		Headers originalRequestHeaders = t.getRequestHeaders();
 		Map<String, String> requestHeaders = new HashMap<>();
 		for (String name : originalRequestHeaders.keySet()) {
 			requestHeaders.put(name, originalRequestHeaders.getFirst(name));
 		}
 
-		// Convert the HttpExchange into a RequestResponseImpl
-		RequestResponseImpl request;
+		// Convert the HttpExchange into a RequestResponse
 		InputStream is = t.getRequestBody();
 		String requestBody = null;
 		try {
@@ -206,15 +206,15 @@ public abstract class ControllerBaseImpl implements HttpHandler {
 	}
 
 	/**
-	 * Sent a response to the waiting client using HttpExchange and RequestResponseImpl
+	 * Sent a response to the waiting client using HttpExchange and RequestResponse
 	 *
 	 * @param t HttpExchange instance that we're working with; it has the output stream
-	 * @param response RequestResponseImpl instance with all our response data in it
+	 * @param response RequestResponse instance with all our response data in it
 	 *
 	 * @throws MHException if anything goes sideways...
 	 */
-	protected void sendResponse(HttpExchange t, RequestResponseImpl response) throws MHException {
-		// Send the RequestResponseImpl out (headers via HttpExchange, body via output stream)
+	protected void sendResponse(HttpExchange t, RequestResponse response) throws MHException {
+		// Send the RequestResponse out (headers via HttpExchange, body via output stream)
 		Headers responseHeaders = t.getResponseHeaders();
 		for (String name : response.getHeaders().keySet()) {
 			responseHeaders.add(name, response.getHeader(name));
