@@ -3,10 +3,10 @@ package com.digistratum.microhost.Example.Api;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionImpl;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
 import com.digistratum.microhost.Database.Mysql.Model.MysqlModelFactory;
-import com.digistratum.microhost.Endpoint.Endpoint;
+import com.digistratum.microhost.RestServer.Endpoint.Endpoint;
 import com.digistratum.microhost.Example.Model.ModelMysqlDatabaseImpl;
 import com.digistratum.microhost.Exception.MHException;
-import com.digistratum.microhost.Http.RequestResponseImpl;
+import com.digistratum.microhost.RestServer.Http.RequestResponseImpl;
 import com.google.gson.Gson;
 
 import java.util.List;

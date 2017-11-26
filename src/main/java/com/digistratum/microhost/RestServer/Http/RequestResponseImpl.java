@@ -1,4 +1,4 @@
-package com.digistratum.microhost.Http;
+package com.digistratum.microhost.RestServer.Http;
 
 import com.digistratum.microhost.Exception.MHException;
 

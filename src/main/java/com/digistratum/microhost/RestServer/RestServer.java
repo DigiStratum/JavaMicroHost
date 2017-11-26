@@ -1,6 +1,6 @@
 package com.digistratum.microhost.RestServer;
 
-import com.digistratum.microhost.Controller.ControllerBaseImpl;
+import com.digistratum.microhost.RestServer.Controller.Controller;
 import com.digistratum.microhost.Exception.MHException;
 
 public interface RestServer {
@@ -15,7 +15,7 @@ public interface RestServer {
 	 *
 	 * @throws MHException
 	 */
-	public void addControllerContext(ControllerBaseImpl ctrl, String ctx) throws MHException;
+	public void addControllerContext(Controller ctrl, String ctx) throws MHException;
 
 	/**
 	 * Remove a context which is already defined

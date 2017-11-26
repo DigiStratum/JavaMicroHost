@@ -1,6 +1,6 @@
 package com.digistratum.microhost.Example.Api;
 
-import com.digistratum.microhost.Controller.ControllerBaseImpl;
+import com.digistratum.microhost.RestServer.Controller.ControllerBaseImpl;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
 import com.digistratum.microhost.Database.Mysql.Model.MysqlModelFactory;
 import com.digistratum.microhost.Exception.MHException;

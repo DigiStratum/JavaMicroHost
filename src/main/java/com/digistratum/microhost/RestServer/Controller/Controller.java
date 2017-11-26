@@ -1,4 +1,4 @@
-package com.digistratum.microhost.Controller;
+package com.digistratum.microhost.RestServer.Controller;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;

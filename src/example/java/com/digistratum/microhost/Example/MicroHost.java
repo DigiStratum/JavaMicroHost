@@ -2,7 +2,7 @@ package com.digistratum.microhost.Example;
 
 import com.digistratum.microhost.Config.ConfigFactory;
 import com.digistratum.microhost.Config.ConfigImpl;
-import com.digistratum.microhost.Controller.ControllerBaseMicroHostImpl;
+import com.digistratum.microhost.RestServer.Controller.ControllerBaseMicroHostImpl;
 import com.digistratum.microhost.Example.Api.ControllerBaseImplExample;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolFactory;

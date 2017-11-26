@@ -1,9 +1,9 @@
-package com.digistratum.microhost.Controller;
+package com.digistratum.microhost.RestServer.Controller;
 
-import com.digistratum.microhost.Endpoint.Endpoint;
-import com.digistratum.microhost.Endpoint.EndpointErrorDocumentImpl;
+import com.digistratum.microhost.RestServer.Endpoint.Endpoint;
+import com.digistratum.microhost.RestServer.Endpoint.EndpointErrorDocumentImpl;
 import com.digistratum.microhost.Exception.MHException;
-import com.digistratum.microhost.Http.RequestResponseImpl;
+import com.digistratum.microhost.RestServer.Http.RequestResponseImpl;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;

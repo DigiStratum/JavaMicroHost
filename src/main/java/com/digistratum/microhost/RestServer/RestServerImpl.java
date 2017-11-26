@@ -1,6 +1,6 @@
 package com.digistratum.microhost.RestServer;
 
-import com.digistratum.microhost.Controller.ControllerBaseImpl;
+import com.digistratum.microhost.RestServer.Controller.Controller;
 import com.digistratum.microhost.Exception.MHException;
 import com.digistratum.microhost.Config.ConfigImpl;
 import com.sun.net.httpserver.HttpServer;
@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
 
 public class RestServerImpl implements RestServer {
 	HttpServer server;
-	Map<String, ControllerBaseImpl> controllerMap;
+	Map<String, Controller> controllerMap;
 
 	/**
 	 * Configuration-injected constructor
@@ -50,7 +50,7 @@ public class RestServerImpl implements RestServer {
 	}
 
 	@Override
-	public void addControllerContext(ControllerBaseImpl ctrl, String ctx) throws MHException {
+	public void addControllerContext(Controller ctrl, String ctx) throws MHException {
 
 		// If the controller or context are bogus...
 		if ((null == ctrl) || (null == ctx) || ctx.isEmpty()) {
