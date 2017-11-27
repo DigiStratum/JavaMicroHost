@@ -1,17 +1,19 @@
 package com.digistratum.microhost.RestServer.Endpoint;
 
-import com.digistratum.microhost.Exception.MHException;
-import com.digistratum.microhost.RestServer.Http.RequestResponse.RequestResponse;
-import com.digistratum.microhost.RestServer.Http.RequestResponse.RequestResponseImpl;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.digistratum.microhost.RestServer.Http.Headers.HeadersImpl;
+import com.digistratum.microhost.RestServer.Http.RequestResponse.Request;
+import com.digistratum.microhost.RestServer.Http.RequestResponse.Response;
+import com.digistratum.microhost.RestServer.Http.RequestResponse.ResponseImpl;
 
 public class EndpointStatusImpl implements Endpoint {
 	@Override
-	public RequestResponse handle(RequestResponse request) throws MHException {
-		Map<String, String> responseHeaders = new HashMap<>();
-		responseHeaders.put("content-type", "application/json");
-		return new RequestResponseImpl(200,responseHeaders,"{\"status\": \"UP\"}");
+	public Response handle(Request request) throws Exception {
+		HeadersImpl responseHeaders = new HeadersImpl();
+		responseHeaders.set("content-type", "application/json");
+		return new ResponseImpl(
+				200,
+				responseHeaders,
+				"{\"status\": \"UP\"}"
+		);
 	}
 }

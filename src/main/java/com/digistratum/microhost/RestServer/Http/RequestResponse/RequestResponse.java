@@ -1,49 +1,17 @@
 package com.digistratum.microhost.RestServer.Http.RequestResponse;
 
-import java.util.Map;
+import com.digistratum.microhost.RestServer.Http.Headers.Headers;
 
+/**
+ * Capabilities common to both requests and responses
+ */
 public interface RequestResponse {
-
-	/**
-	 * Check whether this instance represents a REQUEST
-	 *
-	 * @return boolean true if it does, else false (if it's a RESPONSE!)
-	 */
-	public boolean isRequest();
-
-	/**
-	 * Check whether this instance represents a RESPONSE
-	 *
-	 * @return boolean true if it does, else false (if it's a REQUEST!)
-	 */
-	public boolean isResponse();
-
-	/**
-	 * Check whether we have a specifically named header
-	 *
-	 * @param name String name of the header we want to check for
-	 *
-	 * @return boolean true if the named header is defined, else false
-	 */
-	public boolean hasHeader(String name);
-
-	/**
-	 * Get the value of the specifically named header
-	 *
-	 * Note that casing is not enforced here, but all lower-case is recommended to avoid inconsistency.
-	 *
-	 * @param name String name of the header we want the value for
-	 *
-	 * @return String value of the header (may be null, especially if undefined)
-	 */
-	public String getHeader(String name);
-
 	/**
 	 * Get the entire collection of headers
 	 *
-	 * @return Header map
+	 * @return Headers implementation instance
 	 */
-	public Map<String, String> getHeaders();
+	public Headers getHeaders();
 
 	/**
 	 * Get the value of the body
@@ -52,12 +20,6 @@ public interface RequestResponse {
 	 */
 	public String getBody();
 
-	/**
-	 * Get the value of the method
-	 *
-	 * @return String method (may be null!)
-	 */
-	public String getRequestMethod();
 
 	/**
 	 * Get the value of the URI
@@ -65,11 +27,4 @@ public interface RequestResponse {
 	 * @return String URI (may be null!)
 	 */
 	public String getUri();
-
-	/**
-	 * Get the value of the status code
-	 *
-	 * @return Integer status code (may be null!)
-	 */
-	public Integer getCode();
 }

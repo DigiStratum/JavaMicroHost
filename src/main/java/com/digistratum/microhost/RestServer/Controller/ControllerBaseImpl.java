@@ -3,8 +3,8 @@ package com.digistratum.microhost.RestServer.Controller;
 import com.digistratum.microhost.RestServer.Endpoint.Endpoint;
 import com.digistratum.microhost.RestServer.Endpoint.EndpointErrorDocumentImpl;
 import com.digistratum.microhost.Exception.MHException;
-import com.digistratum.microhost.RestServer.Http.RequestResponse.RequestResponse;
-import com.digistratum.microhost.RestServer.Http.RequestResponse.RequestResponseImpl;
+import com.digistratum.microhost.RestServer.Http.Headers.HeadersImpl;
+import com.digistratum.microhost.RestServer.Http.RequestResponse.*;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -48,19 +48,19 @@ public abstract class ControllerBaseImpl implements HttpHandler {
 		// TODO: Extract some useful bits from the URI and pass as arguments to request
 
 		// Convert the HttpExchange into a RequestResponseImpl
-		RequestResponse request = null;
+		Request request;
 		try {
 			request = fromHttpExchange(t);
-		} catch (MHException e) {
+		} catch (Exception e) {
 			String msg = "Error converting RequestResponse";
 			log.error(msg, e);
 			throw new IOException(msg, e);
 		}
 
 		// Get a response from the endpoint
-		RequestResponseImpl response;
+		ResponseImpl response;
 		try {
-			response = (RequestResponseImpl) endpoint.handle(request);
+			response = (ResponseImpl) endpoint.handle(request);
 		} catch (Exception e) {
 			String msg = "Error handling RequestResponse";
 			log.error(msg, e);
@@ -70,7 +70,7 @@ public abstract class ControllerBaseImpl implements HttpHandler {
 		// Send the RequestResponse out
 		try {
 			sendResponse(t, response);
-		} catch (MHException e) {
+		} catch (Exception e) {
 			String msg = "Error sending response";
 			log.error(msg, e);
 			throw new IOException(msg, e);
@@ -168,13 +168,13 @@ public abstract class ControllerBaseImpl implements HttpHandler {
 	 *
 	 * @throws MHException If anything goes sideways...
 	 */
-	protected RequestResponse fromHttpExchange(HttpExchange t) throws MHException {
+	protected Request fromHttpExchange(HttpExchange t) throws Exception {
 
 		// Convert the HttpExchange headers to RequestResponse headers
 		Headers originalRequestHeaders = t.getRequestHeaders();
-		Map<String, String> requestHeaders = new HashMap<>();
+		HeadersImpl requestHeaders = new HeadersImpl();
 		for (String name : originalRequestHeaders.keySet()) {
-			requestHeaders.put(name, originalRequestHeaders.getFirst(name));
+			requestHeaders.set(name, originalRequestHeaders.getFirst(name));
 		}
 
 		// Convert the HttpExchange into a RequestResponse
@@ -187,7 +187,8 @@ public abstract class ControllerBaseImpl implements HttpHandler {
 			throw new MHException("Internal error reading request body", e);
 		}
 
-		return new RequestResponseImpl(
+
+		return new RequestImpl(
 				t.getRequestMethod(),
 				t.getRequestURI().toString(),
 				requestHeaders,
@@ -199,15 +200,17 @@ public abstract class ControllerBaseImpl implements HttpHandler {
 	 * Sent a response to the waiting client using HttpExchange and RequestResponse
 	 *
 	 * @param t HttpExchange instance that we're working with; it has the output stream
-	 * @param response RequestResponse instance with all our response data in it
+	 * @param response Response instance with all our response data in it
 	 *
 	 * @throws MHException if anything goes sideways...
 	 */
-	protected void sendResponse(HttpExchange t, RequestResponse response) throws MHException {
+	protected void sendResponse(HttpExchange t, Response response) throws MHException {
+
 		// Send the RequestResponse out (headers via HttpExchange, body via output stream)
-		Headers responseHeaders = t.getResponseHeaders();
-		for (String name : response.getHeaders().keySet()) {
-			responseHeaders.add(name, response.getHeader(name));
+		Headers actualHeaders = t.getResponseHeaders();
+		HeadersImpl desiredHeaders = (HeadersImpl) response.getHeaders();
+		for (String name : desiredHeaders.list()) {
+			actualHeaders.add(name, desiredHeaders.get(name));
 		}
 
 		try {
@@ -225,7 +228,7 @@ public abstract class ControllerBaseImpl implements HttpHandler {
 	 */
 	protected void mapErrors() {
 		errorMap = new HashMap<>();
-		errorMap.put(400, new EndpointErrorDocumentImpl(400, "400 Bad Request"));
+		errorMap.put(400, new EndpointErrorDocumentImpl(400, "400 Bad RequestImpl"));
 		errorMap.put(401, new EndpointErrorDocumentImpl(401, "401 Unauthorized"));
 		errorMap.put(403, new EndpointErrorDocumentImpl(403, "403 Forbidden"));
 		errorMap.put(404, new EndpointErrorDocumentImpl(404, "404 Not Found"));
@@ -235,7 +238,7 @@ public abstract class ControllerBaseImpl implements HttpHandler {
 		errorMap.put(410, new EndpointErrorDocumentImpl(410, "410 Gone"));
 		errorMap.put(411, new EndpointErrorDocumentImpl(411, "411 Length Required"));
 		errorMap.put(412, new EndpointErrorDocumentImpl(412, "412 Precondition Failed"));
-		errorMap.put(413, new EndpointErrorDocumentImpl(413, "413 Request Entity Too Large"));
+		errorMap.put(413, new EndpointErrorDocumentImpl(413, "413 RequestImpl Entity Too Large"));
 		errorMap.put(415, new EndpointErrorDocumentImpl(415, "415 Unsupported Media Type"));
 		errorMap.put(416, new EndpointErrorDocumentImpl(416, "416 Requested Range Not Satisfiable"));
 		errorMap.put(417, new EndpointErrorDocumentImpl(417, "417 Expectation Failed"));

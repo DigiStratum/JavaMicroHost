@@ -1,7 +1,9 @@
 package com.digistratum.microhost.RestServer.Http.Headers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class HeadersImpl implements Headers {
 	Map<String, String> headers;
@@ -28,4 +30,10 @@ public class HeadersImpl implements Headers {
 		// todo Make this validate the name of the header and that the combined pair is under a total max size
 		headers.put(name, value);
 	}
+
+	@Override
+	public Set<String> list() {
+		return headers.keySet();
+	}
+
 }

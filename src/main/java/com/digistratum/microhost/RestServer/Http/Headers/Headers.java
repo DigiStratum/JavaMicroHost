@@ -1,5 +1,7 @@
 package com.digistratum.microhost.RestServer.Http.Headers;
 
+import java.util.Set;
+
 /**
  * A managed collection of name:value HTTP headers
  */
@@ -37,4 +39,11 @@ public interface Headers {
 	 * @throws Exception on errors
 	 */
 	public void set(String name, String value) throws Exception;
+
+	/**
+	 * Get a set  of named headers
+	 *
+	 * @return Set<String> of header names which we have
+	 */
+	public Set<String> list();
 }

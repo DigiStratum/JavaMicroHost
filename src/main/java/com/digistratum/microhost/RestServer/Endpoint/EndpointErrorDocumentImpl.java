@@ -1,8 +1,11 @@
 package com.digistratum.microhost.RestServer.Endpoint;
 
 import com.digistratum.microhost.Exception.MHException;
-import com.digistratum.microhost.RestServer.Http.RequestResponse.RequestResponse;
+import com.digistratum.microhost.RestServer.Http.Headers.HeadersImpl;
+import com.digistratum.microhost.RestServer.Http.RequestResponse.Request;
 import com.digistratum.microhost.RestServer.Http.RequestResponse.RequestResponseImpl;
+import com.digistratum.microhost.RestServer.Http.RequestResponse.Response;
+import com.digistratum.microhost.RestServer.Http.RequestResponse.ResponseImpl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,10 +26,10 @@ public class EndpointErrorDocumentImpl implements Endpoint {
 	}
 
 	@Override
-	public RequestResponse handle(RequestResponse request) throws MHException {
-		Map<String, String> responseHeaders = new HashMap<>();
-		responseHeaders.put("content-type", "text/html");
-		return new RequestResponseImpl(
+	public Response handle(Request request) throws Exception {
+		HeadersImpl responseHeaders = new HeadersImpl();
+		responseHeaders.set("content-type", "text/html");
+		return new ResponseImpl(
 				code,
 				responseHeaders,
 				"<h1>" + message + "</h1>"
