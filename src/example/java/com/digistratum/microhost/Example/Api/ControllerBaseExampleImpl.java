@@ -8,9 +8,9 @@ import com.digistratum.microhost.Exception.MHException;
 /**
  * ControllerBaseImplExample example controller
  */
-public class ControllerBaseImplExample extends ControllerBaseImpl {
+public class ControllerBaseExampleImpl extends ControllerBaseImpl {
 
-	public ControllerBaseImplExample(MySqlConnectionPoolImpl pool) throws MHException {
+	public ControllerBaseExampleImpl(MySqlConnectionPoolImpl pool) throws MHException {
 		super();
 
 		// Respond to http://localhost:54321/hello

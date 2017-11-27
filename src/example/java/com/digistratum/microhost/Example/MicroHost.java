@@ -3,7 +3,7 @@ package com.digistratum.microhost.Example;
 import com.digistratum.microhost.Config.ConfigFactory;
 import com.digistratum.microhost.Config.ConfigImpl;
 import com.digistratum.microhost.RestServer.Controller.ControllerBaseMicroHostImpl;
-import com.digistratum.microhost.Example.Api.ControllerBaseImplExample;
+import com.digistratum.microhost.Example.Api.ControllerBaseExampleImpl;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolFactory;
 import com.digistratum.microhost.Exception.MHException;
@@ -88,7 +88,7 @@ public class MicroHost {
 				server.addControllerContext(new ControllerBaseMicroHostImpl(), "/microhost");
 			}
 			if ("on".equals(configImpl.get("microhost.context.example", "off"))) {
-				server.addControllerContext(new ControllerBaseImplExample(pool), "/example");
+				server.addControllerContext(new ControllerBaseExampleImpl(pool), "/example");
 			}
 			log.info("started!");
 

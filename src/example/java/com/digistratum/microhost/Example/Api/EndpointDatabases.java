@@ -5,8 +5,9 @@ import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolIm
 import com.digistratum.microhost.Database.Mysql.Model.MysqlModelFactory;
 import com.digistratum.microhost.RestServer.Endpoint.Endpoint;
 import com.digistratum.microhost.Example.Model.ModelMysqlDatabaseImpl;
-import com.digistratum.microhost.Exception.MHException;
-import com.digistratum.microhost.RestServer.Http.RequestResponse.RequestResponseImpl;
+import com.digistratum.microhost.RestServer.Http.RequestResponse.Request;
+import com.digistratum.microhost.RestServer.Http.RequestResponse.Response;
+import com.digistratum.microhost.RestServer.Http.RequestResponse.ResponseImpl;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -29,20 +30,17 @@ public class EndpointDatabases implements Endpoint {
 		this.mysqlModelFactory = mysqlModelFactory;
 	}
 
-	/**
-	 *
-	 * @param request
-	 * @return
-	 * @throws MHException
-	 */
 	@Override
-	public RequestResponseImpl handle(RequestResponseImpl request) throws Exception {
+	public Response handle(Request request) throws Exception {
 		try (MySqlConnectionImpl conn = pool.getConnection()) {
 			ModelMysqlDatabaseImpl modelMysqlDatabase = mysqlModelFactory.newModel(ModelMysqlDatabaseImpl.class, conn);
 			List<ModelMysqlDatabaseImpl> databases = modelMysqlDatabase.getDatabases();
 			Gson gson = new Gson();
 			String responseBody = gson.toJson(databases);
-			return new RequestResponseImpl(200, responseBody);
+			return new ResponseImpl(
+					200,
+					responseBody
+			);
 		}
 	}
 }
