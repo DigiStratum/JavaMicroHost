@@ -51,7 +51,7 @@ public class ResponseImpl extends RequestResponseImpl implements Response {
 		code = responseCode;
 
 		// Check the headers
-		headers = (null == responseHeaders) ? new HeadersImpl() : responseHeaders;
+		headers = (null == responseHeaders) ? new HeadersImpl() : (HeadersImpl) responseHeaders;
 
 		// Grab the body (empty is valid fo requests such as with POST)
 		body = responseBody;

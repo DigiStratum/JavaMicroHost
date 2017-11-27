@@ -2,6 +2,7 @@ package com.digistratum.microhost.RestServer.Http.RequestResponse;
 
 import com.digistratum.microhost.Exception.MHException;
 import com.digistratum.microhost.RestServer.Http.Headers.Headers;
+import com.digistratum.microhost.RestServer.Http.Headers.HeadersImpl;
 
 public class RequestImpl extends RequestResponseImpl implements Request {
 
@@ -46,7 +47,7 @@ public class RequestImpl extends RequestResponseImpl implements Request {
 		if (null == requestHeaders) {
 			throw new MHException("RequestResponseImpl() - headers were not supplied");
 		}
-		headers = requestHeaders;
+		headers = (HeadersImpl) requestHeaders;
 
 		// Grab the body (empty is valid fo requests such as with GET)
 		body = requestBody;

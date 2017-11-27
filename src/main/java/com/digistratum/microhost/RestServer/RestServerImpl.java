@@ -21,7 +21,7 @@ public class RestServerImpl implements RestServer {
 	 * @param config
 	 * @throws IOException
 	 */
-	public RestServerImpl(Config config) throws IOException {
+	public RestServerImpl(Config config) throws MHException {
 		this(
 				Integer.parseInt(config.get("microhost.port","54321")),
 				Integer.parseInt(config.get("microhost.threads","10"))
@@ -34,10 +34,14 @@ public class RestServerImpl implements RestServer {
 	 * @param port Listening port for our MicroHost HTTP service
 	 * @param threadPoolSize Count of threads for our pool (concurrency limit)
 	 *
-	 * @throws IOException
+	 * @throws MHException
 	 */
-	public RestServerImpl(int port, int threadPoolSize) throws IOException {
-		server = HttpServer.create(new InetSocketAddress(port), 0);
+	public RestServerImpl(int port, int threadPoolSize) throws MHException {
+		try {
+			server = HttpServer.create(new InetSocketAddress(port), 0);
+		} catch (IOException e) {
+			throw new MHException("Failed to create new HttpServer", e);
+		}
 
 		// ref: http://docs.oracle.com/javase/1.5.0/docs/api/java/util/concurrent/Executors.html#newFixedThreadPool(int)
 		server.setExecutor(Executors.newFixedThreadPool(threadPoolSize));

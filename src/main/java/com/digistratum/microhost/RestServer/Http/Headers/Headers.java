@@ -35,10 +35,8 @@ public interface Headers {
 	 *
 	 * @param name String name of the header we want the value for
 	 * @param value String value to set the header to
-	 *
-	 * @throws Exception on errors
 	 */
-	public void set(String name, String value) throws Exception;
+	public void set(String name, String value);
 
 	/**
 	 * Get a set  of named headers

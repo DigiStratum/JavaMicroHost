@@ -1,12 +1,17 @@
 package com.digistratum.microhost.Database.Mysql.Connection;
 
 import java.sql.DriverManager;
+
+import com.digistratum.microhost.Exception.MHDatabaseException;
 import org.apache.commons.pool.BasePoolableObjectFactory;
+import org.apache.log4j.Logger;
 
 /**
  * @todo Get rid of this factory if possible in favor of DI/interface model
  */
 public class MySqlPoolableObjectFactory extends BasePoolableObjectFactory {
+	final static Logger log = Logger.getLogger(MySqlPoolableObjectFactory.class);
+
 	private String host;
 	private int port;
 	private String schema;
@@ -35,13 +40,19 @@ public class MySqlPoolableObjectFactory extends BasePoolableObjectFactory {
 	 *
 	 * @return Object representation of a MySQL database connection
 	 *
-	 * @throws Exception
+	 * @throws MHDatabaseException for errors
 	 */
 	@Override
-	public Object makeObject() throws Exception {
-		Class.forName("com.mysql.jdbc.Driver").newInstance();
-		String url = "jdbc:mysql://" + host + ":" + port + "/"
-				+ schema + "?autoReconnectForPools=true";
-		return DriverManager.getConnection(url, user, password);
+	public Object makeObject() throws MHDatabaseException {
+		try {
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			String url = "jdbc:mysql://" + host + ":" + port + "/"
+					+ schema + "?autoReconnectForPools=true";
+			return DriverManager.getConnection(url, user, password);
+		} catch (Exception e) {
+			String msg = "JDBC MySql Connection failed";
+			log.error(msg, e);
+			throw new MHDatabaseException(msg, e);
+		}
 	}
 }

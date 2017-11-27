@@ -36,7 +36,7 @@ public class MySqlConnectionImpl implements MySqlConnection, AutoCloseable {
 	/**
 	 * @todo Make a variant of this with prepared statement
 	 */
-	public <T> List<T> query(Class<T> type, String sql) throws Exception {
+	public <T> List<T> query(Class<T> type, String sql) throws MHDatabaseException {
 		try (
 			Statement st = conn.createStatement();
 			ResultSet rs = st.executeQuery(sql);
@@ -99,8 +99,8 @@ public class MySqlConnectionImpl implements MySqlConnection, AutoCloseable {
 			String msg = "query failed: " + sql;
 			log.error(msg, e);
 			throw new MHDatabaseException(msg, e);
-		} catch (IllegalAccessException|InstantiationException e) {
-			String msg = "Generic instantiation failed: " + type.getName();
+		} catch (Exception e) {
+			String msg = "Instantiation failed: " + type.getName();
 			log.error(msg, e);
 			throw new MHDatabaseException(msg, e);
 		}
@@ -114,14 +114,23 @@ public class MySqlConnectionImpl implements MySqlConnection, AutoCloseable {
 	 * @param rsmd ResultSetMetaData that we want to examine
 	 *
 	 * @return String[] of column names
+	 *
+	 * @throws MHDatabaseException on errors
 	 */
-	protected String[] getResultSetColumnNames(ResultSetMetaData rsmd) throws SQLException {
-		int num = rsmd.getColumnCount();
-		String[] columnNames = new String[num];
-		for (int col = 0; col < num; col++) {
-			columnNames[col] = rsmd.getColumnLabel(col);
+	protected String[] getResultSetColumnNames(ResultSetMetaData rsmd) throws MHDatabaseException {
+		int num = 0;
+		try {
+			num = rsmd.getColumnCount();
+			String[] columnNames = new String[num];
+			for (int col = 0; col < num; col++) {
+				columnNames[col] = rsmd.getColumnLabel(col);
+			}
+			return columnNames;
+		} catch (SQLException e) {
+			String msg = "Query result processing failed";
+			log.error(msg, e);
+			throw new MHDatabaseException(msg, e);
 		}
-		return columnNames;
 	}
 
 	/**
@@ -132,55 +141,64 @@ public class MySqlConnectionImpl implements MySqlConnection, AutoCloseable {
 	 * @param rsmd ResultSetMetaData that we want to examine
 	 *
 	 * @return Map of column name -> type
+	 *
+	 * @throws MHDatabaseException on errors
 	 */
-	protected String[] getResultSetColumnTypes(ResultSetMetaData rsmd) throws SQLException {
-		int num = rsmd.getColumnCount();
-		String[] columnTypes = new String[num];
-		for (int col = 0; col < num; col++) {
-			String name = rsmd.getColumnLabel(col);
-			String type = null;
-			switch (rsmd.getColumnType(col)) {
+	protected String[] getResultSetColumnTypes(ResultSetMetaData rsmd) throws MHDatabaseException {
+		int num = 0;
+		try {
+			num = rsmd.getColumnCount();
+			String[] columnTypes = new String[num];
+			for (int col = 0; col < num; col++) {
+				String name = rsmd.getColumnLabel(col);
+				String type = null;
+				switch (rsmd.getColumnType(col)) {
 
-				// Capture as Integers
-				case Types.NULL:
-				case Types.BINARY:
-				case Types.DECIMAL:
-				case Types.INTEGER:
-				case Types.SMALLINT:
-				case Types.TINYINT:
-				case Types.BIGINT: type = "Integer"; break;
+					// Capture as Integers
+					case Types.NULL:
+					case Types.BINARY:
+					case Types.DECIMAL:
+					case Types.INTEGER:
+					case Types.SMALLINT:
+					case Types.TINYINT:
+					case Types.BIGINT: type = "Integer"; break;
 
-				// Capture as Boolean
-				case Types.BOOLEAN: type = "Boolean"; break;
+					// Capture as Boolean
+					case Types.BOOLEAN: type = "Boolean"; break;
 
-				// Capture as Doubles
-				case Types.FLOAT:
-				case Types.REAL:
-				case Types.DOUBLE: type = "Double"; break;
+					// Capture as Doubles
+					case Types.FLOAT:
+					case Types.REAL:
+					case Types.DOUBLE: type = "Double"; break;
 
-				// Capture as Strings...
-				case Types.TIME:
-				case Types.TIME_WITH_TIMEZONE:
-				case Types.TIMESTAMP:
-				case Types.TIMESTAMP_WITH_TIMEZONE:
-				case Types.DATE:
-				case Types.NVARCHAR:
-				case Types.VARCHAR:
-				case Types.VARBINARY:
-				case Types.LONGNVARCHAR:
-				case Types.LONGVARCHAR:
-				case Types.LONGVARBINARY:
-				case Types.BLOB:
-				case Types.CLOB:
-				case Types.CHAR: type = "String"; break;
+					// Capture as Strings...
+					case Types.TIME:
+					case Types.TIME_WITH_TIMEZONE:
+					case Types.TIMESTAMP:
+					case Types.TIMESTAMP_WITH_TIMEZONE:
+					case Types.DATE:
+					case Types.NVARCHAR:
+					case Types.VARCHAR:
+					case Types.VARBINARY:
+					case Types.LONGNVARCHAR:
+					case Types.LONGVARCHAR:
+					case Types.LONGVARBINARY:
+					case Types.BLOB:
+					case Types.CLOB:
+					case Types.CHAR: type = "String"; break;
 
-				default:
-					log.warn("Dropping column '" + name + "' with unsupported data type: '" + rsmd.getColumnTypeName(col) + "'");
-					continue;
+					default:
+						log.warn("Dropping column '" + name + "' with unsupported data type: '" + rsmd.getColumnTypeName(col) + "'");
+						continue;
+				}
+				columnTypes[col] = type;
 			}
-			columnTypes[col] = type;
+			return columnTypes;
+		} catch (SQLException e) {
+			String msg = "Query result processing failed";
+			log.error(msg, e);
+			throw new MHDatabaseException(msg, e);
 		}
-		return columnTypes;
 	}
 
 	/**

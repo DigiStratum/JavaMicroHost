@@ -1,5 +1,7 @@
 package com.digistratum.microhost.Database.Mysql.Connection;
 
+import com.digistratum.microhost.Exception.MHDatabaseException;
+
 import java.util.List;
 
 public interface MySqlConnection {
@@ -12,7 +14,7 @@ public interface MySqlConnection {
 	 *
 	 * @return List<T> Generic typed list result
 	 *
-	 * @throws Exception on errors
+	 * @throws MHDatabaseException on errors
 	 */
-	public <T> List<T> query(Class<T> type, String sql) throws Exception;
+	public <T> List<T> query(Class<T> type, String sql) throws MHDatabaseException;
 }

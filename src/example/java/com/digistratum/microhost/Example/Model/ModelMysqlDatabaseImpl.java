@@ -2,6 +2,7 @@ package com.digistratum.microhost.Example.Model;
 
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionImpl;
 import com.digistratum.microhost.Database.Mysql.Model.MysqlModelImpl;
+import com.digistratum.microhost.Exception.MHException;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class ModelMysqlDatabaseImpl extends MysqlModelImpl {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<ModelMysqlDatabaseImpl> getDatabases() throws Exception {
+	public List<ModelMysqlDatabaseImpl> getDatabases() throws MHException {
 		return conn.query(
 			ModelMysqlDatabaseImpl.class,
 			"show databases;"

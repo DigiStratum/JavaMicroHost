@@ -26,7 +26,7 @@ public class HeadersImpl implements Headers {
 	}
 
 	@Override
-	public void set(String name, String value) throws Exception {
+	public void set(String name, String value) {
 		// todo Make this validate the name of the header and that the combined pair is under a total max size
 		headers.put(name, value);
 	}

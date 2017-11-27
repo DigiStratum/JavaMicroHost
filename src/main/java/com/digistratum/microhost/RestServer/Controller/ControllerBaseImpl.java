@@ -40,6 +40,11 @@ public abstract class ControllerBaseImpl implements HttpHandler {
 		mapErrors();
 	}
 
+	/**
+	 * Note that IOException is required by HttpHandler which we are implementing
+	 *
+	 * @throws IOException
+	 */
 	@Override
 	public void handle(HttpExchange t) throws IOException {
 
@@ -168,7 +173,7 @@ public abstract class ControllerBaseImpl implements HttpHandler {
 	 *
 	 * @throws MHException If anything goes sideways...
 	 */
-	protected Request fromHttpExchange(HttpExchange t) throws Exception {
+	protected Request fromHttpExchange(HttpExchange t) throws MHException {
 
 		// Convert the HttpExchange headers to RequestResponse headers
 		Headers originalRequestHeaders = t.getRequestHeaders();

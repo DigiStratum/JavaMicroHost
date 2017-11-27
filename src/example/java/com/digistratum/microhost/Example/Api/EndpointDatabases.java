@@ -3,6 +3,7 @@ package com.digistratum.microhost.Example.Api;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionImpl;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
 import com.digistratum.microhost.Database.Mysql.Model.MysqlModelFactory;
+import com.digistratum.microhost.Exception.MHException;
 import com.digistratum.microhost.RestServer.Endpoint.Endpoint;
 import com.digistratum.microhost.Example.Model.ModelMysqlDatabaseImpl;
 import com.digistratum.microhost.RestServer.Http.RequestResponse.Request;
@@ -31,7 +32,7 @@ public class EndpointDatabases implements Endpoint {
 	}
 
 	@Override
-	public Response handle(Request request) throws Exception {
+	public Response handle(Request request) throws MHException {
 		try (MySqlConnectionImpl conn = pool.getConnection()) {
 			ModelMysqlDatabaseImpl modelMysqlDatabase = mysqlModelFactory.newModel(ModelMysqlDatabaseImpl.class, conn);
 			List<ModelMysqlDatabaseImpl> databases = modelMysqlDatabase.getDatabases();

@@ -26,7 +26,7 @@ public class EndpointErrorDocumentImpl implements Endpoint {
 	}
 
 	@Override
-	public Response handle(Request request) throws Exception {
+	public Response handle(Request request) throws MHException {
 		HeadersImpl responseHeaders = new HeadersImpl();
 		responseHeaders.set("content-type", "text/html");
 		return new ResponseImpl(

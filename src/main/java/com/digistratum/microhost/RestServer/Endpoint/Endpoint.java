@@ -1,5 +1,6 @@
 package com.digistratum.microhost.RestServer.Endpoint;
 
+import com.digistratum.microhost.Exception.MHException;
 import com.digistratum.microhost.RestServer.Http.RequestResponse.Request;
 import com.digistratum.microhost.RestServer.Http.RequestResponse.Response;
 
@@ -14,5 +15,5 @@ public interface Endpoint {
 	 *
 	 * @throws Exception for any errors
 	 */
-	public Response handle(Request request) throws Exception;
+	public Response handle(Request request) throws MHException;
 }
