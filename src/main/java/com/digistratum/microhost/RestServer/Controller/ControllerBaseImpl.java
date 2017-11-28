@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 /**
  * ref: http://docs.oracle.com/javase/8/docs/jre/api/net/httpserver/spec/com/sun/net/httpserver/package-summary.html
  */
-public abstract class ControllerBaseImpl implements HttpHandler {
+public abstract class ControllerBaseImpl implements Controller {
 	final static Logger log = Logger.getLogger(ControllerBaseImpl.class);
 
 	// RequestMethod, <URIregex, Endpoint>
