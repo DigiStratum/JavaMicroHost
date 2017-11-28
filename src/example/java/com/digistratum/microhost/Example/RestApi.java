@@ -1,7 +1,5 @@
 package com.digistratum.microhost.Example;
 
-import com.digistratum.microhost.Config.ConfigFactory;
-import com.digistratum.microhost.Config.ConfigImpl;
 import com.digistratum.microhost.RestServer.Controller.ControllerBaseMicroHostImpl;
 import com.digistratum.microhost.Example.Api.ControllerBaseExampleImpl;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
@@ -9,6 +7,7 @@ import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolFa
 import com.digistratum.microhost.Exception.MHException;
 import com.digistratum.microhost.RestServer.RestServerFactory;
 import com.digistratum.microhost.RestServer.RestServerImpl;
+import dagger.ObjectGraph;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -26,22 +25,27 @@ import java.io.IOException;
  * ADVANCED:
  * @todo Register service with registry service
  */
-public class MicroHost {
-	protected final static Logger log = Logger.getLogger(MicroHost.class);
+class RestApi implements Runnable {
+	protected final static Logger log = Logger.getLogger(RestApi.class);
 	protected boolean amRunning = false;
 
 	/*
 	 * Application entry point
 	 */
 	public static void main(String[] args) {
-		MicroHost microHost = new MicroHost();
+		ObjectGraph og = ObjectGraph.create(new RestApiModule());
+		RestApi restApi =  og.get(RestApi.class);
+
+		/*
+		RestApi restApi = new RestApi();
+
 
 		// @todo: get rid of these factories, use interfaces/implementations and dependency injection framework instead
-		ConfigFactory mhConfigFactory = new ConfigFactory();
 		MySqlConnectionPoolFactory mySqlConnectionPoolFactory = new MySqlConnectionPoolFactory();
 		RestServerFactory restServerFactory = new RestServerFactory();
 
-		microHost.run(mhConfigFactory, mySqlConnectionPoolFactory, restServerFactory);
+		restApi.run(mhConfigFactory, mySqlConnectionPoolFactory, restServerFactory);
+		*/
 	}
 
 	/**
@@ -61,20 +65,11 @@ public class MicroHost {
 		amRunning = false;
 	}
 
-	/**
-	 * Run the main loop
-	 *
-	 * @param mhConfigFactory Object instance of ConfigFactory to retrieve configuration data
-	 * @param mySqlConnectionPoolFactory Object instance of MySqlConnectionPoolFactory to get connected to a database
-	 * @param restServerFactory Object instance of RestServerFactory to stand up our restful server/controller host
-	 */
-	protected void run(ConfigFactory mhConfigFactory, MySqlConnectionPoolFactory mySqlConnectionPoolFactory, RestServerFactory restServerFactory) {
+	@Override
+	public void run() {
+		/*
+		//Config configImpl, MySqlConnectionPoolFactory mySqlConnectionPoolFactory, RestServerFactory restServerFactory) {
 		try {
-
-			// Read in configuration properties
-			String userDir = System.getProperty("user.dir");
-			String propsFile = userDir + "/MicroHost.properties";
-			ConfigImpl configImpl = mhConfigFactory.createMHConfig(propsFile);
 
 			// Set up database connection pool
 			MySqlConnectionPoolImpl pool = mySqlConnectionPoolFactory.createMySqlConnectionPool(configImpl);
@@ -115,5 +110,6 @@ public class MicroHost {
 		} catch (MHException e) {
 			log.error("MicroHost HTTP RestServerImpl failed", e);
 		}
+		*/
 	}
 }

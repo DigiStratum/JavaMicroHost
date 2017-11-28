@@ -5,6 +5,7 @@ import com.digistratum.microhost.Exception.MHException;
 import com.digistratum.microhost.Config.Config;
 import com.sun.net.httpserver.HttpServer;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -18,9 +19,11 @@ public class RestServerImpl implements RestServer {
 	/**
 	 * Configuration-injected constructor
 	 *
-	 * @param config
+	 * @param config Config instance (DI)
+	 *
 	 * @throws IOException
 	 */
+	@Inject
 	public RestServerImpl(Config config) throws MHException {
 		this(
 				Integer.parseInt(config.get("microhost.port","54321")),

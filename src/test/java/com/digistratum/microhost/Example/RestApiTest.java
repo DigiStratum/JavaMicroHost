@@ -1,7 +1,6 @@
 package com.digistratum.microhost.Example;
 
 import com.digistratum.microhost.Config.ConfigImpl;
-import com.digistratum.microhost.Config.ConfigFactory;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolFactory;
 import com.digistratum.microhost.RestServer.RestServerImpl;
@@ -15,7 +14,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-class MicroHostTest {
+class RestApiTest {
 	ConfigFactory mockMHConfigFactory;
 	ConfigImpl mockMHConfigImpl;
 
@@ -62,7 +61,7 @@ class MicroHostTest {
 		}
 	}
 
-	private class TestableMicroHost extends MicroHost {
+	private class TestableMicroHost extends RestApi {
 		public void testRun(ConfigFactory mhcf, MySqlConnectionPoolFactory mscpf, RestServerFactory sf) {
 			run(mhcf, mscpf, sf);
 		}
