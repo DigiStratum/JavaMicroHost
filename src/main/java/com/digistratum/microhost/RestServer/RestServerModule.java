@@ -8,7 +8,11 @@ import dagger.Provides;
 @Module
 public class RestServerModule {
 	@Provides
-	RestServer provideRestServer(Config config) throws MHException {
-		return new RestServerImpl(config);
+	RestServer provideRestServer(Config config) {
+		try {
+			return new RestServerImpl(config);
+		} catch (MHException e) {
+			throw new RuntimeException("Failed to provide a RestServer!", e);
+		}
 	}
 }

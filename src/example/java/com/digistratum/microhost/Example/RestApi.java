@@ -75,17 +75,27 @@ public class RestApi implements Runnable {
 
 	@Override
 	public void run() {
+
+		Config config;
+		MySqlConnectionPool pool;
+		RestServer restServer;
+
+		try {
+			// Get our configuration data
+			config = lazyConfig.get();
+
+			// Set up database connection pool
+			pool = lazyMySqlConnectionPool.get();
+
+			// Stand up a new HttpServer
+			log.info("RestApi starting...");
+			restServer = lazyRestServer.get();
+		}
+		catch (RuntimeException e) {
+			log.error("MicroHost HTTP RestServerImpl failed", e);
+			return;
+		}
 		amRunning = true;
-
-		// Get our configuration data
-		Config config = lazyConfig.get();
-
-		// Set up database connection pool
-		MySqlConnectionPool pool = lazyMySqlConnectionPool.get();
-
-		// Stand up a new HttpServer
-		log.info("RestApi starting...");
-		RestServer restServer = lazyRestServer.get();
 
 		try {
 			if ("on".equals(config.get("microhost.context.example", "off"))) {
