@@ -1,16 +1,16 @@
 package com.digistratum.microhost.Example;
 
-import com.digistratum.microhost.RestServer.Controller.ControllerBaseMicroHostImpl;
-import com.digistratum.microhost.Example.Api.ControllerBaseExampleImpl;
+import com.digistratum.microhost.Config.Config;
+import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPool;
+import com.digistratum.microhost.Example.Api.ControllerExampleImpl;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
-import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolFactory;
 import com.digistratum.microhost.Exception.MHException;
-import com.digistratum.microhost.RestServer.RestServerFactory;
-import com.digistratum.microhost.RestServer.RestServerImpl;
+import com.digistratum.microhost.RestServer.RestServer;
+import dagger.Lazy;
 import dagger.ObjectGraph;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
+import javax.inject.Inject;
 
 /**
  * BASIC
@@ -18,6 +18,7 @@ import java.io.IOException;
  * @todo bring in Dagger for dependency injection; get rid of factories
  * @todo 90+% unit test coverage
  * @todo Set up inversion of control (IoC) using interface/implementation for better structure, DI, testability, DI, etc.
+ * @todo Make the microhost classes package-private in order to prevent consumers from trying to use them directly (when possible)
  *
  * INTERMEDIATE:
  * @todo Built-in support for common requirements like authentication, CORS, OPTIONS/HEAD responses
@@ -25,9 +26,13 @@ import java.io.IOException;
  * ADVANCED:
  * @todo Register service with registry service
  */
-class RestApi implements Runnable {
+public class RestApi implements Runnable {
 	protected final static Logger log = Logger.getLogger(RestApi.class);
 	protected boolean amRunning = false;
+
+	@Inject Lazy<Config> lazyConfig;
+	@Inject Lazy<MySqlConnectionPool> lazyMySqlConnectionPool;
+	@Inject Lazy<RestServer> lazyRestServer;
 
 	/*
 	 * Application entry point
@@ -35,6 +40,9 @@ class RestApi implements Runnable {
 	public static void main(String[] args) {
 		ObjectGraph og = ObjectGraph.create(new RestApiModule());
 		RestApi restApi =  og.get(RestApi.class);
+
+
+		restApi.run();
 
 		/*
 		RestApi restApi = new RestApi();
@@ -67,23 +75,24 @@ class RestApi implements Runnable {
 
 	@Override
 	public void run() {
-		/*
-		//Config configImpl, MySqlConnectionPoolFactory mySqlConnectionPoolFactory, RestServerFactory restServerFactory) {
+		amRunning = true;
+
+		// Get our configuration data
+		Config config = lazyConfig.get();
+
+		// Set up database connection pool
+		MySqlConnectionPool pool = lazyMySqlConnectionPool.get();
+
+		// Stand up a new HttpServer
+		log.info("RestApi starting...");
+		RestServer restServer = lazyRestServer.get();
+
 		try {
-
-			// Set up database connection pool
-			MySqlConnectionPoolImpl pool = mySqlConnectionPoolFactory.createMySqlConnectionPool(configImpl);
-
-			// Stand up a new HttpServer
-			log.info("MicroHost HTTP RestServerImpl starting...");
-			final RestServerImpl server = restServerFactory.createServer(configImpl);
-
-			// Set up default controller for microhost context endpoints
-			if ("on".equals(configImpl.get("microhost.context.microhost", "off"))) {
-				server.addControllerContext(new ControllerBaseMicroHostImpl(), "/microhost");
-			}
-			if ("on".equals(configImpl.get("microhost.context.example", "off"))) {
-				server.addControllerContext(new ControllerBaseExampleImpl(pool), "/example");
+			if ("on".equals(config.get("microhost.context.example", "off"))) {
+				restServer.addControllerContext(
+						new ControllerExampleImpl((MySqlConnectionPoolImpl) pool),
+						"/example"
+				);
 			}
 			log.info("started!");
 
@@ -93,7 +102,7 @@ class RestApi implements Runnable {
 				@Override
 				public void run() {
 					log.info("MicroHost HTTP RestServerImpl stopping...");
-					server.stop();
+					restServer.stop();
 					log.info(" stopped!");
 				}
 			});
@@ -103,13 +112,10 @@ class RestApi implements Runnable {
 			while (amRunning) {
 				Thread.sleep(1000);
 			}
-		} catch (IOException e) {
-			log.error("MicroHost HTTP RestServerImpl failed to initialize", e);
 		} catch (InterruptedException e) {
 			log.error("MicroHost HTTP RestServerImpl was interrupted", e);
 		} catch (MHException e) {
 			log.error("MicroHost HTTP RestServerImpl failed", e);
 		}
-		*/
 	}
 }

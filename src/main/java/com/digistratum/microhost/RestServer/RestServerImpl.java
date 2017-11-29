@@ -3,6 +3,7 @@ package com.digistratum.microhost.RestServer;
 import com.digistratum.microhost.RestServer.Controller.Controller;
 import com.digistratum.microhost.Exception.MHException;
 import com.digistratum.microhost.Config.Config;
+import com.digistratum.microhost.RestServer.Controller.ControllerBaseMicroHostImpl;
 import com.sun.net.httpserver.HttpServer;
 
 import javax.inject.Inject;
@@ -19,6 +20,8 @@ public class RestServerImpl implements RestServer {
 	/**
 	 * Configuration-injected constructor
 	 *
+	 * Use this to automatically configure the service by way of configuration data.
+	 *
 	 * @param config Config instance (DI)
 	 *
 	 * @throws IOException
@@ -29,10 +32,18 @@ public class RestServerImpl implements RestServer {
 				Integer.parseInt(config.get("microhost.port","54321")),
 				Integer.parseInt(config.get("microhost.threads","10"))
 		);
+
+		// Add our own default controllers as needed
+		// Set up default controller for microhost context endpoints
+		if ("on".equals(config.get("microhost.context.microhost", "off"))) {
+			addControllerContext(new ControllerBaseMicroHostImpl(), "/microhost");
+		}
 	}
 
 	/**
 	 * Parametric constructor
+	 *
+	 * Use this to programmatically configure the service rather than using configuration data.
 	 *
 	 * @param port Listening port for our MicroHost HTTP service
 	 * @param threadPoolSize Count of threads for our pool (concurrency limit)

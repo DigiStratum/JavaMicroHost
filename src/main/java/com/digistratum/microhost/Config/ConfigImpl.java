@@ -50,7 +50,7 @@ public class ConfigImpl implements Config {
 			System.out.println("Error reading properties file: '" + path + "' - " + e.getMessage());
 		}
 
-		// Move our props into a Map<String, String> for configImpl
+		// Move our props into a Map<String, String> for config
 		// ref: https://coderanch.com/t/599586/java/Properties-Class
 		for (Map.Entry<Object, Object> e : prop.entrySet()) {
 			config.put(e.getKey().toString(), e.getValue().toString());

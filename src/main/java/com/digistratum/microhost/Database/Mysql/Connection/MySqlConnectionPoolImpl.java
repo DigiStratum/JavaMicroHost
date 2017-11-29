@@ -1,5 +1,6 @@
 package com.digistratum.microhost.Database.Mysql.Connection;
 
+import com.digistratum.microhost.Config.Config;
 import com.digistratum.microhost.Config.ConfigImpl;
 import com.digistratum.microhost.Exception.MHDatabaseException;
 
@@ -15,37 +16,37 @@ import java.sql.Connection;
  * ref: https://commons.apache.org/proper/commons-pool/api-1.6/org/apache/commons/pool/ObjectPool.html#returnObject(T)
  */
 public class MySqlConnectionPoolImpl implements MySqlConnectionPool {
-	protected ConfigImpl configImpl;
+	protected Config config;
 	protected ObjectPool pool;
 
 	/**
 	 * Constructor
 	 *
-	 * @param configImpl Configuration is dependency-injected
+	 * @param config Configuration is dependency-injected
 	 */
-	public MySqlConnectionPoolImpl(ConfigImpl configImpl) {
-		this.configImpl = configImpl;
+	public MySqlConnectionPoolImpl(Config config) {
+		this.config = config;
 		init();
 	}
 
 	@Override
 	public void init() {
-		String host = configImpl.get("microhost.db.host", "localhost");
-		Integer port = configImpl.get("microhost.db.port", 3306);
-		String name = configImpl.get("microhost.db.name", "mysql");
-		String user = configImpl.get("microhost.db.user", "root");
-		String pass = configImpl.get("microhost.db.pass", "");
+		String host = config.get("microhost.db.host", "localhost");
+		Integer port = config.get("microhost.db.port", 3306);
+		String name = config.get("microhost.db.name", "mysql");
+		String user = config.get("microhost.db.user", "root");
+		String pass = config.get("microhost.db.pass", "");
 
 		PoolableObjectFactory mySqlPoolableObjectFactory;
 		mySqlPoolableObjectFactory = new MySqlPoolableObjectFactory(
 				host, port, name, user, pass
 		);
 		GenericObjectPool.Config poolConfig = new GenericObjectPool.Config();
-		poolConfig.maxActive = configImpl.get("microhost.db.pool.maxActive", 10);
-		poolConfig.testOnBorrow = configImpl.get("microhost.db.pool.testOnBorrow", true);
-		poolConfig.testWhileIdle = configImpl.get("microhost.db.pool.testWhileIdle", true);;
-		poolConfig.timeBetweenEvictionRunsMillis = configImpl.get("microhost.db.pool.timeBetweenEvictionRunsMillis", 10000);
-		poolConfig.minEvictableIdleTimeMillis = configImpl.get("microhost.db.pool.minEvictableIdleTimeMillis", 60000);
+		poolConfig.maxActive = config.get("microhost.db.pool.maxActive", 10);
+		poolConfig.testOnBorrow = config.get("microhost.db.pool.testOnBorrow", true);
+		poolConfig.testWhileIdle = config.get("microhost.db.pool.testWhileIdle", true);;
+		poolConfig.timeBetweenEvictionRunsMillis = config.get("microhost.db.pool.timeBetweenEvictionRunsMillis", 10000);
+		poolConfig.minEvictableIdleTimeMillis = config.get("microhost.db.pool.minEvictableIdleTimeMillis", 60000);
 
 		GenericObjectPoolFactory genericObjectPoolFactory;
 		genericObjectPoolFactory = new GenericObjectPoolFactory(
