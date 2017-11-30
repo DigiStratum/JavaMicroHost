@@ -4,7 +4,7 @@ import com.digistratum.microhost.Config.Config;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(complete = false, library = true)
+@Module
 public class RestServerModule {
 	@Provides
 	RestServer provideRestServer(Config config) {

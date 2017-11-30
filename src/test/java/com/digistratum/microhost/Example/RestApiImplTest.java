@@ -1,27 +1,31 @@
 package com.digistratum.microhost.Example;
 
-import com.digistratum.microhost.Config.ConfigImpl;
-import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
-import com.digistratum.microhost.RestServer.RestServerImpl;
+import com.digistratum.microhost.Config.Config;
+import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPool;
+import com.digistratum.microhost.RestServer.RestServer;
 import org.junit.jupiter.api.*;
+
+import javax.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-class RestApiTest {
-	ConfigImpl mockMHConfigImpl;
-	MySqlConnectionPoolImpl mockMySqlConnectionPoolImpl;
-	RestServerImpl mockServer;
+public class RestApiImplTest {
+	@Inject
+	Config mockConfig;
+	@Inject
+	MySqlConnectionPool mockPool;
+	@Inject
+	RestServer mockRestServer;
 
 	TestableMicroHost sut;
 
 	@BeforeEach
 	public void setup() throws Exception {
-/*
+		//ObjectGraph.create(new RestApiTestModule());
+
+		/*
 		// Mock our various factories and their prducts
 		mockMHConfigFactory = mock(ConfigFactory.class);
 		mockMHConfigImpl = mock(ConfigImpl.class);
@@ -35,14 +39,14 @@ class RestApiTest {
 		mockMySqlConnectionPoolImpl = mock(MySqlConnectionPoolImpl.class);
 		doReturn(mockMySqlConnectionPoolImpl).when(mockMySqlConnectionPoolFactory).createMySqlConnectionPool(anyObject());
 */
-		sut = new TestableMicroHost();
+		sut = new TestableMicroHost(mockConfig, mockPool, mockRestServer);
 	}
 
+	@Test
 	public void testThatRunLoopsUntilStopped() {
-		/*
 		// FIXME - run enters a perpetual loop (by design), but it's the JUnit test thread
 		// which is looping, so it needs to happen asynchronously... or something
-		sut.testRun(mockMHConfigFactory, mockMySqlConnectionPoolFactory, mockRestServerFactory);
+		sut.testRun();
 		try {
 			Thread.sleep(1000);
 			assertTrue(sut.isRunning());
@@ -53,15 +57,16 @@ class RestApiTest {
 			// Any exception is a failed test
 			assertTrue(false);
 		}
-		*/
 	}
 
-	private class TestableMicroHost extends RestApi {
-/*
-		public void testRun(ConfigFactory mhcf, MySqlConnectionPoolFactory mscpf, RestServerFactory sf) {
-			run(mhcf, mscpf, sf);
+	private class TestableMicroHost extends RestApiImpl {
+		public TestableMicroHost(Config config, MySqlConnectionPool pool, RestServer restServer) {
+			super(config, pool, restServer);
 		}
-*/
+
+		public void testRun() {
+			run();
+		}
 	}
 
 }

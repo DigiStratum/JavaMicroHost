@@ -4,13 +4,13 @@ import com.digistratum.microhost.Config.Config;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPool;
 import com.digistratum.microhost.Example.Api.ControllerExampleImpl;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
+import com.digistratum.microhost.Example.Model.RestApi;
 import com.digistratum.microhost.Exception.MHException;
 import com.digistratum.microhost.RestServer.RestServer;
-import dagger.Lazy;
-import dagger.ObjectGraph;
 import org.apache.log4j.Logger;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * BASIC
@@ -26,48 +26,28 @@ import javax.inject.Inject;
  * ADVANCED:
  * @todo Register service with registry service
  */
-public class RestApi implements Runnable {
-	protected final static Logger log = Logger.getLogger(RestApi.class);
+@Singleton
+public class RestApiImpl implements RestApi, Runnable {
+	protected final static Logger log = Logger.getLogger(RestApiImpl.class);
 	protected boolean amRunning = false;
 
-	@Inject Config config;
-	@Inject MySqlConnectionPool pool;
-	@Inject RestServer restServer;
+	Config config;
+	RestServer restServer;
+	MySqlConnectionPool pool;
 
-	/*
-	 * Application entry point
-	 */
-	public static void main(String[] args) {
-		ObjectGraph og = ObjectGraph.create(new RestApiModule());
-		RestApi restApi =  og.get(RestApi.class);
-
-
-		restApi.run();
-
-		/*
-		RestApi restApi = new RestApi();
-
-
-		// @todo: get rid of these factories, use interfaces/implementations and dependency injection framework instead
-		MySqlConnectionPoolFactory mySqlConnectionPoolFactory = new MySqlConnectionPoolFactory();
-		RestServerFactory restServerFactory = new RestServerFactory();
-
-		restApi.run(mhConfigFactory, mySqlConnectionPoolFactory, restServerFactory);
-		*/
+	@Inject
+	public RestApiImpl(Config config, MySqlConnectionPool pool, RestServer restServer) {
+		this.config = config;
+		this.pool = pool;
+		this.restServer = restServer;
 	}
 
-	/**
-	 * Determine from the outside whether we are running
-	 *
-	 * @return boolean true if we are running, else false
-	 */
+	@Override
 	public boolean isRunning() {
 		return amRunning;
 	}
 
-	/**
-	 * Stop the main loop from running any longer
-	 */
+	@Override
 	public void stop() {
 		log.info("Stop requested!");
 		amRunning = false;
@@ -76,6 +56,7 @@ public class RestApi implements Runnable {
 	@Override
 	public void run() {
 		amRunning = true;
+System.out.println("running...");
 
 		try {
 			if ("on".equals(config.get("microhost.context.example", "off"))) {
