@@ -1,5 +1,10 @@
 package com.digistratum.microhost.Example;
 
+import com.digistratum.microhost.Example.Api.DaggerRestApiComponent;
+import com.digistratum.microhost.Example.Api.RestApiComponent;
+import com.digistratum.microhost.Example.Api.RestApiImpl;
+import com.digistratum.microhost.Example.Api.RestApiModule;
+
 public class ExampleHost {
 
 	/*
@@ -10,10 +15,10 @@ public class ExampleHost {
 	 * ref: https://github.com/raphaelbrugier/dagger2-sample
 	 */
 	public static void main(String[] args) {
-		RestApiImpl restApiImpl = DaggerExampleHost_RestApiComponent
-				.builder()
+		RestApiComponent restApiComponent = DaggerRestApiComponent.builder()
 				.restApiModule( new RestApiModule())
 				.build();
-		restApiImpl.run();
+		RestApiImpl restApi = (RestApiImpl) restApiComponent.getRestApi();
+		restApi.run();
 	}
 }

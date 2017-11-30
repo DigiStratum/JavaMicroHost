@@ -1,8 +1,7 @@
-package com.digistratum.microhost.Example;
+package com.digistratum.microhost.Example.Api;
 
 import com.digistratum.microhost.Config.Config;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPool;
-import com.digistratum.microhost.Example.Api.ControllerExampleImpl;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
 import com.digistratum.microhost.Example.Model.RestApi;
 import com.digistratum.microhost.Exception.MHException;
@@ -14,11 +13,9 @@ import javax.inject.Singleton;
 
 /**
  * BASIC
- * @todo separate example from reusable classes; build separate jars for them
- * @todo bring in Dagger for dependency injection; get rid of factories
+ * @todo move this class back to library out of example, and make example extend it to add controllers for setup
+ * @todo build separate jars for example/library
  * @todo 90+% unit test coverage
- * @todo Set up inversion of control (IoC) using interface/implementation for better structure, DI, testability, DI, etc.
- * @todo Make the microhost classes package-private in order to prevent consumers from trying to use them directly (when possible)
  *
  * INTERMEDIATE:
  * @todo Built-in support for common requirements like authentication, CORS, OPTIONS/HEAD responses
@@ -32,14 +29,14 @@ public class RestApiImpl implements RestApi, Runnable {
 	protected boolean amRunning = false;
 
 	Config config;
-	RestServer restServer;
+	RestServer server;
 	MySqlConnectionPool pool;
 
 	@Inject
-	public RestApiImpl(Config config, MySqlConnectionPool pool, RestServer restServer) {
+	public RestApiImpl(Config config, MySqlConnectionPool pool, RestServer server) {
 		this.config = config;
 		this.pool = pool;
-		this.restServer = restServer;
+		this.server = server;
 	}
 
 	@Override
@@ -60,7 +57,7 @@ System.out.println("running...");
 
 		try {
 			if ("on".equals(config.get("microhost.context.example", "off"))) {
-				restServer.addControllerContext(
+				server.addControllerContext(
 						new ControllerExampleImpl((MySqlConnectionPoolImpl) pool),
 						"/example"
 				);
@@ -73,7 +70,7 @@ System.out.println("running...");
 				@Override
 				public void run() {
 					log.info("MicroHost HTTP RestServerImpl stopping...");
-					restServer.stop();
+					server.stop();
 					log.info(" stopped!");
 				}
 			});

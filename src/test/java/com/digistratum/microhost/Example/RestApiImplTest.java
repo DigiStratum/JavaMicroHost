@@ -2,6 +2,7 @@ package com.digistratum.microhost.Example;
 
 import com.digistratum.microhost.Config.Config;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPool;
+import com.digistratum.microhost.Example.Api.RestApiImpl;
 import com.digistratum.microhost.RestServer.RestServer;
 import org.junit.jupiter.api.*;
 

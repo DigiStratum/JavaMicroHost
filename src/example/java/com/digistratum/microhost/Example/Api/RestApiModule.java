@@ -1,9 +1,10 @@
-package com.digistratum.microhost.Example;
+package com.digistratum.microhost.Example.Api;
 
 import com.digistratum.microhost.Config.Config;
 import com.digistratum.microhost.Config.ConfigImpl;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPool;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
+import com.digistratum.microhost.Example.Model.RestApi;
 import com.digistratum.microhost.RestServer.RestServer;
 import com.digistratum.microhost.RestServer.RestServerImpl;
 
@@ -35,5 +36,11 @@ public class RestApiModule {
 	@Singleton
 	RestServer provideRestServer(Config config) {
 		return new RestServerImpl(config);
+	}
+
+	@Provides
+	@Singleton
+	RestApi provideRestApi(Config config, MySqlConnectionPool pool, RestServer server) {
+		return new RestApiImpl(config, pool, server);
 	}
 }
