@@ -4,7 +4,7 @@ import com.digistratum.microhost.Config.Config;
 import dagger.Module;
 import dagger.Provides;
 
-@Module
+@Module(complete = false, library = true)
 public class MySqlConnectionPoolModule {
 	@Provides
 	MySqlConnectionPool provideMySqlConnectionPool(Config config) {

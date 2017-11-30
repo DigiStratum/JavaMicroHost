@@ -9,6 +9,7 @@ import org.apache.commons.pool.PoolableObjectFactory;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.commons.pool.impl.GenericObjectPoolFactory;
 
+import javax.inject.Inject;
 import java.sql.Connection;
 
 /**
@@ -24,6 +25,7 @@ public class MySqlConnectionPoolImpl implements MySqlConnectionPool {
 	 *
 	 * @param config Configuration is dependency-injected
 	 */
+	@Inject
 	public MySqlConnectionPoolImpl(Config config) {
 		this.config = config;
 		init();

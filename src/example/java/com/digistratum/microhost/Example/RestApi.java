@@ -30,9 +30,9 @@ public class RestApi implements Runnable {
 	protected final static Logger log = Logger.getLogger(RestApi.class);
 	protected boolean amRunning = false;
 
-	@Inject Lazy<Config> lazyConfig;
-	@Inject Lazy<MySqlConnectionPool> lazyMySqlConnectionPool;
-	@Inject Lazy<RestServer> lazyRestServer;
+	@Inject Config config;
+	@Inject MySqlConnectionPool pool;
+	@Inject RestServer restServer;
 
 	/*
 	 * Application entry point
@@ -75,26 +75,6 @@ public class RestApi implements Runnable {
 
 	@Override
 	public void run() {
-
-		Config config;
-		MySqlConnectionPool pool;
-		RestServer restServer;
-
-		try {
-			// Get our configuration data
-			config = lazyConfig.get();
-
-			// Set up database connection pool
-			pool = lazyMySqlConnectionPool.get();
-
-			// Stand up a new HttpServer
-			log.info("RestApi starting...");
-			restServer = lazyRestServer.get();
-		}
-		catch (RuntimeException e) {
-			log.error("MicroHost HTTP RestServerImpl failed", e);
-			return;
-		}
 		amRunning = true;
 
 		try {

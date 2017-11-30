@@ -85,23 +85,26 @@ public abstract class ControllerBaseImpl implements Controller {
 	/**
 	 * Add a mapping for the requestMethod/URI to a named requestHandler method
 	 *
+	 * Note: Throw no exceptions here since this is called from constructors of subclasses.
+	 *
 	 * @param requestMethod HTTP request method (e.g. get, post, etc)
 	 * @param requestUriPattern Regex pattern to use to match a given request URI
 	 * @param endpoint Endpoint instance which will handler requests matching the URI
-	 *
-	 * @throws MHException when something is wrong with the supplied arguments
 	 */
-	protected void mapEndpoint(String requestMethod, String requestUriPattern, Endpoint endpoint) throws MHException {
+	protected void mapEndpoint(String requestMethod, String requestUriPattern, Endpoint endpoint) {
 
 		// Check our arguments
 		if (! isValidMethod(requestMethod)) {
-			throw new MHException("Invalid request method supplied");
+			log.error("mapEndpoint() - Invalid request method supplied");
+			return;
 		}
 		if ((null == requestUriPattern) || requestUriPattern.isEmpty()) {
-			throw new MHException("Invalid request URI pattern supplied");
+			log.error("mapEndpoint() - Invalid request URI pattern supplied");
+			return;
 		}
 		if ((null == endpoint)) {
-			throw new MHException("Invalid endpoint supplied");
+			log.error("mapEndpoint() - Invalid endpoint supplied");
+			return;
 		}
 
 		// Add this endpoint to the method map for the specified request method and URI pattern

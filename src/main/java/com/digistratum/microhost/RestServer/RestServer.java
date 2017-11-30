@@ -12,10 +12,8 @@ public interface RestServer {
 	 *
 	 * @param ctrl ControllerBaseImpl instance to do the work
 	 * @param ctx String context base URI to map this controller to
-	 *
-	 * @throws MHException
 	 */
-	public void addControllerContext(Controller ctrl, String ctx) throws MHException;
+	public void addControllerContext(Controller ctrl, String ctx);
 
 	/**
 	 * Remove a context which is already defined

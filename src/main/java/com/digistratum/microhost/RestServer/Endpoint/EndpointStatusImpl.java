@@ -8,7 +8,7 @@ import com.digistratum.microhost.RestServer.Http.RequestResponse.ResponseImpl;
 
 public class EndpointStatusImpl implements Endpoint {
 	@Override
-	public Response handle(Request request) throws MHException {
+	public Response handle(Request request) {
 		HeadersImpl responseHeaders = new HeadersImpl();
 		responseHeaders.set("content-type", "application/json");
 		return new ResponseImpl(

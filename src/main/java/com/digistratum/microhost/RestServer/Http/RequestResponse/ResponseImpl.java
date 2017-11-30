@@ -42,7 +42,7 @@ public class ResponseImpl extends RequestResponseImpl implements Response {
 	 * @param responseHeaders Map<name, value> HTTP response headers
 	 * @param responseBody HTTP response body (optional)
 	 */
-	public ResponseImpl(int responseCode, Headers responseHeaders, String responseBody) throws MHException {
+	public ResponseImpl(int responseCode, Headers responseHeaders, String responseBody) {
 
 		// This is a RESPONSE
 		type = RequestResponseImpl.Type.response;
