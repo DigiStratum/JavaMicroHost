@@ -1,7 +1,15 @@
 package com.digistratum.microhost.Database;
 
-/**
- * @todo - get rid of this... obviously has  no value with no implementation
- */
+import com.digistratum.microhost.Exception.MHException;
+
 public interface ModelFactory {
+
+	/**
+	 * Generic Model Maker
+	 *
+	 * @return Object instance of modelClass type
+	 *
+	 * @throws MHException
+	 */
+	public <T extends Model> T newModel(Class<T> modelClass) throws MHException;
 }

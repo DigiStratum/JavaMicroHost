@@ -9,12 +9,8 @@ import java.util.List;
 public class ModelMysqlDatabaseImpl extends MysqlModelImpl {
 	public String Database;
 
-	/**
-	 *
-	 * @param conn
-	 */
-	public ModelMysqlDatabaseImpl(MySqlConnectionImpl conn) {
-		super(conn);
+	public ModelMysqlDatabaseImpl() {
+		super();
 	}
 
 	/*
@@ -35,7 +31,7 @@ public class ModelMysqlDatabaseImpl extends MysqlModelImpl {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<ModelMysqlDatabaseImpl> getDatabases() throws MHException {
+	public List<ModelMysqlDatabaseImpl> getDatabases(MySqlConnectionImpl conn) throws MHException {
 		return conn.query(
 			ModelMysqlDatabaseImpl.class,
 			"show databases;"

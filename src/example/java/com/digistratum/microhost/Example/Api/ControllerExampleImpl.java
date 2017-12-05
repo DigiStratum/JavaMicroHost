@@ -2,15 +2,18 @@ package com.digistratum.microhost.Example.Api;
 
 import com.digistratum.microhost.RestServer.Controller.ControllerBaseImpl;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
-import com.digistratum.microhost.Database.Mysql.Model.MysqlModelFactory;
+import com.digistratum.microhost.Database.Mysql.Model.MySqlModelFactory;
 import com.digistratum.microhost.Exception.MHException;
+
+import javax.inject.Inject;
 
 /**
  * ControllerBaseImplExample example controller
  */
 public class ControllerExampleImpl extends ControllerBaseImpl {
 
-	public ControllerExampleImpl(MySqlConnectionPoolImpl pool) throws MHException {
+	@Inject
+	public ControllerExampleImpl(MySqlConnectionPoolImpl pool, MySqlModelFactory mySqlModelFactory) throws MHException {
 		super();
 
 		// Respond to http://localhost:54321/hello
@@ -24,7 +27,7 @@ public class ControllerExampleImpl extends ControllerBaseImpl {
 		this.mapEndpoint(
 				"get",
 				"^/example/databases$",
-				new EndpointDatabases(pool, new MysqlModelFactory())
+				new EndpointDatabases(pool, mySqlModelFactory)
 		);
 	}
 }
