@@ -1,8 +1,8 @@
 package com.digistratum.microhost.Example;
 
-import com.digistratum.microhost.Example.Api.DaggerRestApiComponent;
-import com.digistratum.microhost.Example.Api.RestApiComponent;
-import com.digistratum.microhost.Example.Api.RestApiImpl;
+import com.digistratum.microhost.RestServer.DaggerRestApiComponent;
+import com.digistratum.microhost.RestServer.RestApiComponent;
+import com.digistratum.microhost.RestServer.RestApiImpl;
 import com.digistratum.microhost.Example.Api.RestApiModule;
 
 public class ExampleHost {

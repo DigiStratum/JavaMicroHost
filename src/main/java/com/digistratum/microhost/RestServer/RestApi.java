@@ -1,4 +1,4 @@
-package com.digistratum.microhost.Example.Model;
+package com.digistratum.microhost.RestServer;
 
 public interface RestApi {
 

@@ -4,9 +4,7 @@ import com.digistratum.microhost.Config.Config;
 import com.digistratum.microhost.Config.ConfigImpl;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPool;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
-import com.digistratum.microhost.Example.Model.RestApi;
-import com.digistratum.microhost.RestServer.RestServer;
-import com.digistratum.microhost.RestServer.RestServerImpl;
+import com.digistratum.microhost.RestServer.*;
 
 import dagger.Module;
 import dagger.Provides;
@@ -40,7 +38,13 @@ public class RestApiModule {
 
 	@Provides
 	@Singleton
-	RestApi provideRestApi(Config config, MySqlConnectionPool pool, RestServer server) {
-		return new RestApiImpl(config, pool, server);
+	RestServerSetterUpper provideRestServersetterUpper(Config config, MySqlConnectionPool pool) {
+		return new RestServerSetterUpperExampleImpl(config, pool);
+	}
+
+	@Provides
+	@Singleton
+	RestApi provideRestApi(Config config, MySqlConnectionPool pool, RestServer server, RestServerSetterUpper setterUpper) {
+		return new RestApiImpl(config, pool, server, setterUpper);
 	}
 }
