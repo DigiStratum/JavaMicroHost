@@ -10,10 +10,10 @@ import javax.inject.Inject;
 /**
  * ControllerBaseImplExample example controller
  */
-public class ControllerExampleImpl extends ControllerBaseImpl {
+class ControllerExampleImpl extends ControllerBaseImpl {
 
 	@Inject
-	public ControllerExampleImpl(MySqlConnectionPoolImpl pool, MySqlModelFactory mySqlModelFactory) throws MHException {
+	ControllerExampleImpl(MySqlConnectionPoolImpl pool, MySqlModelFactory mySqlModelFactory) throws MHException {
 		super();
 
 		// Respond to http://localhost:54321/hello

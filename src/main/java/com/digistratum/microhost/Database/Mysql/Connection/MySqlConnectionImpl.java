@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @todo Add support for transaction begin/commit, auto-commit, rollback
  */
-public class MySqlConnectionImpl implements MySqlConnection, AutoCloseable {
+public class MySqlConnectionImpl implements MySqlConnection {
 	final static Logger log = Logger.getLogger(MySqlConnectionImpl.class);
 
 	protected Connection conn;

@@ -4,7 +4,7 @@ import com.digistratum.microhost.Exception.MHDatabaseException;
 
 import java.util.List;
 
-public interface MySqlConnection {
+public interface MySqlConnection extends AutoCloseable {
 	/**
 	 * Execute some SQL as a normal statement
 	 *
