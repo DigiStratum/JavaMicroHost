@@ -39,5 +39,5 @@ class EndpointDatabases implements Endpoint {
 				200,
 				responseBody
 		);
- be	}
+	}
 }
