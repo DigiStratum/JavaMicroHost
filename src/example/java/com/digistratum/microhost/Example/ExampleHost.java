@@ -10,6 +10,8 @@ public class ExampleHost {
 	/*
 	 * Application entry point
 	 *
+	 * @todo API -> Controller -> Endpoint -> [Service Layer] -> model + conn -> database
+	 *
 	 * ref: https://github.com/google/dagger/blob/master/examples/simple/src/main/java/coffee/CoffeeApp.java
 	 * ref: https://medium.com/@Zhuinden/that-missing-guide-how-to-use-dagger2-ef116fbea97
 	 * ref: https://github.com/raphaelbrugier/dagger2-sample
