@@ -10,7 +10,7 @@ public class ExampleHost {
 	/*
 	 * Application entry point
 	 *
-	 * @todo API -> Controller -> Endpoint -> [Service Layer] -> model + conn -> database
+	 * App -> API -> Controller -> Endpoint -> [Service Layer] -> model + conn -> database
 	 *
 	 * ref: https://github.com/google/dagger/blob/master/examples/simple/src/main/java/coffee/CoffeeApp.java
 	 * ref: https://medium.com/@Zhuinden/that-missing-guide-how-to-use-dagger2-ef116fbea97
@@ -20,7 +20,17 @@ public class ExampleHost {
 		RestApiComponent restApiComponent = DaggerRestApiComponent.builder()
 				.restApiModule( new RestApiModule())
 				.build();
-		RestApiImpl restApi = (RestApiImpl) restApiComponent.getRestApi();
+		new ExampleHost((RestApiImpl) restApiComponent.getRestApi());
+	}
+
+	/**
+	 * Constructor
+	 *
+	 * Starts our service application using Constructor injection
+	 *
+	 * @param restApi RestApiImpl instance which is ready to go
+	 */
+	public ExampleHost(RestApiImpl restApi) {
 		restApi.run();
 	}
 }
