@@ -1,12 +1,12 @@
 package com.digistratum.microhost.Example;
 
 import com.digistratum.microhost.MicroHostApp;
+import com.digistratum.microhost.Process.MHRunnable;
 import com.digistratum.microhost.RestServer.DaggerRestApiComponent;
 import com.digistratum.microhost.RestServer.RestApiComponent;
-import com.digistratum.microhost.RestServer.RestApiImpl;
 import com.digistratum.microhost.Example.Api.RestApiModule;
 
-public class ExampleHost extends MicroHostApp{
+public class ExampleHost extends MicroHostApp {
 
 	/*
 	 * Application entry point
@@ -21,7 +21,7 @@ public class ExampleHost extends MicroHostApp{
 		RestApiComponent restApiComponent = DaggerRestApiComponent.builder()
 				.restApiModule( new RestApiModule())
 				.build();
-		new ExampleHost((RestApiImpl) restApiComponent.getRestApi());
+		new ExampleHost(restApiComponent.getRestApi());
 	}
 
 	/**
@@ -29,9 +29,9 @@ public class ExampleHost extends MicroHostApp{
 	 *
 	 * Starts our service application using Constructor injection
 	 *
-	 * @param restApi RestApiImpl instance which is ready to go
+	 * @param mHRunnable RestApiImpl instance which is ready to go
 	 */
-	public ExampleHost(RestApiImpl restApi) {
-		super(restApi);
+	public ExampleHost(MHRunnable mHRunnable) {
+		super(mHRunnable);
 	}
 }

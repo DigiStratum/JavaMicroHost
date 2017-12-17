@@ -25,7 +25,7 @@ public class RestApiImplTest {
 		mockPool = mock(MySqlConnectionPool.class);
 		mockRestServer = mock(RestServer.class);
 		mockRestServerSetterUpper = mock(RestServerSetterUpper.class);
-		sut = new RestApiImpl(mockConfig, mockPool, mockRestServer, mockRestServerSetterUpper);
+		sut = new RestApiImpl(mockRestServer);
 	}
 
 	@Test

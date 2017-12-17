@@ -2,7 +2,7 @@ package com.digistratum.microhost.RestServer;
 
 import com.digistratum.microhost.Config.Config;
 import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPool;
-import org.apache.log4j.Logger;
+import com.digistratum.microhost.Process.MHRunnableImpl;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -20,42 +20,16 @@ import javax.inject.Singleton;
  * @todo Register service with registry service
  */
 @Singleton
-public class RestApiImpl implements RestApi {
-	// ref: http://www.java67.com/2015/07/how-to-stop-thread-in-java-example.html
-	private volatile boolean amRunning = false;
-	protected final static Logger log = Logger.getLogger(RestApiImpl.class);
-
-	protected Config config;
-	protected MySqlConnectionPool pool;
+public class RestApiImpl extends MHRunnableImpl {
 	protected RestServer server;
-	protected RestServerSetterUpper restServerSetterUpper;
 
 	@Inject
-	public RestApiImpl(Config config, MySqlConnectionPool pool, RestServer server, RestServerSetterUpper restServerSetterUpper) {
-		this.config = config;
-		this.pool = pool;
+	public RestApiImpl(RestServer server) {
 		this.server = server;
-		this.restServerSetterUpper = restServerSetterUpper;
-	}
-
-	@Override
-	public boolean isRunning() {
-		return amRunning;
-	}
-
-	@Override
-	public void stop() {
-
-		// Don't do the work of stopping if we are not running
-		if (! amRunning) return;
-		log.info("Stop requested!");
-		amRunning = false;
-
 	}
 
 	@Override
 	public void run() {
-		amRunning = true;
 		log.info("MicroHost HTTP RestApi starting...");
 
 		// Register a shut-down hook so that we can clean up our business
@@ -68,16 +42,6 @@ public class RestApiImpl implements RestApi {
 			}
 		});
 
-		// Do-nothing run loop
-		while (amRunning) {
-			log.info("Running...");
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// Restore the interrupted status
-				Thread.currentThread().interrupt();
-			}
-		}
-		stop();
+		super.run();
 	}
 }

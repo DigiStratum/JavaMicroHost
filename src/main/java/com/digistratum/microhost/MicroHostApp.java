@@ -1,7 +1,10 @@
 package com.digistratum.microhost;
 
-import com.digistratum.microhost.RestServer.RestApi;
+import com.digistratum.microhost.Process.MHRunnable;
 
+/**
+ * @TODO Add support for receiving, starting, and monitoring multiple MHRunnable's
+ */
 public class MicroHostApp {
 
 	/**
@@ -12,13 +15,13 @@ public class MicroHostApp {
 	 * ability to potentially spawn more threads and/or perform additional work as needed while the
 	 * RestApi service does its job.
 	 *
-	 * @param restApi RestApi RestApi instance
+	 * @param mHRunnable RestApi RestApi instance
 	 */
-	public MicroHostApp(RestApi restApi) {
+	public MicroHostApp(MHRunnable mHRunnable) {
 		// Start and monitor...
-		Thread t = new Thread(restApi, "JUnit: RestApiImpl Instance");
+		Thread t = new Thread(mHRunnable, "MHRunnable Instance");
 		t.start();
-		while (restApi.isRunning()) {
+		while (mHRunnable.isRunning()) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
