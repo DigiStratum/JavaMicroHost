@@ -5,7 +5,7 @@ import com.digistratum.microhost.Process.MHRunnable;
 /**
  * @TODO Add support for receiving, starting, and monitoring multiple MHRunnable's
  */
-public class MicroHostApp {
+abstract public class MicroHostApp {
 
 	/**
 	 * Constructor
