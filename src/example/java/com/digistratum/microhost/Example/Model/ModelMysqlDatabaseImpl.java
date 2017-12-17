@@ -13,23 +13,12 @@ public class ModelMysqlDatabaseImpl extends MysqlModelImpl {
 		super();
 	}
 
-	/*
-	show databases;
-+--------------------+
-| Database           |
-+--------------------+
-| information_schema |
-| microhost_example  |
-| mysql              |
-| performance_schema |
-| sys                |
-+--------------------+
-	 */
-
 	/**
+	 * Get a list of databases from our database server connection
 	 *
-	 * @return
-	 * @throws Exception
+	 * @return List of ModelMysqlDatabaseImpl's
+	 *
+	 * @throws MHException for any errors
 	 */
 	public List<ModelMysqlDatabaseImpl> getDatabases(MySqlConnection conn) throws MHException {
 		return conn.query(

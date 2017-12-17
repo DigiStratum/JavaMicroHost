@@ -9,6 +9,11 @@ import com.digistratum.microhost.Exception.MHException;
 import javax.inject.Inject;
 import java.util.List;
 
+/**
+ * Application Service Layer
+ *
+ * This sits between our RESTful API interface and the data model for separation of concerns
+ */
 public class ServiceExample {
 	protected MySqlConnectionPool pool;
 	protected ModelFactory modelFactory;
@@ -17,7 +22,7 @@ public class ServiceExample {
 	 * Constructor
 	 *
 	 * @param pool Dependency injected database connection pool
-	 * @param modelFactory My
+	 * @param modelFactory ModelFactory instance which can create new Model instances as requested
 	 */
 	@Inject
 	public ServiceExample(MySqlConnectionPool pool, ModelFactory modelFactory) {
@@ -25,6 +30,11 @@ public class ServiceExample {
 		this.modelFactory = modelFactory;
 	}
 
+	/**
+	 *
+	 * @return
+	 * @throws MHException
+	 */
 	public List<ModelMysqlDatabaseImpl> getDatabases() throws MHException {
 		try (MySqlConnection conn = pool.getConnection()) {
 			ModelMysqlDatabaseImpl modelMysqlDatabase = modelFactory.newModel(ModelMysqlDatabaseImpl.class);
@@ -32,6 +42,5 @@ public class ServiceExample {
 		} catch (Exception e) {
 			throw new MHException("Error handling request", e);
 		}
-
 	}
 }
