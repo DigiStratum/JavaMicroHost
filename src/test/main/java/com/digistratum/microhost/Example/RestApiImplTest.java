@@ -12,19 +12,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 public class RestApiImplTest {
-	private Config mockConfig;
-	private MySqlConnectionPool mockPool;
 	private RestServer mockRestServer;
-	private RestServerSetterUpper mockRestServerSetterUpper;
 
 	private RestApiImpl sut;
 
 	@BeforeEach
 	public void setup() throws Exception {
-		mockConfig = mock(Config.class);
-		mockPool = mock(MySqlConnectionPool.class);
 		mockRestServer = mock(RestServer.class);
-		mockRestServerSetterUpper = mock(RestServerSetterUpper.class);
 		sut = new RestApiImpl(mockRestServer);
 	}
 

@@ -22,6 +22,7 @@ public class MHRunnableImpl implements MHRunnable {
 	@Override
 	public void run() {
 		// Do-nothing run loop
+		amRunning = true;
 		while (amRunning) {
 			try {
 				Thread.sleep(1000);
