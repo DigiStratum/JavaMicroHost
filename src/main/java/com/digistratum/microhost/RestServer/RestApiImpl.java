@@ -21,8 +21,9 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class RestApiImpl implements RestApi, Runnable {
+	// ref: http://www.java67.com/2015/07/how-to-stop-thread-in-java-example.html
+	private volatile boolean amRunning = false;
 	protected final static Logger log = Logger.getLogger(RestApiImpl.class);
-	protected boolean amRunning = false;
 
 	protected Config config;
 	protected MySqlConnectionPool pool;
@@ -44,15 +45,18 @@ public class RestApiImpl implements RestApi, Runnable {
 
 	@Override
 	public void stop() {
+
+		// Don't do the work of stopping if we are not running
+		if (! amRunning) return;
 		log.info("Stop requested!");
 		amRunning = false;
+
 	}
 
 	@Override
 	public void run() {
 		amRunning = true;
-System.out.println("running...");
-		log.info("started!");
+		log.info("MicroHost HTTP RestApi starting...");
 
 		// Register a shut-down hook so that we can clean up our business
 		// ref: https://stackoverflow.com/questions/2921945/useful-example-of-a-shutdown-hook-in-java
@@ -61,13 +65,12 @@ System.out.println("running...");
 			public void run() {
 				log.info("MicroHost HTTP RestApi stopping...");
 				server.stop();
-				log.info(" stopped!");
 			}
 		});
 
 		// Do-nothing run loop
-		amRunning = true;
 		while (amRunning) {
+			log.info("Running...");
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
@@ -75,6 +78,6 @@ System.out.println("running...");
 				Thread.currentThread().interrupt();
 			}
 		}
-		log.info("stopping!");
+		stop();
 	}
 }
