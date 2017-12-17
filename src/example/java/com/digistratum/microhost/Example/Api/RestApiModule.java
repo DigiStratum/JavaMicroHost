@@ -16,6 +16,9 @@ import dagger.Provides;
 import javax.inject.Singleton;
 
 @Module
+/**
+ * Dagger module for DI of all our Singleton
+ */
 public class RestApiModule {
 
 	@Provides

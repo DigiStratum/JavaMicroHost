@@ -1,24 +1,10 @@
 package com.digistratum.microhost.RestServer;
 
-import com.digistratum.microhost.Config.Config;
-import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPool;
 import com.digistratum.microhost.Process.MHRunnableImpl;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * BASIC
- * @todo move this class back to library out of example, and make example extend it to add controllers for setup
- * @todo build separate jars for example/library
- * @todo 90+% unit test coverage
- *
- * INTERMEDIATE:
- * @todo Built-in support for common requirements like authentication, CORS, OPTIONS/HEAD responses
- *
- * ADVANCED:
- * @todo Register service with registry service
- */
 @Singleton
 public class RestApiImpl extends MHRunnableImpl {
 	protected RestServer server;
