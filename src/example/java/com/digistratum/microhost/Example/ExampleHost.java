@@ -1,11 +1,12 @@
 package com.digistratum.microhost.Example;
 
+import com.digistratum.microhost.MicroHostApp;
 import com.digistratum.microhost.RestServer.DaggerRestApiComponent;
 import com.digistratum.microhost.RestServer.RestApiComponent;
 import com.digistratum.microhost.RestServer.RestApiImpl;
 import com.digistratum.microhost.Example.Api.RestApiModule;
 
-public class ExampleHost {
+public class ExampleHost extends MicroHostApp{
 
 	/*
 	 * Application entry point
@@ -31,6 +32,6 @@ public class ExampleHost {
 	 * @param restApi RestApiImpl instance which is ready to go
 	 */
 	public ExampleHost(RestApiImpl restApi) {
-		restApi.run();
+		super(restApi);
 	}
 }

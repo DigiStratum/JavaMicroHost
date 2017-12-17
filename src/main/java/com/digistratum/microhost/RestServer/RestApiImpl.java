@@ -20,7 +20,7 @@ import javax.inject.Singleton;
  * @todo Register service with registry service
  */
 @Singleton
-public class RestApiImpl implements RestApi, Runnable {
+public class RestApiImpl implements RestApi {
 	// ref: http://www.java67.com/2015/07/how-to-stop-thread-in-java-example.html
 	private volatile boolean amRunning = false;
 	protected final static Logger log = Logger.getLogger(RestApiImpl.class);

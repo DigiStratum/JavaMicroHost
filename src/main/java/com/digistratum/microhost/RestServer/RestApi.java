@@ -1,6 +1,6 @@
 package com.digistratum.microhost.RestServer;
 
-public interface RestApi {
+public interface RestApi extends Runnable {
 
 	/**
 	 * Determine from the outside whether we are running
