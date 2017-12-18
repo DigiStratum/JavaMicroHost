@@ -35,7 +35,7 @@ public interface RestServer {
 	 *
 	 * @return boolean true if the context is defined, else false
 	 */
-	public boolean hasContext(String ctx);
+	public boolean hasContext(String ctx) throws MHException;
 
 	/**
 	 * RestServerImpl stopper

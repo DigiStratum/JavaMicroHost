@@ -74,6 +74,7 @@ public class RestServerImpl implements RestServer {
 			// controller contexts on-the-fly while the server is running
 			server.start();
 		} catch (MHException e) {
+			// No exceptions from constructors (thanks, Daggger!)
 			log.error("Failed to create new HttpServer", e);
 		}
 	}
@@ -103,14 +104,19 @@ public class RestServerImpl implements RestServer {
 	@Override
 	public void removeContext(String ctx) throws MHException {
 		if (! hasContext(ctx)) {
-			throw new MHException("Attempted to remove undefined context: '" + ctx + "'");
+			throw new MHException("removeContext() - Attempted to remove undefined context: '" + ctx + "'");
 		}
 		server.removeContext(ctx);
 		controllerMap.remove(ctx);
 	}
 
 	@Override
-	public boolean hasContext(String ctx) {
+	public boolean hasContext(String ctx) throws MHException {
+		if ((null == ctx) || ctx.isEmpty()) {
+			String msg = "hasContext() - Attempted to check invalid context";
+			log.error(msg);
+			throw new MHException(msg);
+		}
 		return controllerMap.containsKey(ctx);
 	}
 
