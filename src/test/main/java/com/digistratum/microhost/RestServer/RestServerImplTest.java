@@ -6,24 +6,16 @@ import com.digistratum.microhost.RestServer.Controller.Controller;
 import com.digistratum.microhost.RestServer.Http.HttpServerFactory;
 import com.sun.net.httpserver.HttpServer;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-/**
- * ref: https://stackoverflow.com/questions/156503/how-do-you-assert-that-a-certain-exception-is-thrown-in-junit-4-tests
- */
 public class RestServerImplTest {
-	// ref: http://junit.org/junit4/javadoc/4.12/org/junit/rules/ExpectedException.html
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
-
 	private RestServerImpl sut;
 	private Config mockConfig;
 	private HttpServerFactory mockHttpServerFactory;
@@ -40,8 +32,12 @@ public class RestServerImplTest {
 
 	@Test
 	public void testThat_addControllerContext_rejectsNullContext() {
-		Controller mockCtrl = mock(Controller.class);
-		thrown.expect(MHException.class);
-		sut.addControllerContext(mockCtrl, null);
+		assertThrows(
+			MHException.class,
+			()-> {
+				Controller mockCtrl = mock(Controller.class);
+				sut.addControllerContext(mockCtrl, null);
+			}
+		);
 	}
 }
