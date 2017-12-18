@@ -1,10 +1,5 @@
-package com.digistratum.microhost.Example;
+package com.digistratum.microhost.RestServer;
 
-import com.digistratum.microhost.Config.Config;
-import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPool;
-import com.digistratum.microhost.RestServer.RestApiImpl;
-import com.digistratum.microhost.RestServer.RestServer;
-import com.digistratum.microhost.RestServer.RestServerSetterUpper;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;

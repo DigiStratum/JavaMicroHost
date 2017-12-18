@@ -10,6 +10,7 @@ import com.digistratum.microhost.Example.Service.ServiceExample;
 import com.digistratum.microhost.Process.MHRunnable;
 import com.digistratum.microhost.RestServer.*;
 
+import com.digistratum.microhost.RestServer.Http.HttpServerFactory;
 import dagger.Module;
 import dagger.Provides;
 
@@ -39,8 +40,8 @@ public class RestApiModule {
 
 	@Provides
 	@Singleton
-	RestServer provideRestServer(Config config) {
-		return new RestServerImpl(config);
+	RestServer provideRestServer(Config config, HttpServerFactory serverFactory) {
+		return new RestServerImpl(config, serverFactory);
 	}
 
 	@Provides
@@ -57,7 +58,7 @@ public class RestApiModule {
 
 	@Provides
 	@Singleton
-	MHRunnable provideRestApi(Config config, MySqlConnectionPool pool, RestServer server, RestServerSetterUpper setterUpper) {
+	MHRunnable provideRestApi(RestServer server) {
 		return new RestApiImpl(server);
 	}
 
@@ -65,5 +66,11 @@ public class RestApiModule {
 	@Singleton
 	ServiceExample provideService(MySqlConnectionPool connectionPool, ModelFactory modelFactory) {
 		return new ServiceExample(connectionPool, modelFactory);
+	}
+
+	@Provides
+	@Singleton
+	HttpServerFactory provideHttpServerFactory() {
+		return new HttpServerFactory();
 	}
 }
