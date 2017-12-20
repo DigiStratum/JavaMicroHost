@@ -12,9 +12,7 @@ public interface RestServerSetterUpper {
 	 * Add all the contexts to our RestServer
 	 *
 	 * @param restServer RestServer instance that we want to get set up
-	 *
-	 * @throws MHException for problems
 	 */
-	public void addContexts(RestServer restServer) throws MHException;
+	public void addContexts(RestServer restServer);
 
 }

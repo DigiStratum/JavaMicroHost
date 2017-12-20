@@ -5,12 +5,14 @@ import com.digistratum.microhost.Example.Service.ServiceExample;
 import com.digistratum.microhost.Exception.MHException;
 import com.digistratum.microhost.RestServer.RestServer;
 import com.digistratum.microhost.RestServer.RestServerSetterUpper;
+import org.apache.log4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
 public class RestServerSetterUpperExampleImpl implements RestServerSetterUpper {
+	protected final static Logger log = Logger.getLogger(RestServerSetterUpperExampleImpl.class);
 	protected Config config;
 	protected ServiceExample service;
 
@@ -21,14 +23,21 @@ public class RestServerSetterUpperExampleImpl implements RestServerSetterUpper {
 	}
 
 	@Override
-	public void addContexts(RestServer restServer) throws MHException {
+	public void addContexts(RestServer restServer) {
 
 		// Add the /example context if enabled via configuration
 		if ("on".equals(config.get("microhost.context.example", "off"))) {
-			restServer.addControllerContext(
-					new ControllerExampleImpl(service),
-					"/example"
-			);
+			try {
+				restServer.addControllerContext(
+						new ControllerExampleImpl(service),
+						"/example"
+				);
+			} catch (MHException e) {
+				// Swallow it - no exceptions in our DI layer
+			}
+		}
+		else {
+			log.info("Skipping context: /example");
 		}
 	}
 }

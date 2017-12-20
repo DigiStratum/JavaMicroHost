@@ -12,8 +12,5 @@ import javax.inject.Singleton;
 @Component(modules = {RestApiModule.class})
 public interface RestApiComponent {
 	Config getConfig();
-	MySqlConnectionPool getMySqlConnectionPool();
-	RestServer getRestServer();
-	RestServerSetterUpper RestServerSetterUpperExampleImpl();
 	MHRunnable getRestApi();
 }

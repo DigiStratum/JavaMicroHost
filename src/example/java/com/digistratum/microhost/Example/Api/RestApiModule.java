@@ -25,7 +25,7 @@ public class RestApiModule {
 	@Provides
 	@Singleton
 	Config provideConfig() {
-		System.out.println("providing real config to someone!");
+		//System.out.println("providing real config to someone!");
 		// Read in configuration properties
 		String userDir = System.getProperty("user.dir");
 		String propsFile = userDir + "/RestApi.properties";
@@ -40,13 +40,15 @@ public class RestApiModule {
 
 	@Provides
 	@Singleton
-	RestServer provideRestServer(Config config, HttpServerFactory serverFactory) {
-		return new RestServerImpl(config, serverFactory);
+	RestServer provideRestServer(Config config, HttpServerFactory serverFactory, RestServerSetterUpper setterUpper) {
+		RestServer restServer = new RestServerImpl(config, serverFactory);
+		setterUpper.addContexts(restServer);
+		return restServer;
 	}
 
 	@Provides
 	@Singleton
-	RestServerSetterUpper provideRestServersetterUpper(Config config, ServiceExample service) {
+	RestServerSetterUpper provideRestServerSetterUpper(Config config, ServiceExample service) {
 		return new RestServerSetterUpperExampleImpl(config, service);
 	}
 

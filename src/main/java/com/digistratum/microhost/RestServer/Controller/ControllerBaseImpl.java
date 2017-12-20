@@ -89,7 +89,7 @@ public abstract class ControllerBaseImpl implements Controller {
 	 *
 	 * @param requestMethod HTTP request method (e.g. get, post, etc)
 	 * @param requestUriPattern Regex pattern to use to match a given request URI
-	 * @param endpoint Endpoint instance which will handler requests matching the URI
+	 * @param endpoint Endpoint instance which will handle requests matching the URI
 	 */
 	protected void mapEndpoint(String requestMethod, String requestUriPattern, Endpoint endpoint) {
 

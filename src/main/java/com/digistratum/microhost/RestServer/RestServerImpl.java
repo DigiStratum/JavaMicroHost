@@ -84,19 +84,20 @@ public class RestServerImpl implements RestServer {
 
 		// If the controller or context are bogus...
 		if ((null == ctrl) || (null == ctx) || ctx.isEmpty()) {
-			String msg = "addControllerContext() - Attempted to add invalid controller for context: '" + ctx + "'";
+			String msg = "Failed to add context for invalid controller: '" + ctx + "'";
 			log.error(msg);
 			throw new MHException(msg);
 		}
 
 		// If the context is already defined, it must be removed before we attempt to replace it
 		if (hasContext(ctx)) {
-			String msg = "addControllerContext() - Attempted to add duplicate controller for context: '" + ctx + "'";
+			String msg = "Failed to add duplicate controller for context: '" + ctx + "'";
 			log.error(msg);
 			throw new MHException(msg);
 		}
 
 		// Add it!
+		log.info("Adding context: '" + ctx +"'");
 		controllerMap.put(ctx, ctrl);
 		server.createContext(ctx, ctrl);
 	}
@@ -104,7 +105,7 @@ public class RestServerImpl implements RestServer {
 	@Override
 	public void removeContext(String ctx) throws MHException {
 		if (! hasContext(ctx)) {
-			throw new MHException("removeContext() - Attempted to remove undefined context: '" + ctx + "'");
+			throw new MHException("Failed to remove undefined context: '" + ctx + "'");
 		}
 		server.removeContext(ctx);
 		controllerMap.remove(ctx);
@@ -113,7 +114,7 @@ public class RestServerImpl implements RestServer {
 	@Override
 	public boolean hasContext(String ctx) throws MHException {
 		if ((null == ctx) || ctx.isEmpty()) {
-			String msg = "hasContext() - Attempted to check invalid context";
+			String msg = "Failed to check invalid context";
 			log.error(msg);
 			throw new MHException(msg);
 		}
