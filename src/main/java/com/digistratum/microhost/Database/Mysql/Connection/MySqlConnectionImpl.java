@@ -64,7 +64,7 @@ public class MySqlConnectionImpl implements MySqlConnection {
 
 				// Does this field's type match the map?
 				Class fieldType = field.getType();
-				if (! fieldType.getName().equals(columnTypes[col])) {
+				if (! fieldType.getSimpleName().equals(columnTypes[col])) {
 					String msg = "Result contains a column type mismatch on: '" + columnNames[col] +
 							"'; class: '" + fieldType.getName() +
 							"'; result: '" + columnTypes[col] + "'";
@@ -81,13 +81,13 @@ public class MySqlConnectionImpl implements MySqlConnection {
 				for (int col = 0; col < columnNames.length; col++) {
 					Field field = type.getField(columnNames[col]);
 					if ("String".equals(columnTypes[col])) {
-						field.set(result, rs.getString(col));
+						field.set(result, rs.getString(1 + col));
 					} else if ("Boolean".equals(columnTypes[col])) {
-						field.set(result, rs.getBoolean(col));
+						field.set(result, rs.getBoolean(1 + col));
 					} else if ("Integer".equals(columnTypes[col])) {
-						field.set(result, rs.getInt(col));
+						field.set(result, rs.getInt(1 + col));
 					} else if ("Double".equals(columnTypes[col])) {
-						field.set(result, rs.getDouble(col));
+						field.set(result, rs.getDouble(1 + col));
 					}
 				}
 				results.add(result);
@@ -121,9 +121,11 @@ public class MySqlConnectionImpl implements MySqlConnection {
 		int num = 0;
 		try {
 			num = rsmd.getColumnCount();
+			//log.debug("Database result set column count = " + num);
 			String[] columnNames = new String[num];
 			for (int col = 0; col < num; col++) {
-				columnNames[col] = rsmd.getColumnLabel(col);
+				// Column indicators start numbering from 1, but array index is 0-based!
+				columnNames[col] = rsmd.getColumnLabel(1 + col);;
 			}
 			return columnNames;
 		} catch (SQLException e) {
@@ -150,9 +152,10 @@ public class MySqlConnectionImpl implements MySqlConnection {
 			num = rsmd.getColumnCount();
 			String[] columnTypes = new String[num];
 			for (int col = 0; col < num; col++) {
-				String name = rsmd.getColumnLabel(col);
+				// Column indicators start numbering from 1...
+				String name = rsmd.getColumnLabel(1 + col);
 				String type = null;
-				switch (rsmd.getColumnType(col)) {
+				switch (rsmd.getColumnType(1 + col)) {
 
 					// Capture as Integers
 					case Types.NULL:

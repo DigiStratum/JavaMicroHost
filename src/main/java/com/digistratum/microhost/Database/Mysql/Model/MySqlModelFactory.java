@@ -14,7 +14,7 @@ public class MySqlModelFactory implements ModelFactory {
 	@Override
 	public <T extends Model> T newModel(Class<T> modelClass) throws MHException {
 		try {
-			return modelClass.getConstructor(MySqlConnectionImpl.class).newInstance();
+			return modelClass.getConstructor().newInstance();
 		} catch (Exception e) {
 			throw new MHDatabaseException("Failed to instantiate a new Model of type '" + modelClass.getCanonicalName() + "'", e);
 		}
