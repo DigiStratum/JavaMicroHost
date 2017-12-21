@@ -27,8 +27,10 @@ import java.util.regex.Pattern;
 public abstract class ControllerBaseImpl implements Controller {
 	final static Logger log = Logger.getLogger(ControllerBaseImpl.class);
 
-	// RequestMethod, <URIregex, Endpoint>
+	// MAP: RequestMethod, <URIregex, Endpoint>
 	protected Map<String, Map<Pattern, Endpoint>> requestMap;
+
+	// MAP: ErrorCode, Endpoint
 	protected Map<Integer, Endpoint> errorMap;
 
 	/**
@@ -47,6 +49,7 @@ public abstract class ControllerBaseImpl implements Controller {
 	 */
 	@Override
 	public void handle(HttpExchange t) throws IOException {
+		String logRequest = t.getRequestMethod() + " " + t.getRequestURI();
 
 		Endpoint endpoint = getEndpoint(t);
 
@@ -57,7 +60,7 @@ public abstract class ControllerBaseImpl implements Controller {
 		try {
 			request = fromHttpExchange(t);
 		} catch (Exception e) {
-			String msg = "Error converting RequestResponse";
+			String msg = logRequest + " 500 - Error converting RequestResponse";
 			log.error(msg, e);
 			throw new IOException(msg, e);
 		}
@@ -67,7 +70,7 @@ public abstract class ControllerBaseImpl implements Controller {
 		try {
 			response = (ResponseImpl) endpoint.handle(request);
 		} catch (Exception e) {
-			String msg = "Error handling RequestResponse";
+			String msg = logRequest + " 500 - Error handling RequestResponse";
 			log.error(msg, e);
 			throw new IOException(msg, e);
 		}
@@ -76,10 +79,14 @@ public abstract class ControllerBaseImpl implements Controller {
 		try {
 			sendResponse(t, response);
 		} catch (Exception e) {
-			String msg = "Error sending response";
+			String msg = logRequest + " 500 - Error sending response";
 			log.error(msg, e);
 			throw new IOException(msg, e);
 		}
+
+		// Log the request method, URI, response code, and body length
+		// INFO GET /health 200 - 54
+		log.info(logRequest + " " + response.getCode() + " - " + response.getBody().length());
 	}
 
 	/**
@@ -146,13 +153,14 @@ public abstract class ControllerBaseImpl implements Controller {
 		String requestUri = t.getRequestURI().toString();
 		String requestMethod = t.getRequestMethod().toLowerCase();
 
-		// Does the requested URI match anything in our methodMap?
+		// Does the request method match anything in our methodMap?
 		Map<Pattern, Endpoint> methodMap = requestMap.get(requestMethod);
 		if (null == methodMap) {
-			// Do a 404 response!
+			// Nope: issue a 404 response!
 			return errorMap.get(404);
 		}
 
+		// Does the request URI match any of our endpoints' URI regex's in our map?
 		// ref: https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
 		Iterator it = methodMap.entrySet().iterator();
 		while (it.hasNext()) {

@@ -63,4 +63,20 @@ abstract public class EndpointImpl implements Endpoint {
 				text
 		);
 	}
+
+	/**
+	 * Supply a typical 404 response
+	 *
+	 * @return Response instance populated with the text and status code
+	 *
+	 * @throws MHException for any errors
+	 */
+	protected Response textResponse404() throws MHException {
+		Headers responseHeaders = new HeadersImpl();
+		responseHeaders.set("Content-Type", "text/plain");
+		return new ResponseImpl(
+				404,
+				"NOT FOUND"
+		);
+	}
 }
