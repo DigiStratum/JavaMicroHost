@@ -10,7 +10,7 @@ import com.digistratum.microhost.RestServer.Http.RequestResponse.ResponseImpl;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EndpointErrorDocumentImpl implements Endpoint {
+public class EndpointErrorDocumentImpl extends EndpointImpl {
 	Integer code;
 	String message;
 
@@ -27,12 +27,6 @@ public class EndpointErrorDocumentImpl implements Endpoint {
 
 	@Override
 	public Response handle(Request request) throws MHException {
-		HeadersImpl responseHeaders = new HeadersImpl();
-		responseHeaders.set("content-type", "text/html");
-		return new ResponseImpl(
-				code,
-				responseHeaders,
-				"<h1>" + message + "</h1>"
-		);
+		return htmlResponse("<h1>" + message + "</h1>", code);
 	}
 }

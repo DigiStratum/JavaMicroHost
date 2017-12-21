@@ -3,8 +3,11 @@ package com.digistratum.microhost.RestServer.Http.RequestResponse;
 import com.digistratum.microhost.Exception.MHException;
 import com.digistratum.microhost.RestServer.Http.Headers.Headers;
 import com.digistratum.microhost.RestServer.Http.Headers.HeadersImpl;
+import com.digistratum.microhost.RestServer.Http.HttpSpec;
+import org.apache.log4j.Logger;
 
 public class ResponseImpl extends RequestResponseImpl implements Response {
+	final static Logger log = Logger.getLogger(ResponseImpl.class);
 
 	/**
 	 * Bodyless Response Constructor
@@ -41,14 +44,19 @@ public class ResponseImpl extends RequestResponseImpl implements Response {
 	 * @param responseCode Integer HTTP response code
 	 * @param responseHeaders Map<name, value> HTTP response headers
 	 * @param responseBody HTTP response body (optional)
+	 *
+	 * @throws MHException if any parameters are unacceptable
 	 */
 	public ResponseImpl(int responseCode, Headers responseHeaders, String responseBody) {
 
+		// Check that the code is one which we support (but use it anyway!)
+		if (null == HttpSpec.getStatusDescription(responseCode)) {
+			log.warn("Unsupported response code: " + responseCode);
+		}
+		code = responseCode;
+
 		// This is a RESPONSE
 		type = RequestResponseImpl.Type.response;
-
-		// TODO: check that the code is one which we support
-		code = responseCode;
 
 		// Check the headers
 		headers = (null == responseHeaders) ? new HeadersImpl() : (HeadersImpl) responseHeaders;

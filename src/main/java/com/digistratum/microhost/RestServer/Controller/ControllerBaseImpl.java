@@ -37,6 +37,10 @@ public abstract class ControllerBaseImpl implements Controller {
 	 */
 	public ControllerBaseImpl() {
 
+		// Set up the logger
+		//PatternLayout loggerPatternLayout = new PatternLayout();
+		//log.info(loggerPatternLayout.getConversionPattern());
+
 		// Declare our supported request methods
 		supportedRequestMethods = new ArrayList<>();
 		String[] srm = {"get","post","put","delete","head","options","patch"};
@@ -54,7 +58,7 @@ public abstract class ControllerBaseImpl implements Controller {
 	 */
 	@Override
 	public void handle(HttpExchange t) throws IOException {
-		String logRequest = t.getRequestMethod() + " " + t.getRequestURI();
+		String logRequest = t.getProtocol() + " " + t.getRequestMethod() + " " + t.getRequestURI();
 
 		Endpoint endpoint = getEndpoint(t);
 
@@ -90,8 +94,10 @@ public abstract class ControllerBaseImpl implements Controller {
 		}
 
 		// Log the request method, URI, response code, and body length
-		// INFO GET /health 200 - 54
-		log.info(logRequest + " " + response.getCode() + " - " + response.getBody().length());
+		// INFO HTTP/1.1 GET /health -> Code:200 Size:54 Type:text/plain
+		com.digistratum.microhost.RestServer.Http.Headers.Headers responseHeaders = response.getHeaders();
+		String type = (responseHeaders.has("content-type")) ? " Type:" + responseHeaders.get("content-type") : "";
+		log.info(logRequest + " -> Code:" + response.getCode() + " Size:" + response.getBody().length() + type);
 	}
 
 	/**

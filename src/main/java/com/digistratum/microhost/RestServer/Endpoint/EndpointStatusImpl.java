@@ -1,7 +1,7 @@
 package com.digistratum.microhost.RestServer.Endpoint;
 
-import com.digistratum.microhost.Exception.MHException;
 import com.digistratum.microhost.RestServer.Http.Headers.HeadersImpl;
+import com.digistratum.microhost.RestServer.Http.HttpSpec;
 import com.digistratum.microhost.RestServer.Http.RequestResponse.Request;
 import com.digistratum.microhost.RestServer.Http.RequestResponse.Response;
 import com.digistratum.microhost.RestServer.Http.RequestResponse.ResponseImpl;
@@ -12,7 +12,7 @@ public class EndpointStatusImpl implements Endpoint {
 		HeadersImpl responseHeaders = new HeadersImpl();
 		responseHeaders.set("content-type", "application/json");
 		return new ResponseImpl(
-				200,
+				HttpSpec.HTTP_STATUS_200_OK,
 				responseHeaders,
 				"{\"status\": \"UP\"}"
 		);

@@ -3,6 +3,7 @@ package com.digistratum.microhost.RestServer.Endpoint;
 import com.digistratum.microhost.Exception.MHException;
 import com.digistratum.microhost.RestServer.Http.Headers.Headers;
 import com.digistratum.microhost.RestServer.Http.Headers.HeadersImpl;
+import com.digistratum.microhost.RestServer.Http.HttpSpec;
 import com.digistratum.microhost.RestServer.Http.RequestResponse.Request;
 import com.digistratum.microhost.RestServer.Http.RequestResponse.Response;
 import com.digistratum.microhost.RestServer.Http.RequestResponse.ResponseImpl;
@@ -31,7 +32,7 @@ abstract public class EndpointImpl implements Endpoint {
 	 *
 	 * @param data Object that we want to JSON-encode for the response
 	 *
-	 * @return Response instance populated with the data and status code
+	 * @return Response instance populated with the data, status code, and mime type
 	 *
 	 * @throws MHException for any errors
 	 */
@@ -40,7 +41,7 @@ abstract public class EndpointImpl implements Endpoint {
 		responseHeaders.set("Content-Type", "application/json");
 		String responseBody = gson.toJson(data);
 		return new ResponseImpl(
-				200,
+				HttpSpec.HTTP_STATUS_200_OK,
 				responseHeaders,
 				responseBody
 		);
@@ -51,7 +52,7 @@ abstract public class EndpointImpl implements Endpoint {
 	 *
 	 * @param text String that we want to return for the response
 	 *
-	 * @return Response instance populated with the text and status code
+	 * @return Response instance populated with the text, status code, and mime type
 	 *
 	 * @throws MHException for any errors
 	 */
@@ -59,24 +60,41 @@ abstract public class EndpointImpl implements Endpoint {
 		Headers responseHeaders = new HeadersImpl();
 		responseHeaders.set("Content-Type", "text/plain");
 		return new ResponseImpl(
-				200,
+				HttpSpec.HTTP_STATUS_200_OK,
+				responseHeaders,
 				text
 		);
 	}
 
 	/**
-	 * Supply a typical 404 response
+	 * Provide an HTML response with the supplied status code
 	 *
-	 * @return Response instance populated with the text and status code
+	 * @param html String that we want to return for the response
+	 *
+	 * @return Response instance populated with the html, status code, and mime type
 	 *
 	 * @throws MHException for any errors
 	 */
-	protected Response textResponse404() throws MHException {
+	protected Response htmlResponse(String html, int code) throws MHException {
 		Headers responseHeaders = new HeadersImpl();
-		responseHeaders.set("Content-Type", "text/plain");
+		responseHeaders.set("Content-Type", "text/html");
 		return new ResponseImpl(
-				404,
-				"NOT FOUND"
+				code,
+				responseHeaders,
+				html
 		);
+	}
+
+	/**
+	 * Provide an HTML response with 200 OK status code
+	 *
+	 * @param html String that we want to return for the response
+	 *
+	 * @return Response instance populated with the html, status code, and mime type
+	 *
+	 * @throws MHException for any errors
+	 */
+	protected Response htmlResponse200(String html) throws MHException {
+		return htmlResponse(html, HttpSpec.HTTP_STATUS_200_OK);
 	}
 }
