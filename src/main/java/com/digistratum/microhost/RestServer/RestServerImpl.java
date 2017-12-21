@@ -4,13 +4,12 @@ import com.digistratum.microhost.RestServer.Controller.Controller;
 import com.digistratum.microhost.Exception.MHException;
 import com.digistratum.microhost.Config.Config;
 import com.digistratum.microhost.RestServer.Controller.ControllerBaseMicroHostImpl;
+import com.digistratum.microhost.RestServer.Controller.ControllerDefaultImpl;
 import com.digistratum.microhost.RestServer.Http.HttpServerFactory;
 import com.sun.net.httpserver.HttpServer;
 import org.apache.log4j.Logger;
 
 import javax.inject.Inject;
-import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -20,8 +19,9 @@ public class RestServerImpl implements RestServer {
 
 	protected final static Integer DEFAULT_PORT = 54321;
 	protected final static Integer DEFAULT_THREADS = 10;
-	protected final static String DEFAULT_ENDPOINTS = "off";
-	protected final static String DEFAULT_CONTEXT = "/microhost";
+	protected final static String MICROHOST_ENDPOINTS = "off";
+	protected final static String MICROHOST_CONTEXT = "/microhost";
+	protected final static String DEFAULT_CONTEXT = "/";
 
 	protected HttpServer server;
 	protected Map<String, Controller> controllerMap;
@@ -44,12 +44,20 @@ public class RestServerImpl implements RestServer {
 
 		// Add our own default controllers as needed
 		// Set up default controller for microhost context endpoints
-		if ("on".equals(config.get("microhost.context.microhost", DEFAULT_ENDPOINTS))) {
+		if ("on".equals(config.get("microhost.context.microhost", MICROHOST_ENDPOINTS))) {
 			try {
-				addControllerContext(new ControllerBaseMicroHostImpl(), DEFAULT_CONTEXT);
+				addControllerContext(new ControllerBaseMicroHostImpl(), MICROHOST_CONTEXT);
+
 			} catch (MHException e) {
 				// Swallow it - no exceptions are permitted from our Constructors (thanks Dagger!)
 			}
+		}
+
+		// Add a default context for / to handle 404s's
+		try {
+			addControllerContext(new ControllerDefaultImpl(), DEFAULT_CONTEXT);
+		} catch (MHException e) {
+			// Swallow it - no exceptions are permitted from our Constructors (thanks Dagger!)
 		}
 	}
 
