@@ -11,45 +11,9 @@ public class ControllerDefaultImpl extends ControllerBaseImpl {
 		super();
 
 		// Respond to anything
-		//  TODO: Make a mapEndpointMultiMethod() which takes a list of methods for the same endpoint
+		String[] methods = {"get","post","put","delete","head","options","patch"};
 		this.mapEndpoint(
-				"get",
-				".*",
-				new EndpointDefault()
-		);
-
-		this.mapEndpoint(
-				"put",
-				".*",
-				new EndpointDefault()
-		);
-
-		this.mapEndpoint(
-				"post",
-				".*",
-				new EndpointDefault()
-		);
-
-		this.mapEndpoint(
-				"delete",
-				".*",
-				new EndpointDefault()
-		);
-
-		this.mapEndpoint(
-				"head",
-				".*",
-				new EndpointDefault()
-		);
-
-		this.mapEndpoint(
-				"options",
-				".*",
-				new EndpointDefault()
-		);
-
-		this.mapEndpoint(
-				"patch",
+				methods,
 				".*",
 				new EndpointDefault()
 		);

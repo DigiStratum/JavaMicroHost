@@ -90,6 +90,17 @@ public abstract class ControllerBaseImpl implements Controller {
 	}
 
 	/**
+	 * Add a mapping for all the requestMethods for this URI to a named requestHandler method
+	 *
+	 * @param requestMethods String array of HTTP request methods (e.g. get, post, etc)
+	 * @param requestUriPattern Regex pattern to use to match a given request URI
+	 * @param endpoint Endpoint instance which will handle requests matching the URI
+	 */
+	protected void mapEndpoint(String[] requestMethods, String requestUriPattern, Endpoint endpoint) {
+		for (String requestMethod : requestMethods) mapEndpoint(requestMethod, requestUriPattern, endpoint);
+	}
+
+	/**
 	 * Add a mapping for the requestMethod/URI to a named requestHandler method
 	 *
 	 * Note: Throw no exceptions here since this is called from constructors of subclasses.
