@@ -16,9 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -33,10 +31,17 @@ public abstract class ControllerBaseImpl implements Controller {
 	// MAP: ErrorCode, Endpoint
 	protected Map<Integer, Endpoint> errorMap;
 
+	List<String> supportedRequestMethods;
 	/**
 	 * Default Constructor
 	 */
 	public ControllerBaseImpl() {
+
+		// Declare our supported request methods
+		supportedRequestMethods = new ArrayList<>();
+		String[] srm = {"get","post","put","delete","head","options","patch"};
+		supportedRequestMethods.addAll(Arrays.asList(srm));
+
 		// ref: https://www.javatpoint.com/java-regex
 		requestMap = new HashMap<>();
 		mapErrors();
@@ -145,11 +150,8 @@ public abstract class ControllerBaseImpl implements Controller {
 	 * @return boolean true if the method is valid, else false
 	 */
 	protected boolean isValidMethod(String requestMethod) {
-		if ((null == requestMethod) || requestMethod.isEmpty()) {
-			return false;
-		}
-		// TODO make sure that requestMethod is one which we support
-		return true;
+		if ((null == requestMethod) || requestMethod.isEmpty()) return false;
+		return supportedRequestMethods.contains(requestMethod);
 	}
 
 	/**
