@@ -4,10 +4,10 @@ import com.digistratum.microhost.RestServer.Endpoint.Endpoint;
 import com.digistratum.microhost.RestServer.Endpoint.EndpointErrorDocumentImpl;
 import com.digistratum.microhost.Exception.MHException;
 import com.digistratum.microhost.RestServer.Http.Headers.HeadersImpl;
+import com.digistratum.microhost.RestServer.Http.HttpSpec;
 import com.digistratum.microhost.RestServer.Http.RequestResponse.*;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -257,28 +257,27 @@ public abstract class ControllerBaseImpl implements Controller {
 	 */
 	protected void mapErrors() {
 		errorMap = new HashMap<>();
-		errorMap.put(400, new EndpointErrorDocumentImpl(400, "400 Bad RequestImpl"));
-		errorMap.put(401, new EndpointErrorDocumentImpl(401, "401 Unauthorized"));
-		errorMap.put(403, new EndpointErrorDocumentImpl(403, "403 Forbidden"));
-		errorMap.put(404, new EndpointErrorDocumentImpl(404, "404 Not Found"));
-		errorMap.put(405, new EndpointErrorDocumentImpl(405, "405 Method Not Allowed"));
-		errorMap.put(406, new EndpointErrorDocumentImpl(406, "406 Not Acceptable"));
-		errorMap.put(409, new EndpointErrorDocumentImpl(409, "409 Conflict"));
-		errorMap.put(410, new EndpointErrorDocumentImpl(410, "410 Gone"));
-		errorMap.put(411, new EndpointErrorDocumentImpl(411, "411 Length Required"));
-		errorMap.put(412, new EndpointErrorDocumentImpl(412, "412 Precondition Failed"));
-		errorMap.put(413, new EndpointErrorDocumentImpl(413, "413 RequestImpl Entity Too Large"));
-		errorMap.put(415, new EndpointErrorDocumentImpl(415, "415 Unsupported Media Type"));
-		errorMap.put(416, new EndpointErrorDocumentImpl(416, "416 Requested Range Not Satisfiable"));
-		errorMap.put(417, new EndpointErrorDocumentImpl(417, "417 Expectation Failed"));
-		errorMap.put(428, new EndpointErrorDocumentImpl(428, "428 Precondition Required"));
-		errorMap.put(429, new EndpointErrorDocumentImpl(429, "429 Too Many Requests"));
-		errorMap.put(500, new EndpointErrorDocumentImpl(500, "500 Internal RestServerImpl Error"));
-		errorMap.put(501, new EndpointErrorDocumentImpl(501, "501 Not Implemented"));
-		errorMap.put(502, new EndpointErrorDocumentImpl(502, "502 Bad Gateway"));
-		errorMap.put(503, new EndpointErrorDocumentImpl(503, "503 Service Unavailable"));
-		errorMap.put(504, new EndpointErrorDocumentImpl(504, "504 Gateway Timeout"));
-		errorMap.put(598, new EndpointErrorDocumentImpl(598, "598 Network Read Timeout Error"));
-		errorMap.put(599, new EndpointErrorDocumentImpl(599, "599 Network Connect Timeout Error"));
+		int[] errorCodes = {
+				HttpSpec.HTTP_STATUS_400_BAD_REQUEST, HttpSpec.HTTP_STATUS_401_UNAUTHORIZED,
+				HttpSpec.HTTP_STATUS_403_FORBIDDEN, HttpSpec.HTTP_STATUS_404_NOT_FOUND,
+				HttpSpec.HTTP_STATUS_405_METHOD_NOT_ALLOWED, HttpSpec.HTTP_STATUS_406_NOT_ACCEPTABLE,
+				HttpSpec.HTTP_STATUS_409_CONFLICT, HttpSpec.HTTP_STATUS_410_GONE,
+				HttpSpec.HTTP_STATUS_411_LENGTH_REQUIRED, HttpSpec.HTTP_STATUS_412_PRECONDITION_FAILED,
+				HttpSpec.HTTP_STATUS_413_REQUEST_ENTITY_TOO_LARGE, HttpSpec.HTTP_STATUS_415_UNSUPPORTED_MEDIA_TYPE,
+				HttpSpec.HTTP_STATUS_416_REQUESTED_RANGE_NOT_SATISFIED, HttpSpec.HTTP_STATUS_417_EXPECTATION_FAILED,
+				HttpSpec.HTTP_STATUS_428_PRECONDITION_REQUIRED, HttpSpec.HTTP_STATUS_429_TOO_MANY_REQUESTS,
+				HttpSpec.HTTP_STATUS_500_INTERNAL_SERVER_ERROR, HttpSpec.HTTP_STATUS_501_NOT_IMPLEMENTED,
+				HttpSpec.HTTP_STATUS_502_BAD_GATEWAY, HttpSpec.HTTP_STATUS_503_SERVICE_UNAVAILABLE,
+				HttpSpec.HTTP_STATUS_504_GATEWAY_TIMEOUT
+		};
+		for (int errorCode : errorCodes) {
+			errorMap.put(
+					errorCode,
+					new EndpointErrorDocumentImpl(
+							errorCode,
+							errorCode + " " + HttpSpec.getStatusDescription(errorCode)
+					)
+			);
+		}
 	}
 }
