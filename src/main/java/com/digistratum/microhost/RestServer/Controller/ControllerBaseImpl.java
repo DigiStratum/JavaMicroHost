@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -219,11 +220,14 @@ public abstract class ControllerBaseImpl implements Controller {
 			throw new MHException("Internal error reading request body", e);
 		}
 
+		URI uri = t.getRequestURI();
+
 		return new RequestImpl(
 				t.getRequestMethod(),
-				t.getRequestURI().toString(),
+				uri.getPath(),
 				requestHeaders,
-				requestBody
+				requestBody,
+				uri.getQuery()
 		);
 	}
 

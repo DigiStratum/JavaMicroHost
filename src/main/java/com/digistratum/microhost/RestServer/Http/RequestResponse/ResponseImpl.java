@@ -69,4 +69,7 @@ public class ResponseImpl extends RequestResponseImpl implements Response {
 	public Integer getCode() {
 		return code;
 	}
+
+	@Override
+	public String getUri() { return uri; }
 }

@@ -3,6 +3,9 @@ package com.digistratum.microhost.RestServer.Http.RequestResponse;
 import com.digistratum.microhost.RestServer.Http.Headers.Headers;
 import com.digistratum.microhost.RestServer.Http.Headers.HeadersImpl;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Base class for data & capabilities common to both HTTP requests and responses
  */
@@ -15,6 +18,8 @@ public abstract class RequestResponseImpl implements RequestResponse {
 	protected String method = null;
 	protected String uri = null;
 	protected Integer code = null;
+	protected String queryString = null;
+	protected Map<String, List<String>> queryParams = null;
 
 	@Override
 	public Headers getHeaders() {
@@ -24,10 +29,5 @@ public abstract class RequestResponseImpl implements RequestResponse {
 	@Override
 	public String getBody() {
 		return body;
-	}
-
-	@Override
-	public String getUri() {
-		return uri;
 	}
 }
