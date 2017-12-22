@@ -32,6 +32,7 @@ public abstract class ControllerBaseImpl implements Controller {
 	protected Map<Integer, Endpoint> errorMap;
 
 	List<String> supportedRequestMethods;
+
 	/**
 	 * Default Constructor
 	 */
@@ -60,44 +61,40 @@ public abstract class ControllerBaseImpl implements Controller {
 	public void handle(HttpExchange t) throws IOException {
 		String logRequest = t.getProtocol() + " " + t.getRequestMethod() + " " + t.getRequestURI();
 
-		Endpoint endpoint = getEndpoint(t);
+		// There are three possible endpoints to handle the request:
+		// 0 - A) matches what we requested, or B) indicates that there is no match, or;
+		// 1 - C) indicates that there was an error handling A or B above
+		Endpoint[] possibleEndpoints = new Endpoint[2];
+		possibleEndpoints[0] = getEndpoint(t);
+		possibleEndpoints[1] = errorMap.get(HttpSpec.HTTP_STATUS_500_INTERNAL_SERVER_ERROR);
+		for (int ep = 0; ep < possibleEndpoints.length; ep++) {
+			Endpoint endpoint = possibleEndpoints[ep];
+			try {
+				// Convert the HttpExchange into a RequestResponseImpl
+				Request request = fromHttpExchange(t);
 
-		// TODO: Extract some useful bits from the URI and pass as arguments to request
+				// Get a response from the endpoint
+				ResponseImpl response = (ResponseImpl) endpoint.handle(request);
 
-		// Convert the HttpExchange into a RequestResponseImpl
-		Request request;
-		try {
-			request = fromHttpExchange(t);
-		} catch (Exception e) {
-			String msg = logRequest + " 500 - Error converting RequestResponse";
-			log.error(msg, e);
-			throw new IOException(msg, e);
+				// Send the RequestResponse out
+				sendResponse(t, response);
+
+				// Log the request method, URI, response code, and body length
+				// INFO HTTP/1.1 GET /health -> Code:200 Size:54 Type:text/plain
+				com.digistratum.microhost.RestServer.Http.Headers.Headers responseHeaders = response.getHeaders();
+				String type = (responseHeaders.has("content-type")) ? " Type:" + responseHeaders.get("content-type") : "";
+				log.info(logRequest + " -> Code:" + response.getCode() + " Size:" + response.getBody().length() + type);
+				return;
+			} catch (Exception e) {
+				// If we have more endpoints to try out, then just swallow this error
+				if (ep < (possibleEndpoints.length - 1)) continue;
+
+				// Out of possibilities; give up and Report the final error
+				String msg = logRequest + " Error handling request!";
+				log.error(msg, e);
+				throw new IOException(msg, e);
+			}
 		}
-
-		// Get a response from the endpoint
-		ResponseImpl response;
-		try {
-			response = (ResponseImpl) endpoint.handle(request);
-		} catch (Exception e) {
-			String msg = logRequest + " 500 - Error handling RequestResponse";
-			log.error(msg, e);
-			throw new IOException(msg, e);
-		}
-
-		// Send the RequestResponse out
-		try {
-			sendResponse(t, response);
-		} catch (Exception e) {
-			String msg = logRequest + " 500 - Error sending response";
-			log.error(msg, e);
-			throw new IOException(msg, e);
-		}
-
-		// Log the request method, URI, response code, and body length
-		// INFO HTTP/1.1 GET /health -> Code:200 Size:54 Type:text/plain
-		com.digistratum.microhost.RestServer.Http.Headers.Headers responseHeaders = response.getHeaders();
-		String type = (responseHeaders.has("content-type")) ? " Type:" + responseHeaders.get("content-type") : "";
-		log.info(logRequest + " -> Code:" + response.getCode() + " Size:" + response.getBody().length() + type);
 	}
 
 	/**
@@ -176,7 +173,7 @@ public abstract class ControllerBaseImpl implements Controller {
 		Map<Pattern, Endpoint> methodMap = requestMap.get(requestMethod);
 		if (null == methodMap) {
 			// Nope: issue a 404 response!
-			return errorMap.get(404);
+			return errorMap.get(HttpSpec.HTTP_STATUS_404_NOT_FOUND);
 		}
 
 		// Does the request URI match any of our endpoints' URI regex's in our map?
@@ -191,7 +188,7 @@ public abstract class ControllerBaseImpl implements Controller {
 				return (Endpoint) entry.getValue();
 			}
 		}
-		return errorMap.get(404);
+		return errorMap.get(HttpSpec.HTTP_STATUS_404_NOT_FOUND);
 	}
 
 	/**
@@ -214,14 +211,13 @@ public abstract class ControllerBaseImpl implements Controller {
 
 		// Convert the HttpExchange into a RequestResponse
 		InputStream is = t.getRequestBody();
-		String requestBody = null;
+		String requestBody;
 		try {
 			requestBody = IOUtils.toString(is, StandardCharsets.UTF_8);
 			is.close();
 		} catch (IOException e) {
 			throw new MHException("Internal error reading request body", e);
 		}
-
 
 		return new RequestImpl(
 				t.getRequestMethod(),
