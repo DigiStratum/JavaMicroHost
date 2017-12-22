@@ -8,6 +8,13 @@ import com.digistratum.microhost.RestServer.Http.RequestResponse.Response;
 public class EndpointHello extends EndpointImpl {
 	@Override
 	public Response handle(Request request) throws MHException {
-		return textResponse200("Hello, World!");
+		String name = "World";
+		return htmlResponse200(
+				"<html><body>" +
+				"Hello, " + name + "!<br/>" +
+				"<form><input type=\"text\" name=\"name\" value=\""+ name + "\"/>" +
+				"<input type=\"submit\" name=\"Say Hello!\"/><br/>" +
+				"</body></html>"
+		);
 	}
 }

@@ -17,7 +17,7 @@ class ControllerExampleImpl extends ControllerBaseImpl {
 		// Respond to http://localhost:54321/hello
 		this.mapEndpoint(
 				"get",
-				"^/example/hello$",
+				"^/example/hello(.*?)$",
 				new EndpointHello()
 		);
 
