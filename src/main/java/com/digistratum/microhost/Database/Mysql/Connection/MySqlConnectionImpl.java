@@ -132,7 +132,7 @@ public class MySqlConnectionImpl implements MySqlConnection {
 		}
 		String sql = "";
 		// ref: https://dev.mysql.com/doc/refman/5.7/en/execute.html
-		// TODO: Add all the params as individual parameters here...
+		// TODO: Add all the params as individual parameters here... (and properly escape them!)
 		// SET @p1 = 'mysql_safe_value1'
 		// SET @pN = 'mysql_safe_valueN'
 		sql = "EXECUTE ps" + sqlHash + " USING @p1, @pN;";
