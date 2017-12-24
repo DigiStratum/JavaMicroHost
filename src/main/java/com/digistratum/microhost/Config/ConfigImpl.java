@@ -37,10 +37,9 @@ public class ConfigImpl implements Config {
 	 */
 	protected void loadProperties(String path) {
 		Properties prop = new Properties();
-		InputStream input = null;
 
 		try {
-			input = new FileInputStream(path);
+			InputStream input = new FileInputStream(path);
 
 			// load a properties file
 			prop.load(input);
