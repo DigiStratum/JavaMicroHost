@@ -6,7 +6,9 @@ import org.apache.log4j.Logger;
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ref: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
@@ -18,6 +20,7 @@ public class MySqlConnectionImpl implements MySqlConnection {
 	protected Connection conn;
 	protected MySqlConnectionPoolImpl pool;
 	protected Boolean inTransaction = false;
+	protected List<Integer> preparedStatementIds = new ArrayList<>();
 
 	/**
 	 * Constructor
@@ -52,16 +55,136 @@ public class MySqlConnectionImpl implements MySqlConnection {
 	}
 
 	/**
-	 * @todo Make a variant of this with prepared statement
+	 * A simple, quick hash for the supplied string
+	 *
+	 * We'll use this to make a quick-reference for prepared statements, etc.
+	 *
+	 * ref: https://stackoverflow.com/questions/2624192/good-hash-function-for-strings
+	 *
+	 * @param str Input string that we want to hash
+	 *
+	 * @return integer hash of the supplied string
 	 */
+	protected int simpleHash(String str) {
+		int hash = 7;
+		for (int i = 0; i < str.length(); i++) {
+			hash = hash * 31 + str.charAt(i);
+		}
+		return hash;
+	}
+
+	@Override
+	public Integer prepare(String sql) throws MHDatabaseException {
+
+		// The hash for this SQL query is...
+		Integer sqlHash = simpleHash(sql);
+
+		// If it is already in our set of prepared statements, then nothing more is needed
+		if (preparedStatementIds.contains(sqlHash)) return sqlHash;
+
+		// Prepare a statement with the id "ps" + hash
+		query("PREPARE ps" + sqlHash + "FROM '" + sql + "';");
+
+		// Add this has to the collection of prepared statement ID's so we can clean up later
+		preparedStatementIds.add(sqlHash);
+
+		return sqlHash;
+	}
+
+	@Override
+	public void deallocatePrepare(Integer sqlHash) throws MHDatabaseException {
+
+		// If it is not in our set of prepared statements, then nothing is needed
+		if (! preparedStatementIds.contains(sqlHash)) return;
+
+		// Deallocate prepare a statement with the id "ps" + hash
+		query("DEALLOCATE PREPARE ps" + sqlHash + ";");
+
+		// Knock this one out of our collection of prepared statements
+		preparedStatementIds.remove(sqlHash);
+	}
+
+	/**
+	 * If there are any prepared statements, deallocate each one
+	 *
+	 * This ensures that there is no leftover cruft connected with this MySQL connection
+	 * when it is returned to the connection pool for some other thread/process to receive.
+	 *
+	 * @throws MHDatabaseException
+	 */
+	protected void deallocateAllPreparedStatements() throws MHDatabaseException {
+
+		// If there aren't any, then there's nothing to do
+		if (preparedStatementIds.isEmpty()) return;
+
+		// For each prepared statement ID that we have...
+		for (Integer sqlHash : preparedStatementIds) {
+
+			// Deallocate it
+			deallocatePrepare(sqlHash);
+		}
+	}
+
+	@Override
+	public <T> List<T> queryPrepared(Class<T> type, Integer sqlHash, Object... params) throws MHDatabaseException {
+		if (! preparedStatementIds.contains(sqlHash)) {
+			throw new MHDatabaseException("No such prepared statement for ID: " + sqlHash);
+		}
+		String sql = "";
+		// ref: https://dev.mysql.com/doc/refman/5.7/en/execute.html
+		// TODO: Add all the params as individual parameters here...
+		// SET @p1 = 'mysql_safe_value1'
+		// SET @pN = 'mysql_safe_valueN'
+		sql = "EXECUTE ps" + sqlHash + " USING @p1, @pN;";
+
+		try (
+				Statement st = conn.createStatement();
+				ResultSet rs = st.executeQuery(sql);
+		) {
+			return getQueryResultSet(type, rs);
+		} catch (SQLException e) {
+			String msg = "query failed: " + sql;
+			log.error(msg, e);
+			throw new MHDatabaseException(msg, e);
+		}
+	}
+
+	@Override
+	public <T> List<T> queryPrepared(Class<T> type, String sql, Object... params) throws MHDatabaseException {
+		// The hash for this SQL query is...
+		Integer sqlHash = simpleHash(sql);
+		return queryPrepared(type, sqlHash, params);
+	}
+
 	@Override
 	public <T> List<T> query(Class<T> type, String sql) throws MHDatabaseException {
 		try (
-			Statement st = conn.createStatement();
-			ResultSet rs = st.executeQuery(sql);
+				Statement st = conn.createStatement();
+				ResultSet rs = st.executeQuery(sql);
 		) {
-			List<T> results = new ArrayList<>();
+			return getQueryResultSet(type, rs);
+		} catch (SQLException e) {
+			String msg = "query failed: " + sql;
+			log.error(msg, e);
+			throw new MHDatabaseException(msg, e);
+		}
+	}
 
+	/**
+	 * Convert the supplied MySQL query Result Set into a List of T objects
+	 *
+	 * This does all our ORM-style mapping from MySQL columns to POJO properties.
+	 *
+	 * @param type
+	 * @param rs MySQL result set to convert
+	 *
+	 * @return List<T> collection of objects converted from the result set
+	 *
+	 * @throws MHDatabaseException for any errors
+	 */
+	protected <T> List<T> getQueryResultSet(Class<T> type, ResultSet rs) throws MHDatabaseException {
+		List<T> results = new ArrayList<>();
+		try {
 			// Advance to the first result row, and return the empty set if there isn't one
 			if (! rs.next()) return results;
 
@@ -114,10 +237,6 @@ public class MySqlConnectionImpl implements MySqlConnection {
 			} while (rs.next());
 
 			return results;
-		} catch (SQLException e) {
-			String msg = "query failed: " + sql;
-			log.error(msg, e);
-			throw new MHDatabaseException(msg, e);
 		} catch (Exception e) {
 			String msg = "Instantiation failed: " + type.getName();
 			log.error(msg, e);
@@ -234,6 +353,9 @@ public class MySqlConnectionImpl implements MySqlConnection {
 		try {
 			// If we are in a transaction, roll back
 			if (inTransaction) rollback();
+
+			// If there are any prepared statements defined, deallocate them
+			deallocateAllPreparedStatements();
 
 			// Return the connection to the pool
 			pool.returnConnection(conn);
