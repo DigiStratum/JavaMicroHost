@@ -11,14 +11,13 @@ import java.util.List;
 /**
  * ref: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
  * ref: https://docs.oracle.com/javase/tutorial/jdbc/basics/retrieving.html
- *
- * @todo Add support for transaction begin/commit, auto-commit, rollback
  */
 public class MySqlConnectionImpl implements MySqlConnection {
 	final static Logger log = Logger.getLogger(MySqlConnectionImpl.class);
 
 	protected Connection conn;
 	protected MySqlConnectionPoolImpl pool;
+	protected Boolean inTransaction = false;
 
 	/**
 	 * Constructor
@@ -34,8 +33,28 @@ public class MySqlConnectionImpl implements MySqlConnection {
 	}
 
 	/**
+	 *
+	 *
+	 * @param sql
+	 * @throws MHDatabaseException
+	 */
+	@Override
+	public void query(String sql) throws MHDatabaseException {
+		try (
+				Statement st = conn.createStatement();
+		) {
+			st.executeQuery(sql);
+		} catch (SQLException e) {
+			String msg = "query failed: " + sql;
+			log.error(msg, e);
+			throw new MHDatabaseException(msg, e);
+		}
+	}
+
+	/**
 	 * @todo Make a variant of this with prepared statement
 	 */
+	@Override
 	public <T> List<T> query(Class<T> type, String sql) throws MHDatabaseException {
 		try (
 			Statement st = conn.createStatement();
@@ -207,17 +226,68 @@ public class MySqlConnectionImpl implements MySqlConnection {
 	/**
 	 * Close out this connection (AutoCloseable!)
 	 *
-	 * We do so by returning our database connection back to the pool from whence it came.
+	 * We do so by returning our database connection back to the pool from whence it came. If we are in
+	 * the middle of a transaction, rollback to get out of it before returning the connection to the pool.
 	 */
 	@Override
 	public void close() {
 		try {
+			// If we are in a transaction, roll back
+			if (inTransaction) rollback();
+
+			// Return the connection to the pool
 			pool.returnConnection(conn);
 		} catch (MHDatabaseException e) {
 			log.error("Failed to return DB connection to pool", e);
 			// null out our working bits to guarantee nobody can abuse us
 			conn = null;
 			pool = null;
+			inTransaction = false;
 		}
+	}
+
+	@Override
+	public void start() throws MHDatabaseException {
+		if (inTransaction) {
+			String msg = "Transaction already started, cannot start again";
+			log.error(msg);
+			throw new MHDatabaseException(msg);
+		}
+
+		// Make sure we got a successful transaction start...
+		query("START TRANSACTION;");
+
+		// ... THEN set our state to match
+		inTransaction = true;
+	}
+
+	@Override
+	public void commit() throws MHDatabaseException {
+		if (! inTransaction) {
+			String msg = "Transaction not started, cannot commit";
+			log.error(msg);
+			throw new MHDatabaseException(msg);
+		}
+
+		// Clear our state so that no matter what happens next we can start a new transaction again...
+		inTransaction = false;
+
+		// ... THEN try to commit!
+		query("COMMIT;");
+	}
+
+	@Override
+	public void rollback() throws MHDatabaseException {
+		if (! inTransaction) {
+			String msg = "Transaction not started, cannot roll back";
+			log.error(msg);
+			throw new MHDatabaseException(msg);
+		}
+
+		// Clear our state so that no matter what happens next we can start a new transaction again...
+		inTransaction = false;
+
+		// ... THEN try to roll back!
+		query("COMMIT;");
 	}
 }
