@@ -47,4 +47,22 @@ public interface Request extends RequestResponse {
 	 * @return List of string values for this param; may be null, usually a single value, may have multiples
 	 */
 	public List<String> getQueryParam(String name);
+
+	/**
+	 * Check if we have the named request body string param
+	 *
+	 * @param name String name of the body param that we want
+	 *
+	 * @return Boolean true if we have the named body param, else false
+	 */
+	public Boolean hasBodyParam(String name);
+
+	/**
+	 * Get the named request body string param
+	 *
+	 * @param name String name of the body param that we want
+	 *
+	 * @return List of string values for this param; may be null, usually a single value, may have multiples
+	 */
+	public List<String> getBodyParam(String name);
 }

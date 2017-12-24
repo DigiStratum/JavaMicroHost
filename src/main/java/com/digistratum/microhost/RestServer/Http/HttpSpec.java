@@ -1,9 +1,21 @@
 package com.digistratum.microhost.RestServer.Http;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * ref: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
  */
 public class HttpSpec {
+
+	// Methods
+	public static final String HTTP_METHOD_GET = "GET";
+	public static final String HTTP_METHOD_POST = "POST";
+	public static final String HTTP_METHOD_PUT = "PUT";
+	public static final String HTTP_METHOD_PATCH = "PATCH";
+	public static final String HTTP_METHOD_DELETE = "DELETE";
+	public static final String HTTP_METHOD_OPTIONS = "OPTIONS";
+	public static final String HTTP_METHOD_HEAD = "HEAD";
 
 	// Informational
 	public static final int HTTP_STATUS_100_CONTINUE = 100;
@@ -46,6 +58,22 @@ public class HttpSpec {
 	public static final int HTTP_STATUS_502_BAD_GATEWAY = 502;
 	public static final int HTTP_STATUS_503_SERVICE_UNAVAILABLE = 503;
 	public static final int HTTP_STATUS_504_GATEWAY_TIMEOUT = 504;
+
+	// Headers
+	public static final String HEADER_CONTENT_TYPE = "Content-Type";
+
+	/**
+	 * Get the list of request methods which support a body payload
+	 *
+	 * @return List of request method strings
+	 */
+	public static List<String> getBodyMethods() {
+		List<String> methods = new LinkedList<>();
+		methods.add(HTTP_METHOD_POST);
+		methods.add(HTTP_METHOD_PUT);
+		methods.add(HTTP_METHOD_PATCH);
+		return methods;
+	}
 
 	/**
 	 * Get a short description for the specified HTTP status code

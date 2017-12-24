@@ -20,6 +20,8 @@ public abstract class RequestResponseImpl implements RequestResponse {
 	protected Integer code = null;
 	protected String queryString = null;
 	protected Map<String, List<String>> queryParams = null;
+	protected Map<String, List<String>> bodyParams = null;
+
 
 	@Override
 	public Headers getHeaders() {
