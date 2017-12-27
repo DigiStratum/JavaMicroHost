@@ -93,6 +93,7 @@ public interface MySqlConnection extends AutoCloseable {
 	 * Start a transaction
 	 *
 	 * ref: https://dev.mysql.com/doc/refman/5.7/en/commit.html
+	 * ref: https://docs.oracle.com/javase/tutorial/jdbc/basics/transactions.html
 	 *
 	 * @throws MHDatabaseException on errors
 	 */

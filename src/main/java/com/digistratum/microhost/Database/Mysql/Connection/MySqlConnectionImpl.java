@@ -449,7 +449,7 @@ public class MySqlConnectionImpl implements MySqlConnection {
 	 * Close out this connection (AutoCloseable!)
 	 *
 	 * We do so by returning our database connection back to the pool from whence it came. If we are in
-	 * the middle of a transaction, rollback to get out of it before returning the connection to the pool.
+	 * the middle of a transaction, rollback to get out of it before returning the connection to the pool
 	 */
 	@Override
 	public void close() {
@@ -480,7 +480,14 @@ public class MySqlConnectionImpl implements MySqlConnection {
 		}
 
 		// Make sure we got a successful transaction start...
-		query("START TRANSACTION;");
+		//query("START TRANSACTION;");
+		try {
+			conn.setAutoCommit(false);
+		} catch (SQLException e) {
+			String msg = "Failed to set auto commit to start transaction";
+			log.error(msg);
+			throw new MHDatabaseException(msg, e);
+		}
 
 		// ... THEN set our state to match
 		inTransaction = true;
@@ -498,7 +505,23 @@ public class MySqlConnectionImpl implements MySqlConnection {
 		inTransaction = false;
 
 		// ... THEN try to commit!
-		query("COMMIT;");
+		//query("COMMIT;");
+		try {
+			conn.commit();
+		} catch (SQLException e) {
+			String msg = "Failed to commit transaction";
+			log.error(msg);
+			throw new MHDatabaseException(msg, e);
+		}
+
+		// Restore auto-commit
+		try {
+			conn.setAutoCommit(true);
+		} catch (SQLException e) {
+			String msg = "Failed to set auto commit to commit transaction";
+			log.error(msg);
+			throw new MHDatabaseException(msg, e);
+		}
 	}
 
 	@Override
@@ -513,6 +536,22 @@ public class MySqlConnectionImpl implements MySqlConnection {
 		inTransaction = false;
 
 		// ... THEN try to roll back!
-		query("COMMIT;");
+		//query("COMMIT;");
+		try {
+			conn.rollback();
+		} catch (SQLException e) {
+			String msg = "Failed to roll back transaction";
+			log.error(msg);
+			throw new MHDatabaseException(msg, e);
+		}
+
+		// Restore auto-commit
+		try {
+			conn.setAutoCommit(true);
+		} catch (SQLException e) {
+			String msg = "Failed to set auto commit to roll back transaction";
+			log.error(msg);
+			throw new MHDatabaseException(msg, e);
+		}
 	}
 }
