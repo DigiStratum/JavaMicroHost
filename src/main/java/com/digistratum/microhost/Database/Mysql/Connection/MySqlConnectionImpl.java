@@ -113,7 +113,6 @@ public class MySqlConnectionImpl implements MySqlConnection {
 		if (containsPreparedStatement(mhps.hash)) return mhps.hash;
 
 		// Prepare a statement with the id "ps" + hash
-		//query("PREPARE ps" + sqlHash + "FROM '" + sql + "';");
 		try {
 			mhps.ps = conn.prepareStatement(sql);
 		} catch (SQLException e) {
@@ -134,7 +133,6 @@ public class MySqlConnectionImpl implements MySqlConnection {
 		if (null == mhps) return;
 
 		// Deallocate prepare a statement with the id "ps" + hash
-		//query("DEALLOCATE PREPARE ps" + sqlHash + ";");
 		try {
 			mhps.ps.close();
 		} catch (SQLException e) {
@@ -172,10 +170,9 @@ public class MySqlConnectionImpl implements MySqlConnection {
 		if (null == mhps) {
 			throw new MHDatabaseException("No such prepared statement for ID: " + sqlHash);
 		}
-		//String sql = "";
 		// ref: https://dev.mysql.com/doc/refman/5.7/en/execute.html
 		// ref: http://www.java2s.com/Code/Java/Language-Basics/JavavarargsIteratingOverVariableLengthArgumentLists.htm
-		// TODO: Add all the params as individual parameters here... (and properly escape them!)
+		// Add all the params as individual parameters here... (and properly escape them!)
 		if (params.length != mhps.paramCount) {
 			throw new MHDatabaseException("Prepared statement (" + sqlHash + ") requires " + mhps.paramCount + " params, " + params.length + " provided.");
 		}
@@ -237,9 +234,6 @@ public class MySqlConnectionImpl implements MySqlConnection {
 				throw new MHDatabaseException(msg, e);
 			}
 		}
-		// SET @p1 = 'mysql_safe_value1'
-		// SET @pN = 'mysql_safe_valueN'
-		//sql = "EXECUTE ps" + sqlHash + " USING @p1, @pN;";
 
 		try (
 				ResultSet rs = mhps.ps.executeQuery()
@@ -480,7 +474,6 @@ public class MySqlConnectionImpl implements MySqlConnection {
 		}
 
 		// Make sure we got a successful transaction start...
-		//query("START TRANSACTION;");
 		try {
 			conn.setAutoCommit(false);
 		} catch (SQLException e) {
@@ -505,7 +498,6 @@ public class MySqlConnectionImpl implements MySqlConnection {
 		inTransaction = false;
 
 		// ... THEN try to commit!
-		//query("COMMIT;");
 		try {
 			conn.commit();
 		} catch (SQLException e) {
@@ -536,7 +528,6 @@ public class MySqlConnectionImpl implements MySqlConnection {
 		inTransaction = false;
 
 		// ... THEN try to roll back!
-		//query("COMMIT;");
 		try {
 			conn.rollback();
 		} catch (SQLException e) {
