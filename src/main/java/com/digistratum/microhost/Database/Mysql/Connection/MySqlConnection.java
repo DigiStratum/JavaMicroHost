@@ -39,12 +39,13 @@ public interface MySqlConnection extends AutoCloseable {
 	 * will likely manifest itself as a SQL syntax error.
 	 *
 	 * @param sql String SQL we want to use for our prepared statement
+	 * @param paramCount int count of params required to be passed into this sql query
 	 *
 	 * @return Integer prepared statement ID
 	 *
 	 * @throws MHDatabaseException on errors
 	 */
-	Integer prepare(String sql) throws MHDatabaseException;
+	Integer prepare(String sql, int paramCount) throws MHDatabaseException;
 
 	/**
 	 * Deallocate a previously prepared statement

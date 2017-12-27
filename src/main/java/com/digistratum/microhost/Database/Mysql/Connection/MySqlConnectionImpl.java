@@ -4,23 +4,31 @@ import com.digistratum.microhost.Exception.MHDatabaseException;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * ref: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
  * ref: https://docs.oracle.com/javase/tutorial/jdbc/basics/retrieving.html
+ * ref: https://www.mkyong.com/jdbc/jdbc-preparestatement-example-select-list-of-the-records/
  */
 public class MySqlConnectionImpl implements MySqlConnection {
 	final static Logger log = Logger.getLogger(MySqlConnectionImpl.class);
 
+	private class MHPreparedStatement {
+		int hash;
+		int paramCount;
+		String sql;
+		PreparedStatement ps;
+	}
+
 	protected Connection conn;
 	protected MySqlConnectionPoolImpl pool;
 	protected Boolean inTransaction = false;
-	protected List<Integer> preparedStatementIds = new ArrayList<>();
+
+	protected List<MHPreparedStatement> preparedStatements = new ArrayList<>();
 
 	/**
 	 * Constructor
@@ -28,23 +36,17 @@ public class MySqlConnectionImpl implements MySqlConnection {
 	 * @param pool MySqlConnectionImpl pool to which we should return our connection
 	 * @param conn Connection JDBC connection that we will wrap
 	 *
-	 * @throws MHDatabaseException
+	 * @throws MHDatabaseException on errors
 	 */
 	public MySqlConnectionImpl(MySqlConnectionPoolImpl pool, Connection conn) throws MHDatabaseException {
 		this.pool = pool;
 		this.conn = conn;
 	}
 
-	/**
-	 *
-	 *
-	 * @param sql
-	 * @throws MHDatabaseException
-	 */
 	@Override
 	public void query(String sql) throws MHDatabaseException {
 		try (
-				Statement st = conn.createStatement();
+				Statement st = conn.createStatement()
 		) {
 			st.executeQuery(sql);
 		} catch (SQLException e) {
@@ -73,35 +75,74 @@ public class MySqlConnectionImpl implements MySqlConnection {
 		return hash;
 	}
 
-	@Override
-	public Integer prepare(String sql) throws MHDatabaseException {
+	/**
+	 * Find a prepared statement by hash in our set of prepared statements
+	 *
+	 * @param hash Int hash ID for the prepared statement's SQL that we are after
+	 *
+	 * @return MHPreparedStatement instance if found, else null
+	 */
+	private MHPreparedStatement findPreparedStatement(int hash) {
+		for (MHPreparedStatement mhps : preparedStatements) {
+			if (mhps.hash == hash) return mhps;
+		}
+		return null;
+	}
 
-		// The hash for this SQL query is...
-		Integer sqlHash = simpleHash(sql);
-
-		// If it is already in our set of prepared statements, then nothing more is needed
-		if (preparedStatementIds.contains(sqlHash)) return sqlHash;
-
-		// Prepare a statement with the id "ps" + hash
-		query("PREPARE ps" + sqlHash + "FROM '" + sql + "';");
-
-		// Add this has to the collection of prepared statement ID's so we can clean up later
-		preparedStatementIds.add(sqlHash);
-
-		return sqlHash;
+	/**
+	 * Determine whether we have a prepared statement with the matching hash in our set of prepared statements
+	 *
+	 * @param hash Int hash ID for the prepared statement's SQL that we are after
+	 *
+	 * @return boolean true if we do have one, else false
+	 */
+	private Boolean containsPreparedStatement(int hash) {
+		return (null != findPreparedStatement(hash));
 	}
 
 	@Override
-	public void deallocatePrepare(Integer sqlHash) throws MHDatabaseException {
+	public Integer prepare(String sql, int paramCount) throws MHDatabaseException {
+
+		// The hash for this SQL query is...
+		MHPreparedStatement mhps = new MHPreparedStatement();
+		mhps.hash = simpleHash(sql);
+		mhps.paramCount = paramCount;
+		mhps.sql = sql;
+
+		// If it is already in our set of prepared statements, then nothing more is needed
+		if (containsPreparedStatement(mhps.hash)) return mhps.hash;
+
+		// Prepare a statement with the id "ps" + hash
+		//query("PREPARE ps" + sqlHash + "FROM '" + sql + "';");
+		try {
+			mhps.ps = conn.prepareStatement(sql);
+		} catch (SQLException e) {
+			throw new MHDatabaseException("Failed to prepare statement for SQL: " + sql, e);
+		}
+
+		// Add this has to the collection of prepared statement ID's so we can clean up later
+		preparedStatements.add(mhps);
+
+		return mhps.hash;
+	}
+
+	@Override
+	public void deallocatePrepare(Integer hash) throws MHDatabaseException {
 
 		// If it is not in our set of prepared statements, then nothing is needed
-		if (! preparedStatementIds.contains(sqlHash)) return;
+		MHPreparedStatement mhps = findPreparedStatement(hash);
+		if (null == mhps) return;
 
 		// Deallocate prepare a statement with the id "ps" + hash
-		query("DEALLOCATE PREPARE ps" + sqlHash + ";");
+		//query("DEALLOCATE PREPARE ps" + sqlHash + ";");
+		try {
+			mhps.ps.close();
+		} catch (SQLException e) {
+			throw new MHDatabaseException("Failed to close prepared statement", e);
+		}
 
 		// Knock this one out of our collection of prepared statements
-		preparedStatementIds.remove(sqlHash);
+		preparedStatements.remove(mhps);
 	}
 
 	/**
@@ -110,40 +151,102 @@ public class MySqlConnectionImpl implements MySqlConnection {
 	 * This ensures that there is no leftover cruft connected with this MySQL connection
 	 * when it is returned to the connection pool for some other thread/process to receive.
 	 *
-	 * @throws MHDatabaseException
+	 * @throws MHDatabaseException on errors
 	 */
 	protected void deallocateAllPreparedStatements() throws MHDatabaseException {
 
 		// If there aren't any, then there's nothing to do
-		if (preparedStatementIds.isEmpty()) return;
+		if (preparedStatements.isEmpty()) return;
 
 		// For each prepared statement ID that we have...
-		for (Integer sqlHash : preparedStatementIds) {
+		for (MHPreparedStatement mhps : preparedStatements) {
 
 			// Deallocate it
-			deallocatePrepare(sqlHash);
+			deallocatePrepare(mhps.hash);
 		}
 	}
 
 	@Override
 	public <T> List<T> queryPrepared(Class<T> type, Integer sqlHash, Object... params) throws MHDatabaseException {
-		if (! preparedStatementIds.contains(sqlHash)) {
+		MHPreparedStatement mhps = findPreparedStatement(sqlHash);
+		if (null == mhps) {
 			throw new MHDatabaseException("No such prepared statement for ID: " + sqlHash);
 		}
-		String sql = "";
+		//String sql = "";
 		// ref: https://dev.mysql.com/doc/refman/5.7/en/execute.html
+		// ref: http://www.java2s.com/Code/Java/Language-Basics/JavavarargsIteratingOverVariableLengthArgumentLists.htm
 		// TODO: Add all the params as individual parameters here... (and properly escape them!)
+		if (params.length != mhps.paramCount) {
+			throw new MHDatabaseException("Prepared statement (" + sqlHash + ") requires " + mhps.paramCount + " params, " + params.length + " provided.");
+		}
+
+		// Iterate over the params supplied
+		for (int i = 0; i < params.length; i++) {
+			Object param = params[i];
+
+			try {
+				// ref: https://coderanch.com/t/404450/java/type-object
+				// TODO: Add proper support for setNull(), setBytes(), set***Stream(), setURL(), addBatch()
+				// Note: skip setObject(), setRef(), setArray(), setRowId(), setNString(), setN***Stream(), setSQLXML()
+				// ref: https://docs.oracle.com/javase/7/docs/api/java/sql/PreparedStatement.html#setInt(int,%20int)
+				if (param instanceof Boolean) {
+					mhps.ps.setBoolean(i + 1, (Boolean) param);
+				}
+				else if (param instanceof Byte) {
+					mhps.ps.setByte(i + 1, (Byte) param);
+				}
+				else if (param instanceof Short) {
+					mhps.ps.setShort(i + 1, (Short) param);
+				}
+				else if (param instanceof Integer) {
+					mhps.ps.setInt(i + 1, (Integer) param);
+				}
+				else if (param instanceof Long) {
+					mhps.ps.setLong(i + 1, (Long) param);
+				}
+				else if (param instanceof Float) {
+					mhps.ps.setFloat(i + 1, (Float) param);
+				}
+				else if (param instanceof Double) {
+					mhps.ps.setDouble(i + 1, (Double) param);
+				}
+				else if (param instanceof BigDecimal) {
+					mhps.ps.setBigDecimal(i + 1, (BigDecimal) param);
+				}
+				else if (param instanceof String) {
+					mhps.ps.setString(i + 1, (String) param);
+				}
+				else if (param instanceof Date) {
+					mhps.ps.setDate(i + 1, (Date) param);
+				}
+				else if (param instanceof Time) {
+					mhps.ps.setTime(i + 1, (Time) param);
+				}
+				else if (param instanceof Timestamp) {
+					mhps.ps.setTimestamp(i + 1, (Timestamp) param);
+				}
+				else if (param instanceof Blob) {
+					mhps.ps.setBlob(i + 1, (Blob) param);
+				}
+				else if (param instanceof Clob) {
+					mhps.ps.setClob(i + 1, (Clob) param);
+				}
+			} catch (SQLException e) {
+				String msg = "Prepared statement set***() param failed for param " + i;
+				log.error(msg, e);
+				throw new MHDatabaseException(msg, e);
+			}
+		}
 		// SET @p1 = 'mysql_safe_value1'
 		// SET @pN = 'mysql_safe_valueN'
-		sql = "EXECUTE ps" + sqlHash + " USING @p1, @pN;";
+		//sql = "EXECUTE ps" + sqlHash + " USING @p1, @pN;";
 
 		try (
-				Statement st = conn.createStatement();
-				ResultSet rs = st.executeQuery(sql);
+				ResultSet rs = mhps.ps.executeQuery()
 		) {
 			return getQueryResultSet(type, rs);
 		} catch (SQLException e) {
-			String msg = "query failed: " + sql;
+			String msg = "Prepared statement executeQuery failed: " + mhps.sql;
 			log.error(msg, e);
 			throw new MHDatabaseException(msg, e);
 		}
@@ -160,7 +263,7 @@ public class MySqlConnectionImpl implements MySqlConnection {
 	public <T> List<T> query(Class<T> type, String sql) throws MHDatabaseException {
 		try (
 				Statement st = conn.createStatement();
-				ResultSet rs = st.executeQuery(sql);
+				ResultSet rs = st.executeQuery(sql)
 		) {
 			return getQueryResultSet(type, rs);
 		} catch (SQLException e) {
@@ -175,7 +278,7 @@ public class MySqlConnectionImpl implements MySqlConnection {
 	 *
 	 * This does all our ORM-style mapping from MySQL columns to POJO properties.
 	 *
-	 * @param type
+	 * @param type The generic type for the POJO matching our result set
 	 * @param rs MySQL result set to convert
 	 *
 	 * @return List<T> collection of objects converted from the result set
@@ -256,14 +359,14 @@ public class MySqlConnectionImpl implements MySqlConnection {
 	 * @throws MHDatabaseException on errors
 	 */
 	protected String[] getResultSetColumnNames(ResultSetMetaData rsmd) throws MHDatabaseException {
-		int num = 0;
+		int num;
 		try {
 			num = rsmd.getColumnCount();
 			//log.debug("Database result set column count = " + num);
 			String[] columnNames = new String[num];
 			for (int col = 0; col < num; col++) {
 				// Column indicators start numbering from 1, but array index is 0-based!
-				columnNames[col] = rsmd.getColumnLabel(1 + col);;
+				columnNames[col] = rsmd.getColumnLabel(1 + col);
 			}
 			return columnNames;
 		} catch (SQLException e) {
@@ -285,14 +388,14 @@ public class MySqlConnectionImpl implements MySqlConnection {
 	 * @throws MHDatabaseException on errors
 	 */
 	protected String[] getResultSetColumnTypes(ResultSetMetaData rsmd) throws MHDatabaseException {
-		int num = 0;
+		int num;
 		try {
 			num = rsmd.getColumnCount();
 			String[] columnTypes = new String[num];
 			for (int col = 0; col < num; col++) {
 				// Column indicators start numbering from 1...
 				String name = rsmd.getColumnLabel(1 + col);
-				String type = null;
+				String type;
 				switch (rsmd.getColumnType(1 + col)) {
 
 					// Capture as Integers
