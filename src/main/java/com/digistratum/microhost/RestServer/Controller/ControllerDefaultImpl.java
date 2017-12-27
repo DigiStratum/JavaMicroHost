@@ -10,7 +10,9 @@ public class ControllerDefaultImpl extends ControllerBaseImpl {
 
 	public ControllerDefaultImpl() {
 		super();
+	}
 
+	public void mapEndpoints() {
 		// Respond to anything
 		String[] methods = {"get","post","put","delete","head","options","patch"};
 		this.mapEndpoint(

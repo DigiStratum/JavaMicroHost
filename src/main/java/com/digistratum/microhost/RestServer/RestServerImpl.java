@@ -104,7 +104,11 @@ public class RestServerImpl implements RestServer {
 			throw new MHException(msg);
 		}
 
-		// Add it!
+		// Initialize it...
+		ctrl.setContext(ctx);
+		ctrl.mapEndpoints();
+
+		// ... and add it!
 		log.info("Adding context: '" + ctx +"'");
 		controllerMap.put(ctx, ctrl);
 		server.createContext(ctx, ctrl);

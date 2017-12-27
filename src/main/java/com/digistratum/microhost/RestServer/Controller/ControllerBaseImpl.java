@@ -34,6 +34,8 @@ public abstract class ControllerBaseImpl implements Controller {
 
 	List<String> supportedRequestMethods;
 
+	String context;
+
 	/**
 	 * Default Constructor
 	 */
@@ -53,11 +55,11 @@ public abstract class ControllerBaseImpl implements Controller {
 		mapErrors();
 	}
 
-	/**
-	 * Note that IOException is required by HttpHandler which we are implementing
-	 *
-	 * @throws IOException
-	 */
+	@Override
+	public void setContext(String context) {
+		this.context = context;
+	}
+
 	@Override
 	public void handle(HttpExchange t) throws IOException {
 		String logRequest = t.getProtocol() + " " + t.getRequestMethod() + " " + t.getRequestURI();
@@ -115,9 +117,10 @@ public abstract class ControllerBaseImpl implements Controller {
 	 * Note: Throw no exceptions here since this is called from constructors of subclasses.
 	 *
 	 * @param requestMethod HTTP request method (e.g. get, post, etc)
-	 * @param requestUriPattern Regex pattern to use to match a given request URI
+	 * @param relativeUri
 	 * @param endpoint Endpoint instance which will handle requests matching the URI
 	 */
+	/*
 	protected void mapEndpoint(String requestMethod, String requestUriPattern, Endpoint endpoint) {
 
 		// Check our arguments
@@ -145,6 +148,36 @@ public abstract class ControllerBaseImpl implements Controller {
 			requestMap.put(requestMethod, methodMap);
 		}
 	}
+*/
+	protected void mapEndpoint(String requestMethod, String relativeUri, Endpoint endpoint) {
+
+		// Check our arguments
+		if (! isValidMethod(requestMethod)) {
+			log.error("mapEndpoint() - Invalid request method supplied");
+			return;
+		}
+		if ((null == relativeUri) || relativeUri.isEmpty()) {
+			log.error("mapEndpoint() - Invalid request URI pattern supplied");
+			return;
+		}
+		if ((null == endpoint)) {
+			log.error("mapEndpoint() - Invalid endpoint supplied");
+			return;
+		}
+
+		// Add this endpoint to the method map for the specified request method and URI pattern
+		Map<Pattern, Endpoint> methodMap = requestMap.get(requestMethod);
+		boolean allNew = (null == methodMap);
+		if (allNew) {
+			methodMap = new HashMap<>();
+		}
+		String requestUriPattern = "^" + context + relativeUri + "(.*?)$";
+		methodMap.put(Pattern.compile(requestUriPattern), endpoint);
+		if (allNew) {
+			requestMap.put(requestMethod, methodMap);
+		}
+	}
+
 
 	/**
 	 * Is the specified request method valid?
@@ -183,6 +216,7 @@ public abstract class ControllerBaseImpl implements Controller {
 		while (it.hasNext()) {
 			Map.Entry entry = (Map.Entry) it.next();
 			Pattern pattern = (Pattern) entry.getKey();
+			//log.debug("Checking " + pattern.toString());
 			// ref: https://www.javatpoint.com/java-regex
 			if (pattern.matcher(requestUri).matches()) {
 				// Found a match; this endpoint will handle the request!

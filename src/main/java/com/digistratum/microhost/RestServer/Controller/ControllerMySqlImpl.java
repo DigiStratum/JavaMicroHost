@@ -20,6 +20,11 @@ public class ControllerMySqlImpl extends ControllerBaseImpl {
 		this.mySqlModelFactory = mySqlModelFactory;
 	}
 
+	@Override
+	public void mapEndpoints() {
+	}
+
+	@Override
 	public void handle(HttpExchange t) throws IOException {
 		try (MySqlConnectionImpl conn = pool.getConnection()) {
 			// FIXME: Pass conn into the endpoint doing the actual handling...
