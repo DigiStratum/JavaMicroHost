@@ -1,16 +1,19 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Document {
 
 	// At least one of the following is required
-	ResourceLinkage data;
-	Error[] errors;
-	Meta meta;
+	protected ResourceLinkage data;
+	protected Error[] errors;
+	protected Meta meta;
 
 	// These are optional
-	JsonApi jsonapi;
-	Links links;
-	Resource[] included;
+	protected JsonApi jsonapi;
+	protected Links links;
+	protected List<Resource> included;
 
 	/**
 	 * Check whether this is a valid JsonApi document
@@ -31,5 +34,46 @@ public class Document {
 		// TODO: Check the links; may include "self", "related", or pagination data
 
 		return true;
+	}
+
+	/**
+	 * Set the jsonapi version info for this document
+	 *
+	 * @param jsonApi JsonApi instance
+	 *
+	 * @return Document (this) for chaining
+	 */
+	public Document setJsonApi(JsonApi jsonApi) {
+		jsonapi = jsonApi;
+		return this;
+	}
+
+	/**
+	 * Set the links for this document
+	 *
+	 * @param links Links instance
+	 *
+	 * @return Document (this) for chaining
+	 */
+	public Document setLinks(Links links) {
+		this.links = links;
+		return this;
+	}
+
+	/**
+	 * Include a supplemental resource with this document's primary data
+	 *
+	 * Note that included property is intentionally null before including any resources
+	 * so that it will be removed from the resulting JSON if no resources are added.
+	 *
+	 * @param resource Resource instance to include
+	 *
+	 * @return Document (this) for chaining
+	 */
+	public Document includeResource(Resource resource) {
+		// If we have no resources yet, then we need to initialize an empty set
+		if (null == included) included = new ArrayList<>();
+		included.add(resource);
+		return this;
 	}
 }

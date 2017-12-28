@@ -1,19 +1,17 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
-import com.digistratum.microhost.RestServer.JsonApi.Exception.JsonApiException;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
  * ref: https://stackoverflow.com/questions/12832554/how-to-add-attributes-dynamically-for-java-object
  *
  * TODO: Add support for other JSON-primitive data types (number, boolean, array (of string/number/boolean), etc)
  */
-public abstract class DynamicClass {
-	private Map<String, Object> properties = new HashMap<>();
+public abstract class DynamicClass implements JsonClass {
+	protected Map<String, Object> properties = new HashMap<>();
 
 	/**
 	 * Get the named property's value
@@ -37,7 +35,7 @@ public abstract class DynamicClass {
 	}
 
 	@Override
-	public String toString() {
+	public String toJson() {
 		Gson gson = new Gson();
 		return gson.toJson(properties);
 	}
