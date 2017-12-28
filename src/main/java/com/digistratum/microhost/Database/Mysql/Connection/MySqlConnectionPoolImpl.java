@@ -1,8 +1,7 @@
 package com.digistratum.microhost.Database.Mysql.Connection;
 
 import com.digistratum.microhost.Config.Config;
-import com.digistratum.microhost.Config.ConfigImpl;
-import com.digistratum.microhost.Exception.MHDatabaseException;
+import com.digistratum.microhost.Database.Exception.MHDatabaseException;
 
 import org.apache.commons.pool.ObjectPool;
 import org.apache.commons.pool.PoolableObjectFactory;
@@ -46,7 +45,7 @@ public class MySqlConnectionPoolImpl implements MySqlConnectionPool {
 		GenericObjectPool.Config poolConfig = new GenericObjectPool.Config();
 		poolConfig.maxActive = config.get("microhost.db.pool.maxActive", 10);
 		poolConfig.testOnBorrow = config.get("microhost.db.pool.testOnBorrow", true);
-		poolConfig.testWhileIdle = config.get("microhost.db.pool.testWhileIdle", true);;
+		poolConfig.testWhileIdle = config.get("microhost.db.pool.testWhileIdle", true);
 		poolConfig.timeBetweenEvictionRunsMillis = config.get("microhost.db.pool.timeBetweenEvictionRunsMillis", 10000);
 		poolConfig.minEvictableIdleTimeMillis = config.get("microhost.db.pool.minEvictableIdleTimeMillis", 60000);
 

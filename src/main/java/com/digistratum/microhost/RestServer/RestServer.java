@@ -15,7 +15,7 @@ public interface RestServer {
 	 *
 	 * @throws MHException for any errors
 	 */
-	public void addControllerContext(Controller ctrl, String ctx) throws MHException;
+	void addControllerContext(Controller ctrl, String ctx) throws MHException;
 
 	/**
 	 * Remove a context which is already defined
@@ -24,7 +24,7 @@ public interface RestServer {
 	 *
 	 * @throws MHException
 	 */
-	public void removeContext(String ctx) throws MHException;
+	void removeContext(String ctx) throws MHException;
 
 	/**
 	 * Check whether the specified context is already defined
@@ -35,10 +35,10 @@ public interface RestServer {
 	 *
 	 * @return boolean true if the context is defined, else false
 	 */
-	public boolean hasContext(String ctx) throws MHException;
+	boolean hasContext(String ctx) throws MHException;
 
 	/**
 	 * RestServerImpl stopper
 	 */
-	public void stop();
+	void stop();
 }

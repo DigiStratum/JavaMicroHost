@@ -20,9 +20,6 @@ abstract public class EndpointImpl implements Endpoint {
 	}
 
 	@Override
-	/**
-	 * Default implementation
-	 */
 	public Response handle(Request request) throws MHException {
 		return null;
 	}

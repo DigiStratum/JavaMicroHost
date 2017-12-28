@@ -2,12 +2,12 @@ package com.digistratum.microhost.Database.Mysql.Connection;
 
 import java.sql.DriverManager;
 
-import com.digistratum.microhost.Exception.MHDatabaseException;
+import com.digistratum.microhost.Database.Exception.MHDatabaseException;
 import org.apache.commons.pool.BasePoolableObjectFactory;
 import org.apache.log4j.Logger;
 
 /**
- * @todo Get rid of this factory if possible in favor of DI/interface model
+ * todo Get rid of this factory if possible in favor of DI/interface model
  */
 public class MySqlPoolableObjectFactory extends BasePoolableObjectFactory {
 	final static Logger log = Logger.getLogger(MySqlPoolableObjectFactory.class);

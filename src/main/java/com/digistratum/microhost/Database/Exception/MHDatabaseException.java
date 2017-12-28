@@ -1,5 +1,6 @@
-package com.digistratum.microhost.Exception;
-@SuppressWarnings("serial")
+package com.digistratum.microhost.Database.Exception;
+
+import com.digistratum.microhost.Exception.MHException;
 
 public class MHDatabaseException extends MHException {
 	public MHDatabaseException(String message) { super(message); }

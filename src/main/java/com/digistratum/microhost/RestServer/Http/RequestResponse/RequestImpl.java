@@ -5,7 +5,6 @@ import com.digistratum.microhost.RestServer.Http.Headers.Headers;
 import com.digistratum.microhost.RestServer.Http.Headers.HeadersImpl;
 import com.digistratum.microhost.RestServer.Http.HttpSpec;
 import com.digistratum.microhost.RestServer.Http.MimeTypes;
-import org.apache.log4j.Logger;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RequestImpl extends RequestResponseImpl implements Request {
-	final static Logger log = Logger.getLogger(RequestImpl.class);
+
 	/**
 	 * Bodyless RequestImpl Constructor
 	 *
@@ -128,8 +127,7 @@ public class RequestImpl extends RequestResponseImpl implements Request {
 
 	@Override
 	public Boolean hasQueryParam(String name) {
-		if (null == queryParams) return false;
-		return queryParams.containsKey(name);
+		return ((null != queryParams) && queryParams.containsKey(name));
 	}
 
 	@Override
@@ -144,8 +142,7 @@ public class RequestImpl extends RequestResponseImpl implements Request {
 
 	@Override
 	public Boolean hasBodyParam(String name) {
-		if (null == bodyParams) return false;
-		return bodyParams.containsKey(name);
+		return ((null != bodyParams) && bodyParams.containsKey(name));
 	}
 
 	@Override

@@ -2,8 +2,7 @@ package com.digistratum.microhost.Database.Mysql.Model;
 
 import com.digistratum.microhost.Database.Model;
 import com.digistratum.microhost.Database.ModelFactory;
-import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionImpl;
-import com.digistratum.microhost.Exception.MHDatabaseException;
+import com.digistratum.microhost.Database.Exception.MHDatabaseException;
 import com.digistratum.microhost.Exception.MHException;
 
 /**

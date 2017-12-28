@@ -7,10 +7,10 @@ public interface MHRunnable extends Runnable {
 	 *
 	 * @return boolean true if we are running, else false
 	 */
-	public boolean isRunning();
+	boolean isRunning();
 
 	/**
 	 * Stop the main loop from running any longer
 	 */
-	public void stop();
+	void stop();
 }

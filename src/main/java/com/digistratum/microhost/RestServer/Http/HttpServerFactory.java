@@ -12,7 +12,7 @@ import java.net.InetSocketAddress;
  * Necessary to satisfy DI, testability, and prevent spawning an actual HttpServer in a test context
  * due to the fact that a static method is used to create a new instance.
  *
- * @todo Add support for binding to a specific local IP address instead of just ANY ipaddress.
+ * todo Add support for binding to a specific local IP address instead of just ANY ipaddress.
  */
 public class HttpServerFactory {
 	public static final int BACKLOG_DEFAULT = 0;

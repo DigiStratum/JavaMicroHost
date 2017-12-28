@@ -17,7 +17,7 @@ public class ControllerDefaultImpl extends ControllerBaseImpl {
 		String[] methods = {"get","post","put","delete","head","options","patch"};
 		this.mapEndpoint(
 				methods,
-				".*",
+				"/",
 				new EndpointErrorDocumentImpl(
 						HttpSpec.HTTP_STATUS_404_NOT_FOUND,
 						HttpSpec.getStatusDescription(HttpSpec.HTTP_STATUS_404_NOT_FOUND)

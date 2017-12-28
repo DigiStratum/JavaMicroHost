@@ -79,7 +79,8 @@ public class HttpSpec {
 	 * Get a short description for the specified HTTP status code
 	 *
 	 * @param statusCode Int HTTP status code from our list of supported codes
-	 * @return
+	 *
+	 * @return String brief description for this error code
 	 */
 	public static String getStatusDescription(int statusCode) {
 		switch (statusCode) {

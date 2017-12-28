@@ -10,7 +10,7 @@ import java.util.Map;
  * Base class for data & capabilities common to both HTTP requests and responses
  */
 public abstract class RequestResponseImpl implements RequestResponse {
-	protected enum Type {request, response };
+	protected enum Type {request, response }
 	protected Type type;
 
 	protected HeadersImpl headers;

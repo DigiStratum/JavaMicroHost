@@ -1,6 +1,6 @@
 package com.digistratum.microhost.Database.Mysql.Connection;
 
-import com.digistratum.microhost.Exception.MHDatabaseException;
+import com.digistratum.microhost.Database.Exception.MHDatabaseException;
 
 import java.sql.Connection;
 
@@ -8,9 +8,9 @@ public interface MySqlConnectionPool {
 	/**
 	 * Initialize the connection pool
 	 *
-	 * @todo - refactor this to get rid of an init(0 stage/call if possible
+	 * todo - refactor this to get rid of an init(0 stage/call if possible
 	 */
-	public void init();
+	void init();
 
 	/**
 	 * Get a wrapped connection from the pool
@@ -19,16 +19,16 @@ public interface MySqlConnectionPool {
 	 *
 	 * @throws MHDatabaseException if something goes sideways...
 	 */
-	public MySqlConnection getConnection() throws MHDatabaseException;
+	MySqlConnection getConnection() throws MHDatabaseException;
 
 	/**
 	 * Return a connection to the pool
 	 *
 	 * @param conn Connection instance to be returned to the pool
 	 *
-	 * @todo Make this symetrical so that the MySqlConnection which the consumer GETs can be PUT back here
+	 * todo Make this symetrical so that the MySqlConnection which the consumer GETs can be PUT back here
 	 *
 	 * @throws MHDatabaseException if something goes sideways...
 	 */
-	public void returnConnection(Connection conn) throws MHDatabaseException;
+	void returnConnection(Connection conn) throws MHDatabaseException;
 }

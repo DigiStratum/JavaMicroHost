@@ -12,5 +12,5 @@ public interface Response extends RequestResponse {
 	 *
 	 * @return Integer code for this response (may be null!)
 	 */
-	public Integer getCode();
+	Integer getCode();
 }

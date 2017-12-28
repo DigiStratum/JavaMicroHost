@@ -1,7 +1,5 @@
 package com.digistratum.microhost.RestServer;
 
-import com.digistratum.microhost.Exception.MHException;
-
 /**
  * A class to be implemented by the application layer to set up the RestServer with all the config,
  * controllers, and anything else necessary to get running.
@@ -13,6 +11,6 @@ public interface RestServerSetterUpper {
 	 *
 	 * @param restServer RestServer instance that we want to get set up
 	 */
-	public void addContexts(RestServer restServer);
+	void addContexts(RestServer restServer);
 
 }

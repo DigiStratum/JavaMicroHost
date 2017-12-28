@@ -44,8 +44,6 @@ public class ResponseImpl extends RequestResponseImpl implements Response {
 	 * @param responseCode Integer HTTP response code
 	 * @param responseHeaders Map<name, value> HTTP response headers
 	 * @param responseBody HTTP response body (optional)
-	 *
-	 * @throws MHException if any parameters are unacceptable
 	 */
 	public ResponseImpl(int responseCode, Headers responseHeaders, String responseBody) {
 

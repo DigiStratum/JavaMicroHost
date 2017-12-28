@@ -3,7 +3,7 @@ package com.digistratum.microhost;
 import com.digistratum.microhost.Process.MHRunnable;
 
 /**
- * @TODO Add support for receiving, starting, and monitoring multiple MHRunnable's
+ * TODO Add support for receiving, starting, and monitoring multiple MHRunnable's
  */
 abstract public class MicroHostApp {
 

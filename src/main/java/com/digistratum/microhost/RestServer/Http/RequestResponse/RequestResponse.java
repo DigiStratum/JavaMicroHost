@@ -11,14 +11,14 @@ public interface RequestResponse {
 	 *
 	 * @return Headers implementation instance
 	 */
-	public Headers getHeaders();
+	Headers getHeaders();
 
 	/**
 	 * Get the value of the body
 	 *
 	 * @return String body (may be null!)
 	 */
-	public String getBody();
+	String getBody();
 
 
 	/**
@@ -26,5 +26,5 @@ public interface RequestResponse {
 	 *
 	 * @return String URI (may be null!)
 	 */
-	public String getUri();
+	String getUri();
 }

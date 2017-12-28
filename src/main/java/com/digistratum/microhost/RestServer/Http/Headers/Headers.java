@@ -17,7 +17,7 @@ public interface Headers {
 	 *
 	 * @return boolean true if the named header is defined, else false
 	 */
-	public boolean has(String name);
+	boolean has(String name);
 
 	/**
 	 * Get the value of the specifically named header
@@ -28,7 +28,7 @@ public interface Headers {
 	 *
 	 * @return String value of the header (may be null, especially if undefined)
 	 */
-	public String get(String name);
+	String get(String name);
 
 	/**
 	 * Set the value of the specifically named header to te supplied value
@@ -36,12 +36,12 @@ public interface Headers {
 	 * @param name String name of the header we want the value for
 	 * @param value String value to set the header to
 	 */
-	public void set(String name, String value);
+	void set(String name, String value);
 
 	/**
 	 * Get a set  of named headers
 	 *
 	 * @return Set<String> of header names which we have
 	 */
-	public Set<String> list();
+	Set<String> list();
 }

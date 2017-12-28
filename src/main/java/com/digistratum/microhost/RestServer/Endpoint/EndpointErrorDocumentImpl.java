@@ -1,14 +1,8 @@
 package com.digistratum.microhost.RestServer.Endpoint;
 
 import com.digistratum.microhost.Exception.MHException;
-import com.digistratum.microhost.RestServer.Http.Headers.HeadersImpl;
 import com.digistratum.microhost.RestServer.Http.RequestResponse.Request;
-import com.digistratum.microhost.RestServer.Http.RequestResponse.RequestResponseImpl;
 import com.digistratum.microhost.RestServer.Http.RequestResponse.Response;
-import com.digistratum.microhost.RestServer.Http.RequestResponse.ResponseImpl;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class EndpointErrorDocumentImpl extends EndpointImpl {
 	Integer code;
@@ -17,8 +11,8 @@ public class EndpointErrorDocumentImpl extends EndpointImpl {
 	/**
 	 * Constructor
 	 *
-	 * @param code
-	 * @param message
+	 * @param code Integer HTTP Status code we want to return
+	 * @param message String message that we want to output into the error doc
 	 */
 	public EndpointErrorDocumentImpl(Integer code, String message) {
 		this.code = code;

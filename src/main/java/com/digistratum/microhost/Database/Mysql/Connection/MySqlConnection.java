@@ -1,6 +1,6 @@
 package com.digistratum.microhost.Database.Mysql.Connection;
 
-import com.digistratum.microhost.Exception.MHDatabaseException;
+import com.digistratum.microhost.Database.Exception.MHDatabaseException;
 
 import java.util.List;
 
