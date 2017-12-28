@@ -19,8 +19,10 @@ ADVANCED:
  * todo Register service with registry service
  * todo Support for some sort of API schema code/stub generation
  * todo Support for JSONApi
+   ref: http://jsonapi.org/format/
  * todo Try to get launcher to fire up more than one MicroHost in a single JVM launcher app, one thread each.
    ref: https://stackoverflow.com/questions/60764/how-should-i-load-jars-dynamically-at-runtime
+   ref: https://docs.oracle.com/javase/tutorial/deployment/jar/jarclassloader.html
  * todo Add some sort of service/daemon wrapper/executor
    ref: http://commons.apache.org/proper/commons-daemon/
    ref: http://yajsw.sourceforge.net/
