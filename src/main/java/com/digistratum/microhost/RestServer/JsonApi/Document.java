@@ -1,9 +1,12 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
+import com.digistratum.microhost.Json.JsonClass;
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Document {
+public class Document implements JsonClass {
 
 	// At least one of the following is required
 	protected ResourceLinkage data;
@@ -75,5 +78,11 @@ public class Document {
 		if (null == included) included = new ArrayList<>();
 		included.add(resource);
 		return this;
+	}
+
+	@Override
+	public String toJson() {
+		Gson gson = new Gson();
+		return "";
 	}
 }

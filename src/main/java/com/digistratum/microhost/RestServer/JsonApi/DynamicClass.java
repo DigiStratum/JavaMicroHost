@@ -1,5 +1,6 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
+import com.digistratum.microhost.Json.JsonClass;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
