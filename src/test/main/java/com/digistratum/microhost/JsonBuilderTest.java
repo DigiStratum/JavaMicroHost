@@ -25,8 +25,13 @@ public class JsonBuilderTest {
 
 	@Test
 	public void testThat_toJson_encodesStrings() {
-		String test = "AmanaplanacanalpanamA";
-		assertEquals("\"" + test + "\"", sut.toJson(test));
+		// A string is always encoded as a JavaString, encapsulated in a set of quotes; so the outermost
+		// characters are always double-quotes. Within that, other characters may be literal or escaped
+		// as needed. If, for example, our test string itself has quotes within it, then those quotes will
+		// be escaped. And to check this in Java here, we must escape the outermost quote, escape the escape,
+		// AND escape the inner quote as Json and Java strings have the same escaping requirements. eek!
+
+		assertEquals("\"\\\"test\\\"\"", sut.toJson("\"test\""));
 	}
 
 	@Test
