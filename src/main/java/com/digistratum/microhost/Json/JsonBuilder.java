@@ -1,6 +1,7 @@
 package com.digistratum.microhost.Json;
 
 import com.google.gson.Gson;
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -9,13 +10,26 @@ import java.util.List;
  * Expand upon Gson's capabilities a bit to handle some difficult situations
  */
 public class JsonBuilder {
+	protected static Logger log;
 	protected Gson gson;
+	protected boolean verbose = false;
 
 	/**
 	 * Default Cosntructor
 	 */
 	public JsonBuilder() {
 		gson = new Gson();
+	}
+
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
+		if (! verbose) return;
+		log = Logger.getLogger(JsonBuilder.class);
+	}
+
+	public void verboseLog(String msg) {
+		if (! verbose) return;
+		log.debug("JsonBuilder: " + msg);
 	}
 
 	/**
@@ -46,8 +60,10 @@ public class JsonBuilder {
 	 * @return String  JSON representation of the supplied object
 	 */
 	public String toJson(Object obj) {
+
 		// If Object is a primitive type, return gson.toJson(obj)
 		String simpleName = obj.getClass().getSimpleName();
+		verboseLog("toJson() encoding object; simpleName = '" + simpleName + "'");
 		if ("String".equals(simpleName)) return toJsonGson(obj);
 		if ("Integer".equals(simpleName)) return toJsonGson(obj);
 		if ("Float".equals(simpleName)) return toJsonGson(obj);
@@ -55,7 +71,10 @@ public class JsonBuilder {
 		if ("Boolean".equals(simpleName)) return toJsonGson(obj);
 
 		// If Object implements JsonClass, return obj.toJson()
-		if (obj instanceof JsonClass) return ((JsonClass) obj).toJson();
+		if (obj instanceof JsonClass) {
+			verboseLog("toJson() encoding JsonClass");
+			return ((JsonClass) obj).toJson();
+		}
 
 		// Else, If Object is an Array:
 		// 		Make new String[] values array
@@ -66,6 +85,7 @@ public class JsonBuilder {
 		// TODO: Support for any other kind of array needed here?
 		StringBuilder sb = new StringBuilder();
 		if (obj instanceof List) {
+			verboseLog("toJson() encoding List");
 			sb.append("[");
 			boolean first = true;
 			for (Object listElement : ((List) obj)) {
@@ -84,13 +104,20 @@ public class JsonBuilder {
 		//     		properties.add(property.name, this.toJson(property))
 		// 		}
 		//		return final JSON string as "{}" with all properties in the middle
-		Field[] fields = obj.getClass().getDeclaredFields();
+		verboseLog("toJson() encoding properties of general class");
+		Field[] fields = obj.getClass().getFields();
 		sb.append("{");
 		boolean first = true;
 		for (Field field : fields) {
 			String fieldName = field.getName();
+
 			//  Skip the magic, Java-built-in this$0 property
-			if (fieldName.equals("this$0")) continue;
+			if (fieldName.equals("this$0")) {
+				verboseLog("toJson() skipping this$0 internal property");
+				continue;
+			}
+
+			verboseLog("toJson() encoding property: " + fieldName);
 			if (! first) sb.append(",");
 			else first = false;
 			sb.append("\"");

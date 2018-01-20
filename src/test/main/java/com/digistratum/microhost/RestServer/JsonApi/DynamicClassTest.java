@@ -15,9 +15,9 @@ public class DynamicClassTest {
 	}
 
 	@Test
-	public void testThat_toString_returnsAJsonObject() {
+	public void testThat_toJson_returnsAJsonObject() {
 		sut.set("copyright", "2018");
-		String json = sut.toString();
+		String json = sut.toJson();
 		assertEquals("{\"copyright\":\"2018\"}", json);
 	}
 

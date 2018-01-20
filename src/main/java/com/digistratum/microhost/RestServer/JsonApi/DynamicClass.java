@@ -1,5 +1,6 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
+import com.digistratum.microhost.Json.JsonBuilder;
 import com.digistratum.microhost.Json.JsonClass;
 import com.google.gson.Gson;
 
@@ -13,6 +14,7 @@ import java.util.Map;
  */
 public abstract class DynamicClass implements JsonClass {
 	protected Map<String, Object> properties = new HashMap<>();
+	protected JsonBuilder jsonBuilder;
 
 	/**
 	 * Get the named property's value

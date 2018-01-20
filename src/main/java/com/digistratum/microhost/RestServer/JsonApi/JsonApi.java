@@ -1,10 +1,12 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
+import com.digistratum.microhost.Json.JsonBuilder;
 import com.digistratum.microhost.Json.JsonClass;
 import com.google.gson.Gson;
 
 public class JsonApi implements JsonClass {
 	protected Properties properties;
+	protected JsonBuilder jsonBuilder;
 
 	/**
 	 * Default Constructor
@@ -17,8 +19,8 @@ public class JsonApi implements JsonClass {
 	 * A JSON serializable class with all our properties without exposing access
 	 */
 	protected class Properties {
-		String version;
-		Meta meta;
+		public String version;
+		public Meta meta;
 	}
 
 	/**
@@ -49,7 +51,8 @@ public class JsonApi implements JsonClass {
 
 	@Override
 	public String toJson() {
-		Gson gson = new Gson();
-		return gson.toJson(properties);
+		if (null == jsonBuilder) jsonBuilder = new JsonBuilder();
+		jsonBuilder.setVerbose(true);
+		return jsonBuilder.toJson(properties);
 	}
 }
