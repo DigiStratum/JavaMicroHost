@@ -1,10 +1,14 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
+import com.digistratum.microhost.Json.JsonClass;
+
 /**
- * ef: https://tools.ietf.org/html/rfc6901
+ * ref: https://tools.ietf.org/html/rfc6901
  * ref: http://rapidjson.org/md_doc_pointer.html
+ *
+ * todo: Add some helper methods around this to ensure that the pointer is well-formed
  */
-public class JsonPointer {
+public class JsonPointer implements JsonClass {
 	String ptr;
 
 	public JsonPointer(String ptr) {
@@ -12,7 +16,7 @@ public class JsonPointer {
 	}
 
 	@Override
-	public String toString() {
+	public String toJson() {
 		return ptr;
 	}
 }
