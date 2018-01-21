@@ -12,12 +12,12 @@ INTERMEDIATE:
  * todo Built-in support for batch operations
  * todo Support for generation of Swagger documentation
  * todo build separate jars for:
- ** Example
- ** MicroHost library
- ** JsonApi library
- ** MySQL/Database MicroORM library
- ** Process/wrapper library (needed?)
- ** Some new Module loader app/library which lets us load one or more modules and execute into the same JVM
+   * Example
+   * MicroHost library
+   * JsonApi library
+   * MySQL/Database MicroORM library
+   * Process/wrapper library (needed?)
+   * Some new Module loader app/library which lets us load one or more modules and execute into the same JVM
  * todo Separate example from library into new repo to demonstrate pulling in the dependency
    ref: https://stackoverflow.com/questions/20161602/loading-maven-dependencies-from-github
 
