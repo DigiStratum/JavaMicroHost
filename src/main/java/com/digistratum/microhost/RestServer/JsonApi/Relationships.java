@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Relationships {
-	private Map<String, Relationship> relationships = new HashMap<>();
+	protected Map<String, Relationship> relationships = new HashMap<>();
 
 	/**
 	 * Get the named relationship's value
