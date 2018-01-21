@@ -6,6 +6,10 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * todo: Add support for using this class to build up a JsonApi Document; can we use a builder pattern?
+ */
 public class Document implements JsonClass {
 
 	// At least one of the following is required
