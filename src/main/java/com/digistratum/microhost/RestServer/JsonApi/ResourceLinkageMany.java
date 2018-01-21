@@ -1,11 +1,12 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
+import com.digistratum.microhost.Json.JsonClass;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResourceLinkageMany {
+public class ResourceLinkageMany implements ResourceLinkage, JsonClass {
 	List<Resource> resources;
 
 	/**
@@ -25,7 +26,7 @@ public class ResourceLinkageMany {
 	}
 
 	@Override
-	public String toString() {
+	public String toJson() {
 		Gson gson = new Gson();
 		return gson.toJson(resources);
 	}

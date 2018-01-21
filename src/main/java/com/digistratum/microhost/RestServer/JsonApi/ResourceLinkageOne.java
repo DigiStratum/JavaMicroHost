@@ -1,9 +1,10 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
+import com.digistratum.microhost.Json.JsonClass;
 import com.google.gson.Gson;
 
-public class ResourceLinkageOne implements ResourceLinkage {
-	Resource resource;
+public class ResourceLinkageOne implements ResourceLinkage, JsonClass {
+	protected Resource resource;
 
 	/**
 	 * Default Constructor; leaves resource null (intentionally)
@@ -29,7 +30,7 @@ public class ResourceLinkageOne implements ResourceLinkage {
 	}
 
 	@Override
-	public String toString() {
+	public String toJson() {
 		Gson gson = new Gson();
 		return gson.toJson(resource);
 	}

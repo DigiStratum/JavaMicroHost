@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RelationshipsTest {
 	private TestableRelationships sut;
+
 	@BeforeEach
 	public void setup() throws Exception {
 		sut = new TestableRelationships();
