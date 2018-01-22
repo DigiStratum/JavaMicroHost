@@ -99,7 +99,8 @@ public class RestServerImplTest {
 	@Test
 	public void testThat_addControllerContext_addsContextToServer() throws Exception {
 		sut.addControllerContext(mockCtrl, "/testContext");
-		verify(mockHttpServer, times(1)).createContext(anyString(), anyObject());
+		// Note: sut constructor calls createContext() for "/" as well, so it's our call + that one: 2
+		verify(mockHttpServer, times(2)).createContext(anyString(), anyObject());
 	}
 
 	@Test
