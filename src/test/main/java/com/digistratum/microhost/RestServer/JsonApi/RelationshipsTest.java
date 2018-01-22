@@ -34,7 +34,7 @@ public class RelationshipsTest {
 		String metaKey = "testmeta";
 		String metaValue = "testvalue";
 		testRelationship.meta.set(metaKey, metaValue);
-		testRelationship.data = new ResourceLinkageOne();
+		testRelationship.data = new Resources();
 		sut.set(key, testRelationship);
 		Relationship verifyRelationship = sut.get(key);
 		assertEquals(verifyRelationship.meta.get(metaKey), metaValue);

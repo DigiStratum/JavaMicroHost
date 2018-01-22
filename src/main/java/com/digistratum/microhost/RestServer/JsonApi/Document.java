@@ -13,7 +13,7 @@ import java.util.List;
 public class Document implements JsonClass {
 
 	// At least one of the following is required
-	protected ResourceLinkage data;
+	protected Resources data;
 	protected Error[] errors;
 	protected Meta meta;
 

@@ -1,19 +1,48 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
+import com.digistratum.microhost.Json.JsonBuilder;
 import com.digistratum.microhost.Json.JsonClass;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResourceLinkageMany implements ResourceLinkage, JsonClass {
-	List<Resource> resources;
+public class Resources implements JsonClass {
+	protected List<Resource> resources;
+
+	protected boolean forceCollection = false;
+	protected boolean nullable = true;
+
+	protected JsonBuilder jsonBuilder;
 
 	/**
 	 * Default constructor
 	 */
-	public ResourceLinkageMany() {
+	public Resources() {
 		resources = new ArrayList<>();
+	}
+
+	/**
+	 * Force the JSON output to be a collection even if there are zero or one
+	 *
+	 * Note: default value is false and the behavior is to automatically set the JSON output to be a
+	 * collection if there are two or more resources, and be a single object for only one resource,
+	 * and null for an empty set. When true, the empty set will return an empty set, and one or more
+	 * resources will be added to a collection rather than just a single object for one resource.
+	 *
+	 * @param value boolean; true to force a collection result
+	 */
+	public void setForceCollection(boolean value) {
+		forceCollection = value;
+	}
+
+	/**
+	 * Force the JSON output to be null for empty set
+	 *
+	 * @param value boolean; false to force the collection to return an empty set instead of null
+	 */
+	public void setNullable(boolean value) {
+		nullable = value;
 	}
 
 	/**
@@ -25,9 +54,22 @@ public class ResourceLinkageMany implements ResourceLinkage, JsonClass {
 		resources.add(resource);
 	}
 
+	// TODO: Perhaps this is generally useful as part of JsonBuilder/JsonClass?
 	@Override
 	public String toJson() {
-		Gson gson = new Gson();
-		return gson.toJson(resources);
+
+		// Empty set? Return a null if we are nullable
+		if (resources.isEmpty() && (nullable)) return "null";
+
+		if (null == jsonBuilder) jsonBuilder = new JsonBuilder();
+
+		// Set of one? // Return only a single resource if we are NOT forcing a collection
+		if ((resources.size() == 1) && (! forceCollection)) {
+			jsonBuilder.setVerbose(true);
+			return jsonBuilder.toJson(resources.get(0));
+		}
+
+		// Everything else is represented as a collection of resource objects (including empty set)
+		return jsonBuilder.toJson(resources);
 	}
 }
