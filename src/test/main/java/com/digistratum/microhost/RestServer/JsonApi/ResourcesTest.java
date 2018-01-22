@@ -14,8 +14,14 @@ public class ResourceLinkageOneTest {
 	}
 
 	@Test
-	public void testThat_defaultResourceIsEmpty() {
+	public void testThat_toJson_returnsJsonNullForDefaultResource() {
 		assertEquals("null", sut.toJson());
+	}
+
+	@Test
+	public void testThat_toJson_returnsGoodJsonForPopulatedResource() {
+		Resource resource = new Resource();
+		sut.setResource(resource);
 	}
 
 	// TODO: Add test to check the JSON here; take inspiration from RelationshipsTest.java

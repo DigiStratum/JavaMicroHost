@@ -14,6 +14,9 @@ public class JsonBuilder {
 	protected Gson gson;
 	protected boolean verbose = false;
 
+	// TODO: Use this to initialize Gson with GsonBuilder()
+	protected boolean serializeNulls = false;
+
 	/**
 	 * Default Cosntructor
 	 */
@@ -57,9 +60,12 @@ public class JsonBuilder {
 	 *
 	 * @param obj Object to reflect upon and convert to JSON
 	 *
-	 * @return String  JSON representation of the supplied object
+	 * @return String  JSON representation of the supplied object; may be null
 	 */
 	public String toJson(Object obj) {
+
+		// If Object is null...
+		if (null == obj) return (serializeNulls) ? toJsonGson(obj) : null;
 
 		// If Object is a primitive type, return gson.toJson(obj)
 		String simpleName = obj.getClass().getSimpleName();
@@ -117,18 +123,26 @@ public class JsonBuilder {
 				continue;
 			}
 
-			verboseLog("toJson() encoding property: " + fieldName);
+			// Get the encoded value...
+			String value = null;
+			try {
+				value = toJson(field.get(obj));
+			} catch (IllegalAccessException e) {
+				// Shouldn't happen; swallow it until there's some indication that this can actually fail
+				System.out.println("Unexpected Exception accessing Field of Object in JsonBuilder.toJson()");
+			}
+
+			// If the encoded value came back null, but we are not serializing nulls, then move on
+			if ((null == value) && (! serializeNulls)) continue;
+
+			// Add this field: value to our output
+			verboseLog("toJson() encoding property: " + fieldName + " value: " + value);
 			if (! first) sb.append(",");
 			else first = false;
 			sb.append("\"");
 			sb.append(fieldName);
 			sb.append("\":");
-			try {
-				sb.append(toJson(field.get(obj)));
-			} catch (IllegalAccessException e) {
-				// Shouldn't happen; swallow it until there's some indication that this can actually fail
-				System.out.println("Unexpected Exception accessing Field of Object in JsonBuilder.toJson()");
-			}
+			sb.append(value);
 		}
 		sb.append("}");
 		return sb.toString();
