@@ -115,6 +115,12 @@ public class JsonBuilderTest {
 		assertTrue(Math.abs(res.bigDoubleProp - test.bigDoubleProp) < 0.0001);
 	}
 
+	@Test
+	public void testThat_toJson_eliminatesNullsByDefault() {
+		ObjectWithNullProperty test = new ObjectWithNullProperty();
+		assertEquals("{}", sut.toJson(test));
+	}
+
 	// TODO: Add a test to cover objects with mixed, nested properties (such as other objects, arrays of objects, etc)
 
 	protected class JsonClassObject implements JsonClass {
@@ -140,5 +146,9 @@ public class JsonBuilderTest {
 		public Float bigFloatProp = (float) 333.3;
 		public double doubleProp = 3.14159;
 		public Double bigDoubleProp = 26.2;
+	}
+
+	protected class ObjectWithNullProperty {
+		public String nullString = null;
 	}
 }
