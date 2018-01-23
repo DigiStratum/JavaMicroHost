@@ -49,6 +49,20 @@ public class Resource implements JsonClass {
 		 * resource that can not be represented as an attribute or relationship.
 		 */
 		public Meta meta;
+
+		/**
+		 * Constructor
+		 *
+		 * This is to prevent us from instantiating a set of
+		 * properties without providing the minimum required fields.
+		 *
+		 * @param id
+		 * @param type
+		 */
+		public Properties (String id, String type) {
+			this.id = id;
+			this.type = type;
+		}
 	}
 
 	/**
@@ -60,9 +74,7 @@ public class Resource implements JsonClass {
 	 * @param type String type of this resource
 	 */
 	public Resource(String id, String type) {
-		properties = new Properties();
-		properties.id = id;
-		properties.type = type;
+		properties = new Properties(id, type);
 	}
 
 	/**
