@@ -1,6 +1,7 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
 import com.digistratum.microhost.Json.JsonClass;
+import com.google.gson.Gson;
 
 /**
  * ref: https://tools.ietf.org/html/rfc6901
@@ -10,6 +11,7 @@ import com.digistratum.microhost.Json.JsonClass;
  */
 public class JsonPointer implements JsonClass {
 	protected String ptr;
+	protected Gson gson;
 
 	public JsonPointer(String ptr) {
 		this.ptr = ptr;
@@ -17,6 +19,7 @@ public class JsonPointer implements JsonClass {
 
 	@Override
 	public String toJson() {
-		return ptr;
+		if (null == gson) gson = new Gson();
+		return gson.toJson(ptr);
 	}
 }

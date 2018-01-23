@@ -16,6 +16,6 @@ public class JsonPointerTest {
 	public void testThat_toJson_returnsExpectedOutput() {
 		String pointerString = "pointerString";
 		sut = new JsonPointer(pointerString);
-		assertEquals(pointerString, sut.toJson());
+		assertEquals("\"pointerString\"", sut.toJson());
 	}
 }
