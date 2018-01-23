@@ -21,6 +21,8 @@ public class DynamicClassTest {
 		assertEquals("{\"copyright\":\"2018\"}", json);
 	}
 
+	// FIXME: Fill in missing test cases here for get/set/has methods!
+
 	private class TestableDynamicClass extends DynamicClass {
 		public TestableDynamicClass() {
 			super();

@@ -35,6 +35,17 @@ public abstract class DynamicClass implements JsonClass {
 		properties.put(key, value);
 	}
 
+	/**
+	 * Check whether we have a value for the named property
+	 *
+	 * @param key String name of the property we want to check
+	 *
+	 * @return boolean true if the named property is in our set, else false
+	 */
+	public boolean has(String key) {
+		return properties.containsKey(key);
+	}
+
 	@Override
 	public String toJson() {
 		Gson gson = new Gson();
