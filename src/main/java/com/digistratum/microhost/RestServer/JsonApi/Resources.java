@@ -2,11 +2,15 @@ package com.digistratum.microhost.RestServer.JsonApi;
 
 import com.digistratum.microhost.Json.JsonBuilder;
 import com.digistratum.microhost.Json.JsonClass;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * JsonApi - Resources
+ *
+ * A collection of zero or more Resource objects
+ */
 public class Resources implements JsonClass {
 	protected List<Resource> resources;
 
