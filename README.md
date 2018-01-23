@@ -15,6 +15,8 @@ INTERMEDIATE:
    * Example
    * MicroHost library
    * JsonApi library
+   * Validation library
+   * Json/Builder/Class library
    * MySQL/Database MicroORM library
    * Process/wrapper library (needed?)
    * Some new Module loader app/library which lets us load one or more modules and execute into the same JVM
