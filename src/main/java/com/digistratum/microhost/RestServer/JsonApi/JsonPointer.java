@@ -9,7 +9,7 @@ import com.digistratum.microhost.Json.JsonClass;
  * todo: Add some helper methods around this to ensure that the pointer is well-formed
  */
 public class JsonPointer implements JsonClass {
-	String ptr;
+	protected String ptr;
 
 	public JsonPointer(String ptr) {
 		this.ptr = ptr;

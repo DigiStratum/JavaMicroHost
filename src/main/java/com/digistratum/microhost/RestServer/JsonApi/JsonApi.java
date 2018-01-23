@@ -52,7 +52,7 @@ public class JsonApi implements JsonClass {
 	@Override
 	public String toJson() {
 		if (null == jsonBuilder) jsonBuilder = new JsonBuilder();
-		jsonBuilder.setVerbose(true);
+		// jsonBuilder.setVerbose(true);
 		return jsonBuilder.toJson(properties);
 	}
 }

@@ -1,7 +1,5 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
-import com.google.gson.Gson;
-
 import java.net.URL;
 
 public class Links extends DynamicClass {
