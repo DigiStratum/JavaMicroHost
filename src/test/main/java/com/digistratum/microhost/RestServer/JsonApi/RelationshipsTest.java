@@ -29,16 +29,20 @@ public class RelationshipsTest {
 		String key = "testkey";
 		assertFalse(sut.hasRelationship(key));
 		Relationship testRelationship = new Relationship();
-		testRelationship.links = new Links();
-		testRelationship.meta = new Meta();
+		testRelationship.setLinks(new Links());
+		Meta meta = new Meta();
 		String metaKey = "testmeta";
 		String metaValue = "testvalue";
-		testRelationship.meta.set(metaKey, metaValue);
-		testRelationship.data = new Resources();
+		meta.set(metaKey, metaValue);
+		testRelationship.setMeta(meta);
+		testRelationship.setData(new Resources());
 		sut.set(key, testRelationship);
+
 		Relationship verifyRelationship = sut.get(key);
-		assertEquals(verifyRelationship.meta.get(metaKey), metaValue);
+		assertEquals(verifyRelationship.getMeta().get(metaKey), metaValue);
 	}
+
+	// TODO: Add more tests around JSON serialization and validation checks
 
 	private class TestableRelationships extends Relationships {
 		public boolean hasRelationship(String key) {
