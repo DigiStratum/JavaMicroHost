@@ -31,27 +31,36 @@ public class Resources implements JsonClass {
 	 * resources will be added to a collection rather than just a single object for one resource.
 	 *
 	 * @param value boolean; true to force a collection result
+	 *
+	 * @Return this for chaining...
 	 */
-	public void setForceCollection(boolean value) {
+	public Resources setForceCollection(boolean value) {
 		forceCollection = value;
+		return this;
 	}
 
 	/**
 	 * Force the JSON output to be null for empty set
 	 *
 	 * @param value boolean; false to force the collection to return an empty set instead of null
+	 *
+	 * @Return this for chaining...
 	 */
-	public void setNullable(boolean value) {
+	public Resources setNullable(boolean value) {
 		nullable = value;
+		return this;
 	}
 
 	/**
 	 * Add a resource to the collection
 	 *
 	 * @param resource Resource instance that we want to add
+	 *
+	 * @Return this for chaining...
 	 */
-	public void addResource(Resource resource) {
+	public Resources addResource(Resource resource) {
 		resources.add(resource);
+		return this;
 	}
 
 	// TODO: Perhaps this is generally useful as part of JsonBuilder/JsonClass?

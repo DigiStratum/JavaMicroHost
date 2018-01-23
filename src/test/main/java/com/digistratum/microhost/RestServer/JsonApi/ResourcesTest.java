@@ -20,32 +20,29 @@ public class ResourcesTest {
 
 	@Test
 	public void testThat_toJson_returnsJsonEmptySetForEmptyResourceNonNullable() {
-		sut.setNullable(false);
-		assertEquals("[]", sut.toJson());
+		String res = sut.setNullable(false).toJson();
+		assertEquals("[]", res);
 	}
 
 	@Test
 	public void testThat_toJson_returnsSingleObjectForBareResource() {
 		Resource resource = new Resource("resourceId", "resourceType");
-		sut.addResource(resource);
-		assertEquals("{\"id\":\"resourceId\",\"type\":\"resourceType\"}", sut.toJson());
+		String res = sut.addResource(resource).toJson();
+		assertEquals("{\"id\":\"resourceId\",\"type\":\"resourceType\"}", res);
 	}
 
 	@Test
 	public void testThat_toJson_returnsCollectionWithSingleObjectElementForBareResourceWithForceCollection() {
-		sut.setForceCollection(true);
 		Resource resource = new Resource("resourceId", "resourceType");
-		sut.addResource(resource);
-		assertEquals("[{\"id\":\"resourceId\",\"type\":\"resourceType\"}]", sut.toJson());
+		String res = sut.setForceCollection(true).addResource(resource).toJson();
+		assertEquals("[{\"id\":\"resourceId\",\"type\":\"resourceType\"}]", res);
 	}
 
 	@Test
 	public void testThat_toJson_returnsCollectionWithMultipleObjectElementsForBareResource() {
 		Resource resource = new Resource("resourceId", "resourceType");
-		sut.addResource(resource);
-		sut.addResource(resource);
-		sut.addResource(resource);
-		assertEquals("[{\"id\":\"resourceId\",\"type\":\"resourceType\"},{\"id\":\"resourceId\",\"type\":\"resourceType\"},{\"id\":\"resourceId\",\"type\":\"resourceType\"}]", sut.toJson());
+		String res = sut.addResource(resource).addResource(resource).addResource(resource).toJson();
+		assertEquals("[{\"id\":\"resourceId\",\"type\":\"resourceType\"},{\"id\":\"resourceId\",\"type\":\"resourceType\"},{\"id\":\"resourceId\",\"type\":\"resourceType\"}]", res);
 	}
 
 	@Test
@@ -54,27 +51,26 @@ public class ResourcesTest {
 		Meta meta = new Meta();
 		meta.set("name", "value");
 		resource.setMeta(meta);
-		sut.addResource(resource);
-		assertEquals("{\"id\":\"resourceId\",\"type\":\"resourceType\",\"meta\":{\"name\":\"value\"}}", sut.toJson());
+		String res = sut.addResource(resource).toJson();
+		assertEquals("{\"id\":\"resourceId\",\"type\":\"resourceType\",\"meta\":{\"name\":\"value\"}}", res);
 	}
 
 	@Test
 	public void testThat_toJson_returnsCollectionWithMultipleObjectElementsForPopulatedResources() {
 
 		// Setup
-		Resource resource = new Resource("resourceId1", "resourceType1");
+		Resource resource1 = new Resource("resourceId1", "resourceType1");
 		Meta meta = new Meta();
 		meta.set("name1", "value1");
-		resource.setMeta(meta);
-		sut.addResource(resource);
+		resource1.setMeta(meta);
 
-		resource = new Resource("resourceId2", "resourceType2");
+		Resource resource2 = new Resource("resourceId2", "resourceType2");
 		meta = new Meta();
 		meta.set("name2", "value2");
-		resource.setMeta(meta);
-		sut.addResource(resource);
+		resource2.setMeta(meta);
+		String res = sut.addResource(resource1).addResource(resource2).toJson();
 
 		// Verify
-		assertEquals("[{\"id\":\"resourceId1\",\"type\":\"resourceType1\",\"meta\":{\"name1\":\"value1\"}},{\"id\":\"resourceId2\",\"type\":\"resourceType2\",\"meta\":{\"name2\":\"value2\"}}]", sut.toJson());
+		assertEquals("[{\"id\":\"resourceId1\",\"type\":\"resourceType1\",\"meta\":{\"name1\":\"value1\"}},{\"id\":\"resourceId2\",\"type\":\"resourceType2\",\"meta\":{\"name2\":\"value2\"}}]", res);
 	}
 }
