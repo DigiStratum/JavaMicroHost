@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * ref: https://stackoverflow.com/questions/12832554/how-to-add-attributes-dynamically-for-java-object
@@ -32,8 +33,27 @@ public abstract class DynamicClass implements JsonClass, Validatable {
 	 *
 	 * @param requiredKeys List<String> set of keys which must be set to be valid
 	 * @param optionalKeys List<String> set of keys which are permitted to be set
+	 *
+	 * @throws JsonApiException for and invalid key
 	 */
 	public DynamicClass(List<String> requiredKeys, List<String> optionalKeys) {
+		this();
+		if (null != requiredKeys) {
+			for (String key : requiredKeys) {
+				if (! isValidKey(key)) {
+					throw new JsonApiException("Invalid required key: '" + key + "'");
+				}
+			}
+			if (! requiredKeys.isEmpty()) unrestricted = false;
+		}
+		if (null != optionalKeys) {
+			for (String key : optionalKeys) {
+				if (! isValidKey(key)) {
+					throw new JsonApiException("Invalid optional key: '" + key + "'");
+				}
+			}
+			if (! optionalKeys.isEmpty()) unrestricted = false;
+		}
 		this.requiredKeys = requiredKeys;
 		this.optionalKeys = optionalKeys;
 	}
@@ -43,13 +63,14 @@ public abstract class DynamicClass implements JsonClass, Validatable {
 	 *
 	 * (For example, that we can't unwittingly specify required/optional keys for impossible keys)
 	 *
+	 * True for anything that can be used as a JSON property name
+	 *
 	 * @param key String key to check
 	 *
 	 * @return boolean true if the key is valid, else false
 	 */
 	protected boolean isValidKey(String key) {
-		// FIXME: return false for anything that can NOT be used as a JSON property name
-		return true;
+		return Pattern.matches("[A-Za-z]+[A-Za-z0-9_]*", key);
 	}
 
 	/**
@@ -68,14 +89,19 @@ public abstract class DynamicClass implements JsonClass, Validatable {
 	 *
 	 * @param key String name of the property we want to set the value for
 	 * @param value  String property value
+	 *
+	 * @throws JsonApiException for and invalid key, or a key which is not required/optional in restricted mode
 	 */
 	public void set(String key, String value) {
 		// If we are in restricted mode
 		if (! unrestricted) {
 			// This key must be in the set of either optional or required keys
-			if (! (requiredKeys.contains(key) || optionalKeys.contains(key))) {
+			if (! ((null != requiredKeys) && (requiredKeys.contains(key)) || ((null != optionalKeys) && optionalKeys.contains(key)))) {
 				throw new JsonApiException("Attempted to set a key on a restricted set which is neither required nor optional");
 			}
+		}
+		if (! isValidKey(key)) {
+			throw new JsonApiException("Invalid key: '" + key + "'");
 		}
 		properties.put(key, value);
 	}
@@ -104,8 +130,10 @@ public abstract class DynamicClass implements JsonClass, Validatable {
 		if (unrestricted) return true;
 
 		// Otherwise, all required keys must be present
-		for (String key : requiredKeys) {
-			if (! has(key)) return false;
+		if (null !=requiredKeys) {
+			for (String key : requiredKeys) {
+				if (!has(key)) return false;
+			}
 		}
 
 		return true;
