@@ -2,6 +2,10 @@ package com.digistratum.microhost.RestServer.JsonApi;
 
 import java.net.URL;
 
+/**
+ * TODO: Add support for forcing which links are required (for validation) and which are optional
+ * (allowed at all) vs. unrestricted (current model)
+ */
 public class Links extends DynamicClass {
 
 	/**
