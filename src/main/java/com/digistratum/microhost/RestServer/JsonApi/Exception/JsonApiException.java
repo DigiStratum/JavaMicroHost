@@ -1,6 +1,6 @@
 package com.digistratum.microhost.RestServer.JsonApi.Exception;
 
-public class JsonApiException extends Exception {
+public class JsonApiException extends RuntimeException {
 	public JsonApiException(String message) { super(message); }
 	public JsonApiException(String message, Throwable cause) { super(message, cause); }
 	public JsonApiException(Throwable cause) { super(cause); }
