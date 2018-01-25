@@ -5,12 +5,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SourceTest {
-	private Source sut;
+public class ErrorSourceTest {
+	private ErrorSource sut;
 
 	@BeforeEach
 	public void setup() throws Exception {
-		sut = new Source();
+		sut = new ErrorSource();
 	}
 
 	@Test

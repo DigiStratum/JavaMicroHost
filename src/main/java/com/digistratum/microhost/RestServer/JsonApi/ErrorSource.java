@@ -8,7 +8,7 @@ import com.digistratum.microhost.Json.JsonClass;
  *
  * An object containing references to the source of the error, should one occur.
  */
-public class Source implements JsonClass {
+public class ErrorSource implements JsonClass {
 	protected Properties properties;
 	protected JsonBuilder jsonBuilder;
 
@@ -31,7 +31,7 @@ public class Source implements JsonClass {
 	/**
 	 * Constructor
 	 */
-	public Source () {
+	public ErrorSource() {
 		properties = new Properties();
 	}
 
@@ -42,7 +42,7 @@ public class Source implements JsonClass {
 	 *
 	 * @return This instance for chaining...
 	 */
-	public Source setPointer(JsonPointer pointer) {
+	public ErrorSource setPointer(JsonPointer pointer) {
 		properties.pointer = pointer;
 		return this;
 	}
@@ -54,7 +54,7 @@ public class Source implements JsonClass {
 	 *
 	 * @return This instance for chaining...
 	 */
-	public Source setParameter(String parameter) {
+	public ErrorSource setParameter(String parameter) {
 		properties.parameter = parameter;
 		return this;
 	}

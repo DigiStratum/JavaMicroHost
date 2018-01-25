@@ -54,7 +54,7 @@ public class Error implements JsonClass {
 		 *
 		 * "parameter": a string indicating which URI query parameter caused the error.
 		 */
-		public Source source;
+		public ErrorSource source;
 
 		/**
 		 * A meta object containing non-standard meta-information about the error.
@@ -150,7 +150,7 @@ public class Error implements JsonClass {
 	 *
 	 * @return this for chaining...
 	 */
-	public Error setSource(Source source) {
+	public Error setSource(ErrorSource source) {
 		properties.source = source;
 		return this;
 	}
@@ -169,9 +169,8 @@ public class Error implements JsonClass {
 
 	@Override
 	public String toJson() {
-		System.out.println("yoh!");
 		if (null == jsonBuilder) jsonBuilder = new JsonBuilder();
-		jsonBuilder.setVerbose(true);
+		//jsonBuilder.setVerbose(true);
 		return jsonBuilder.toJson(properties);
 	}
 }

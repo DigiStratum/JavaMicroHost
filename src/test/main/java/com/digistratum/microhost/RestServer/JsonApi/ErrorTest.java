@@ -22,7 +22,7 @@ public class ErrorTest {
 	@Test
 	public void testThat_setters_chainPropertly() {
 		Meta meta = new Meta();
-		Source source = new Source();
+		ErrorSource source = new ErrorSource();
 		Links links = new Links();
 		sut.setId("id")
 				.setCode("CODE")
