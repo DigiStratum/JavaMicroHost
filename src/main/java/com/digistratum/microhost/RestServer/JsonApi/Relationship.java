@@ -3,6 +3,8 @@ package com.digistratum.microhost.RestServer.JsonApi;
 import com.digistratum.microhost.Json.Exception.JsonException;
 import com.digistratum.microhost.Json.JsonBuilder;
 import com.digistratum.microhost.Json.JsonClass;
+import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.Links;
+import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.Meta;
 import com.digistratum.microhost.Validation.Validatable;
 
 public class Relationship implements JsonClass, Validatable {

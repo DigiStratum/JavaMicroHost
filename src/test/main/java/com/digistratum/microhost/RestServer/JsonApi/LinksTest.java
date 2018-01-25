@@ -1,5 +1,6 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
+import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.Links;
 import com.google.gson.Gson;
 
 import org.junit.jupiter.api.BeforeEach;

@@ -1,5 +1,6 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
+import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.DynamicClass;
 import com.digistratum.microhost.RestServer.JsonApi.Exception.JsonApiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

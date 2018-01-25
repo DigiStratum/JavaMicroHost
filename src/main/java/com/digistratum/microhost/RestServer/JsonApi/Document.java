@@ -1,6 +1,8 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
 import com.digistratum.microhost.Json.JsonClass;
+import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.Links;
+import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.Meta;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;

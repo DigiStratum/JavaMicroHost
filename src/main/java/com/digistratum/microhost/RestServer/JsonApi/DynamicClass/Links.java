@@ -1,4 +1,4 @@
-package com.digistratum.microhost.RestServer.JsonApi;
+package com.digistratum.microhost.RestServer.JsonApi.DynamicClass;
 
 import java.net.URL;
 

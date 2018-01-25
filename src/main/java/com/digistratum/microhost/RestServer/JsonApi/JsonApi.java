@@ -2,7 +2,7 @@ package com.digistratum.microhost.RestServer.JsonApi;
 
 import com.digistratum.microhost.Json.JsonBuilder;
 import com.digistratum.microhost.Json.JsonClass;
-import com.google.gson.Gson;
+import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.Meta;
 
 public class JsonApi implements JsonClass {
 	protected Properties properties;
