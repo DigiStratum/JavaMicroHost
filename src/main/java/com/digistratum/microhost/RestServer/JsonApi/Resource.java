@@ -84,36 +84,48 @@ public class Resource implements JsonClass {
 	 * Setter for attributes
 	 *
 	 * @param attributes Attributes instance to set against our properties
+	 *
+	 * @return this for chaining...
 	 */
-	public void setAttributes(Attributes attributes) {
+	public Resource setAttributes(Attributes attributes) {
 		properties.attributes = attributes;
+		return this;
 	}
 
 	/**
 	 * Setter for relationships
 	 *
 	 * @param relationships Relationships instance to set against our properties
+	 *
+	 * @return this for chaining...
 	 */
-	public void setRelationships(Relationships relationships) {
+	public Resource setRelationships(Relationships relationships) {
 		properties.relationships = relationships;
+		return this;
 	}
 
 	/**
 	 * Setter for Links
 	 *
 	 * @param links Links instance to set against our properties
+	 *
+	 * @return this for chaining...
 	 */
-	public void setLinks(Links links) {
+	public Resource setLinks(Links links) {
 		properties.links = links;
+		return this;
 	}
 
 	/**
 	 * Setter for Meta
 	 *
 	 * @param meta Meta instance to set against our properties
+	 *
+	 * @return this for chaining...
 	 */
-	public void setMeta(Meta meta) {
+	public Resource setMeta(Meta meta) {
 		properties.meta = meta;
+		return this;
 	}
 
 	@Override
