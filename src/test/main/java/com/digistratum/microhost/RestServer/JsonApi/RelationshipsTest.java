@@ -53,8 +53,9 @@ public class RelationshipsTest {
 	@Test
 	public void testThat_toJson_returnsBareSet() {
 		Relationship testRelationship = new Relationship();
+		testRelationship.setData(new Resources());
 		String res = sut.set("testkey", testRelationship).toJson();
-		assertEquals("{\"testkey\":{}}", res);
+		assertEquals("{\"testkey\":{\"data\":null}}", res);
 	}
 
 	private class TestableRelationships extends Relationships {

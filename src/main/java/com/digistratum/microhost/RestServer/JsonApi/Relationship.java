@@ -29,14 +29,14 @@ public class Relationship implements JsonClass, Validatable {
 		public Links links;
 
 		/**
-		 * A meta object that contains non-standard meta-information about the relationship.
-		 */
-		public Meta meta;
-
-		/**
 		 * Resource linkage
 		 */
 		public Resources data;
+
+		/**
+		 * A meta object that contains non-standard meta-information about the relationship.
+		 */
+		public Meta meta;
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class Relationship implements JsonClass, Validatable {
 	@Override
 	public boolean isValid() {
 		// A “relationship object” MUST contain at least one of the following:
-		if ((null == properties.links) && (null == properties.meta) && (null != properties.data)) return false;
+		if ((null == properties.links) && (null == properties.meta) && (null == properties.data)) return false;
 
 		// If a links property is set...
 		if (null != properties.links) {
