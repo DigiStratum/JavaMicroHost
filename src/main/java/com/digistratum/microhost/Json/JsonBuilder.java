@@ -107,6 +107,9 @@ public class JsonBuilder {
 
 		// ref: https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
 		// HashMap, Map, etc..
+		// Note: This cannot simply use Gson.toJson() because the  values may be JavaClass instances
+		// which themselves cannot be interpreted directly by Gson and require JsonBuilder.toJson() to
+		// properly encode.
 		if (obj instanceof Map) {
 			verboseLog("toJson() encoding Map");
 			sb.append("{");
