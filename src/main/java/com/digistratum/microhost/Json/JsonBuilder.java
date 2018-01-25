@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Expand upon Gson's capabilities a bit to handle some difficult situations
@@ -98,9 +100,26 @@ public class JsonBuilder {
 				if (! first) sb.append(",");
 				else first = false;
 				sb.append(toJson(listElement));
-				first = false;
 			}
 			sb.append("]");
+			return sb.toString();
+		}
+
+		// ref: https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
+		// HashMap, Map, etc..
+		if (obj instanceof Map) {
+			verboseLog("toJson() encoding Map");
+			sb.append("{");
+			boolean first = true;
+			Iterator it = ((Map) obj).entrySet().iterator();
+			while (it.hasNext()) {
+				if (! first) sb.append(",");
+				else first = false;
+				Map.Entry pair = (Map.Entry) it.next();
+				sb.append(toJson(pair.getKey()) + ":" + toJson(pair.getValue()));
+				it.remove();
+			}
+			sb.append("}");
 			return sb.toString();
 		}
 

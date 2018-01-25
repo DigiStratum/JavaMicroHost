@@ -18,12 +18,12 @@ public class RelationshipsTest {
 	}
 
 	@Test
-	public void testThat_set_addsARelationship() {
+	public void testThat_set_addsARelationshipAndIsChainable() {
 		String key = "testkey";
 		assertFalse(sut.hasRelationship(key));
 		Relationship testRelationship = new Relationship();
-		sut.set(key, testRelationship);
-		assertTrue(sut.hasRelationship(key));
+		boolean res = sut.set(key, testRelationship).hasRelationship(key);
+		assertTrue(res);
 	}
 
 	@Test
@@ -44,11 +44,26 @@ public class RelationshipsTest {
 		assertEquals(verifyRelationship.getMeta().get(metaKey), metaValue);
 	}
 
-	// TODO: Add more tests around JSON serialization and validation checks
+	@Test
+	public void testThat_toJson_returnsEmptySet() {
+		String res = sut.toJson();
+		assertEquals("{}", res);
+	}
+
+	@Test
+	public void testThat_toJson_returnsBareSet() {
+		Relationship testRelationship = new Relationship();
+		String res = sut.set("testkey", testRelationship).toJson();
+		assertEquals("{\"testkey\":{}}", res);
+	}
 
 	private class TestableRelationships extends Relationships {
 		public boolean hasRelationship(String key) {
 			return relationships.containsKey(key);
+		}
+		@Override
+		public TestableRelationships set(String key, Relationship value) {
+			return (TestableRelationships) super.set(key, value);
 		}
 	}
 }
