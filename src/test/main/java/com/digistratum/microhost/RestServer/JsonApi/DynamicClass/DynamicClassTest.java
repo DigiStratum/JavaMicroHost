@@ -1,4 +1,4 @@
-package com.digistratum.microhost.RestServer.JsonApi;
+package com.digistratum.microhost.RestServer.JsonApi.DynamicClass;
 
 import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.DynamicClass;
 import com.digistratum.microhost.RestServer.JsonApi.Exception.JsonApiException;

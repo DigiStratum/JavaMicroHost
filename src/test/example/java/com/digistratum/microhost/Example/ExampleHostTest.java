@@ -1,3 +1,5 @@
+package com.digistratum.microhost.Example;
+
 import com.digistratum.microhost.Example.ExampleHost;
 import com.digistratum.microhost.RestServer.RestApiImpl;
 
