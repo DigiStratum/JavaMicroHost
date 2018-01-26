@@ -1,42 +1,86 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
+import com.digistratum.microhost.Json.Json;
 import com.digistratum.microhost.Json.JsonSerializeable;
 import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.Links;
 import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.Meta;
 import com.digistratum.microhost.RestServer.JsonApi.Exception.JsonApiException;
 import com.digistratum.microhost.Validation.Validatable;
-import com.google.gson.Gson;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  *
- * todo: Add support for using this class to build up a JsonApi Document; can we use a builder pattern?
+ * todo: can we use a builder pattern?
  */
 public class Document implements JsonSerializeable, Validatable {
+	protected Properties properties;
+	protected Json json;
 
-	// At least one of the following is required
-	protected Resources data;
-	protected Error[] errors;
-	protected Meta meta;
+	/**
+	 * Our set of properties
+	 */
+	class Properties {
 
-	// These are optional
-	protected JsonApi jsonapi;
-	protected Links links;
-	protected List<Resource> included;
+		// At least one of data, errors, or meta must be present to be valid.
+		// The members data and errors MUST NOT coexist in the same document.
+
+		/**
+		 * The document's "primary data"; it will be null, or one or many Resources
+		 */
+		public Resources data;
+
+		/**
+		 * An array of error objects
+		 */
+		public List<Error> errors;
+
+		/**
+		 * A meta object that contains non-standard meta-information.
+		 */
+		public Meta meta;
+
+		// These are optional
+
+		/**
+		 * An object describing the server's implementation
+		 */
+		public JsonApi jsonapi;
+
+		/**
+		 * The top-level links object MAY contain the following members:
+		 *
+		 * "self": the link that generated the current response document.
+		 * "related": a related resource link when the primary data represents a resource relationship.
+		 * Pagination links for the primary data ("first", "last", "prev", "next")
+		 */
+		public Links links;
+
+		/**
+		 * An array of resource objects that are related to the
+		 * primary data and/or each other ("included resources").
+		 */
+		public Resources included;
+	}
+
+	/**
+	 * Constructor
+	 */
+	public Document() {
+		properties = new Properties();
+	}
 
 	/**
 	 * Set the jsonapi version info for this document
 	 *
 	 * @param jsonApi JsonApi instance
 	 *
-	 * @return Document (this) for chaining
+	 * @return this for chaining...
 	 */
 	public Document setJsonApi(JsonApi jsonApi) {
-		jsonapi = jsonApi;
+		properties.jsonapi = jsonApi;
 		return this;
 	}
 
@@ -45,10 +89,10 @@ public class Document implements JsonSerializeable, Validatable {
 	 *
 	 * @param links Links instance
 	 *
-	 * @return Document (this) for chaining
+	 * @return this for chaining...
 	 */
 	public Document setLinks(Links links) {
-		this.links = links;
+		properties.links = links;
 		return this;
 	}
 
@@ -64,11 +108,36 @@ public class Document implements JsonSerializeable, Validatable {
 	 */
 	public Document setLink(String name, URL link) {
 		if (null == link) {
-			throw new JsonApiException("link cannot be null");
+			throw new JsonApiException("Link cannot be null");
 		}
-		String[] optionalLinks = new String[] {"self", "related", "pagination"};
-		if (null == links) links = new Links(null, Arrays.asList(optionalLinks));
-		links.set(name, link);
+		String[] optionalLinks = new String[] {"self", "related", "first", "last", "prev", "next"};
+		if (null == properties.links) {
+			properties.links = new Links(null, Arrays.asList(optionalLinks));
+		}
+		properties.links.set(name, link);
+		return this;
+	}
+
+	/**
+	 * Add a resource to the primary data
+	 *
+	 * @param resource Resource instance to add to the primary data for our response
+	 *
+	 * @return this for chaining...
+	 */
+	public Document addResource(Resource resource) {
+		if (null == resource) {
+			throw new JsonApiException("Resource cannot be null");
+		}
+		if (null != properties.errors) {
+			throw new JsonApiException("Primary resource data cannot coexist with errors");
+		}
+
+		// If we have no primary data yet, then we need to initialize an empty set
+		if (null == properties.data) {
+			properties.data = new Resources();
+		}
+		properties.data.addResource(resource);
 		return this;
 
 	}
@@ -81,34 +150,58 @@ public class Document implements JsonSerializeable, Validatable {
 	 *
 	 * @param resource Resource instance to include
 	 *
-	 * @return Document (this) for chaining
+	 * @return this for chaining...
 	 */
 	public Document includeResource(Resource resource) {
-		// If we have no resources yet, then we need to initialize an empty set
-		if (null == included) included = new ArrayList<>();
-		included.add(resource);
+		if (null == resource) {
+			throw new JsonApiException("Resource cannot be null");
+		}
+
+		// If we have no included resources yet, then we need to initialize an empty set
+		if (null == properties.included) {
+			properties.included = new Resources();
+			properties.included.setForceCollection(true);
+		}
+		properties.included.addResource(resource);
+		return this;
+	}
+
+	/**
+	 * Set some name/value pair into the Metadata
+	 *
+	 * @param name String name of the Metadata we want to set
+	 * @param value String value for the named Metadata we want to set
+	 *
+	 * @return this for chaining...
+	 */
+	public Document setMetadata(String name, String value) {
+		if (null == properties.meta) {
+			properties.meta = new Meta();
+		}
+		properties.meta.set(name, value);
 		return this;
 	}
 
 	@Override
 	public String toJson() {
-		Gson gson = new Gson();
-		return "";
+		if (! isValid()) {
+			throw new JsonApiException("Invalid state, cannot serialize");
+		}
+		if (null == json) json = new Json();
+		return json.toJson(properties);
 	}
 
 	@Override
 	public boolean isValid() {
 
 		// At least one element must be non-null; non = error
-		if ((null == data) && (null == errors) && (null == meta)) return false;
+		if ((null == properties.data) && (null == properties.errors) && (null == properties.meta)) return false;
 
 		// Only data OR errors can be non-null; BOTH = error
-		if ((null != data) && (null != errors)) return false;
+		if ((null != properties.data) && (null != properties.errors)) return false;
 
 		// Included may only be non-null if data is non-null
-		if ((null == data) && (null != included)) return false;
-
-		// TODO: Check the links; may include "self", "related", or pagination data
+		if ((null == properties.data) && (null != properties.included)) return false;
 
 		return true;
 	}
