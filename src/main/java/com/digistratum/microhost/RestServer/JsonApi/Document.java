@@ -1,6 +1,6 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
-import com.digistratum.microhost.Json.JsonClass;
+import com.digistratum.microhost.Json.JsonSerializeable;
 import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.Links;
 import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.Meta;
 import com.google.gson.Gson;
@@ -12,7 +12,7 @@ import java.util.List;
  *
  * todo: Add support for using this class to build up a JsonApi Document; can we use a builder pattern?
  */
-public class Document implements JsonClass {
+public class Document implements JsonSerializeable {
 
 	// At least one of the following is required
 	protected Resources data;

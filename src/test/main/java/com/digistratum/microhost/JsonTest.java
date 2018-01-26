@@ -1,7 +1,7 @@
 package com.digistratum.microhost;
 
 import com.digistratum.microhost.Json.Json;
-import com.digistratum.microhost.Json.JsonClass;
+import com.digistratum.microhost.Json.JsonSerializeable;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,7 +60,7 @@ public class JsonTest {
 
 	@Test
 	public void testThat_toJson_encodesJsonClassInstances() {
-		JsonClassObject test = new JsonClassObject();
+		JsonSerializeableObject test = new JsonSerializeableObject();
 		assertEquals("\"JSON!\"", sut.toJson(test));
 	}
 
@@ -123,7 +123,7 @@ public class JsonTest {
 
 	// TODO: Add a test to cover objects with mixed, nested properties (such as other objects, arrays of objects, etc)
 
-	protected class JsonClassObject implements JsonClass {
+	protected class JsonSerializeableObject implements JsonSerializeable {
 		@Override
 		public String toJson() {
 			return "\"JSON!\"";

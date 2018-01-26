@@ -80,9 +80,9 @@ public class Json {
 		if ("Boolean".equals(simpleName)) return toJsonGson(obj);
 
 		// If Object implements JsonClass, return obj.toJson()
-		if (obj instanceof JsonClass) {
+		if (obj instanceof JsonSerializeable) {
 			verboseLog("toJson() encoding JsonClass");
-			return ((JsonClass) obj).toJson();
+			return ((JsonSerializeable) obj).toJson();
 		}
 
 		// Else, If Object is an Array:

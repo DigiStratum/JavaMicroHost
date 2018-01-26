@@ -1,7 +1,7 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
 import com.digistratum.microhost.Json.Json;
-import com.digistratum.microhost.Json.JsonClass;
+import com.digistratum.microhost.Json.JsonSerializeable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  *
  * A collection of zero or more Resource objects
  */
-public class Resources implements JsonClass {
+public class Resources implements JsonSerializeable {
 	protected List<Resource> resources;
 
 	protected boolean forceCollection = false;

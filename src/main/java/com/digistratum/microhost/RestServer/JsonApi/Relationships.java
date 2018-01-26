@@ -1,12 +1,12 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
 import com.digistratum.microhost.Json.Json;
-import com.digistratum.microhost.Json.JsonClass;
+import com.digistratum.microhost.Json.JsonSerializeable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Relationships implements JsonClass {
+public class Relationships implements JsonSerializeable {
 	protected Map<String, Relationship> relationships = new HashMap<>();
 	protected Json json;
 

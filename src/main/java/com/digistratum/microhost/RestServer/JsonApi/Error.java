@@ -1,11 +1,11 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
 import com.digistratum.microhost.Json.Json;
-import com.digistratum.microhost.Json.JsonClass;
+import com.digistratum.microhost.Json.JsonSerializeable;
 import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.Links;
 import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.Meta;
 
-public class Error implements JsonClass {
+public class Error implements JsonSerializeable {
 	protected Properties properties;
 	protected Json json;
 

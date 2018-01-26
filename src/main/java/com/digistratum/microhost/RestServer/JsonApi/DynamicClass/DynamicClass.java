@@ -1,7 +1,7 @@
 package com.digistratum.microhost.RestServer.JsonApi.DynamicClass;
 
 import com.digistratum.microhost.Json.Json;
-import com.digistratum.microhost.Json.JsonClass;
+import com.digistratum.microhost.Json.JsonSerializeable;
 import com.digistratum.microhost.RestServer.JsonApi.Exception.JsonApiException;
 import com.digistratum.microhost.Validation.Validatable;
 import com.google.gson.Gson;
@@ -9,14 +9,13 @@ import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * ref: https://stackoverflow.com/questions/12832554/how-to-add-attributes-dynamically-for-java-object
  *
  * TODO: Add support for other JSON-primitive data types (number, boolean, array (of string/number/boolean), etc)
  */
-public abstract class DynamicClass implements JsonClass, Validatable {
+public abstract class DynamicClass implements JsonSerializeable, Validatable {
 	protected Map<String, Object> properties;
 	protected boolean unrestricted = true;
 	protected List<String> requiredKeys;

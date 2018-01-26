@@ -1,6 +1,6 @@
 package com.digistratum.microhost.Json;
 
-public interface JsonClass {
+public interface JsonSerializeable {
 
 	/**
 	 * Convert this instance to a JSON representation of itself

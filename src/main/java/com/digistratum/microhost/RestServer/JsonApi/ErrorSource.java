@@ -1,14 +1,14 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
 import com.digistratum.microhost.Json.Json;
-import com.digistratum.microhost.Json.JsonClass;
+import com.digistratum.microhost.Json.JsonSerializeable;
 
 /**
  * JsonApi - Source
  *
  * An object containing references to the source of the error, should one occur.
  */
-public class ErrorSource implements JsonClass {
+public class ErrorSource implements JsonSerializeable {
 	protected Properties properties;
 	protected Json json;
 

@@ -1,6 +1,6 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
-import com.digistratum.microhost.Json.JsonClass;
+import com.digistratum.microhost.Json.JsonSerializeable;
 import com.google.gson.Gson;
 
 /**
@@ -9,7 +9,7 @@ import com.google.gson.Gson;
  *
  * todo: Add some helper methods around this to ensure that the pointer is well-formed
  */
-public class JsonPointer implements JsonClass {
+public class JsonPointer implements JsonSerializeable {
 	protected String ptr;
 	protected Gson gson;
 
