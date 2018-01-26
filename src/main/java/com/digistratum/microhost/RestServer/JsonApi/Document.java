@@ -3,16 +3,20 @@ package com.digistratum.microhost.RestServer.JsonApi;
 import com.digistratum.microhost.Json.JsonSerializeable;
 import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.Links;
 import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.Meta;
+import com.digistratum.microhost.RestServer.JsonApi.Exception.JsonApiException;
+import com.digistratum.microhost.Validation.Validatable;
 import com.google.gson.Gson;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  *
  * todo: Add support for using this class to build up a JsonApi Document; can we use a builder pattern?
  */
-public class Document implements JsonSerializeable {
+public class Document implements JsonSerializeable, Validatable {
 
 	// At least one of the following is required
 	protected Resources data;
@@ -23,27 +27,6 @@ public class Document implements JsonSerializeable {
 	protected JsonApi jsonapi;
 	protected Links links;
 	protected List<Resource> included;
-
-	/**
-	 * Check whether this is a valid JsonApi document
-	 *
-	 * @return boolean true if so, else false
-	 */
-	public boolean validate() {
-
-		// At least one element must be non-null; non = error
-		if ((null == data) && (null == errors) && (null == meta)) return false;
-
-		// Only data OR errors can be non-null; BOTH = error
-		if ((null != data) && (null != errors)) return false;
-
-		// Included may only be non-null if data is non-null
-		if ((null == data) && (null != included)) return false;
-
-		// TODO: Check the links; may include "self", "related", or pagination data
-
-		return true;
-	}
 
 	/**
 	 * Set the jsonapi version info for this document
@@ -70,6 +53,27 @@ public class Document implements JsonSerializeable {
 	}
 
 	/**
+	 * Add/set a link into our links collection
+	 *
+	 * Note that this will instantiate the links collection if a valid link is being provided to set
+	 *
+	 * @param name String name of the link to set
+	 * @param link URL instance of the link we want to save
+	 *
+	 * @return this for chaining...
+	 */
+	public Document setLink(String name, URL link) {
+		if (null == link) {
+			throw new JsonApiException("link cannot be null");
+		}
+		String[] optionalLinks = new String[] {"self", "related", "pagination"};
+		if (null == links) links = new Links(null, Arrays.asList(optionalLinks));
+		links.set(name, link);
+		return this;
+
+	}
+
+	/**
 	 * Include a supplemental resource with this document's primary data
 	 *
 	 * Note that included property is intentionally null before including any resources
@@ -90,5 +94,22 @@ public class Document implements JsonSerializeable {
 	public String toJson() {
 		Gson gson = new Gson();
 		return "";
+	}
+
+	@Override
+	public boolean isValid() {
+
+		// At least one element must be non-null; non = error
+		if ((null == data) && (null == errors) && (null == meta)) return false;
+
+		// Only data OR errors can be non-null; BOTH = error
+		if ((null != data) && (null != errors)) return false;
+
+		// Included may only be non-null if data is non-null
+		if ((null == data) && (null != included)) return false;
+
+		// TODO: Check the links; may include "self", "related", or pagination data
+
+		return true;
 	}
 }
