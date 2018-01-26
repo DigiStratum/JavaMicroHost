@@ -185,13 +185,17 @@ public class Json {
 	/**
 	 * Check whether the supplied identifier is a valid one
 	 *
-	 * True for anything that can be used as a JSON property name
+	 * True for anything that can be used as a JSON property name;
+	 *
+	 * TODO: Note that JSON itself does support other special characters in keys such as blank keys
+	 * and everything in [/%^|\" ~], and likely more. This pattern matcher should be expanded to
+	 * verify the complete possible set.
 	 *
 	 * @param identifier String identifier to check
 	 *
 	 * @return boolean true if the identifier is valid, else false
 	 */
 	public static boolean isValidJsonIdentifier(String identifier) {
-		return Pattern.matches("[A-Za-z]+[A-Za-z0-9_]*", identifier);
+		return Pattern.matches("[A-Za-z0-9_]*", identifier);
 	}
 }

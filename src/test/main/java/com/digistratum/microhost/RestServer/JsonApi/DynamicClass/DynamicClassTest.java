@@ -37,7 +37,7 @@ public class DynamicClassTest {
 		assertThrows(
 				JsonApiException.class,
 				() -> {
-					sut.set("00InvalidKey", null);
+					sut.set("InvalidKey!", null);
 				}
 		);
 	}
