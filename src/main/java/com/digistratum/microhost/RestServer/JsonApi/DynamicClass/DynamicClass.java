@@ -1,5 +1,6 @@
 package com.digistratum.microhost.RestServer.JsonApi.DynamicClass;
 
+import com.digistratum.microhost.Json.Json;
 import com.digistratum.microhost.Json.JsonClass;
 import com.digistratum.microhost.RestServer.JsonApi.Exception.JsonApiException;
 import com.digistratum.microhost.Validation.Validatable;
@@ -40,7 +41,7 @@ public abstract class DynamicClass implements JsonClass, Validatable {
 		this();
 		if (null != requiredKeys) {
 			for (String key : requiredKeys) {
-				if (! isValidKey(key)) {
+				if (! Json.isValidJsonIdentifier(key)) {
 					throw new JsonApiException("Invalid required key: '" + key + "'");
 				}
 			}
@@ -48,7 +49,7 @@ public abstract class DynamicClass implements JsonClass, Validatable {
 		}
 		if (null != optionalKeys) {
 			for (String key : optionalKeys) {
-				if (! isValidKey(key)) {
+				if (! Json.isValidJsonIdentifier(key)) {
 					throw new JsonApiException("Invalid optional key: '" + key + "'");
 				}
 			}
@@ -56,21 +57,6 @@ public abstract class DynamicClass implements JsonClass, Validatable {
 		}
 		this.requiredKeys = requiredKeys;
 		this.optionalKeys = optionalKeys;
-	}
-
-	/**
-	 * Check whether the supplied key is a valid one
-	 *
-	 * (For example, that we can't unwittingly specify required/optional keys for impossible keys)
-	 *
-	 * True for anything that can be used as a JSON property name
-	 *
-	 * @param key String key to check
-	 *
-	 * @return boolean true if the key is valid, else false
-	 */
-	protected boolean isValidKey(String key) {
-		return Pattern.matches("[A-Za-z]+[A-Za-z0-9_]*", key);
 	}
 
 	/**
@@ -100,7 +86,7 @@ public abstract class DynamicClass implements JsonClass, Validatable {
 				throw new JsonApiException("Attempted to set a key on a restricted set which is neither required nor optional");
 			}
 		}
-		if (! isValidKey(key)) {
+		if (! Json.isValidJsonIdentifier(key)) {
 			throw new JsonApiException("Invalid key: '" + key + "'");
 		}
 		properties.put(key, value);
@@ -130,7 +116,7 @@ public abstract class DynamicClass implements JsonClass, Validatable {
 		if (unrestricted) return true;
 
 		// Otherwise, all required keys must be present
-		if (null !=requiredKeys) {
+		if (null != requiredKeys) {
 			for (String key : requiredKeys) {
 				if (!has(key)) return false;
 			}

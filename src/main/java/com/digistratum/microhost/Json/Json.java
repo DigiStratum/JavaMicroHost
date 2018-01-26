@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Expand upon Gson's capabilities a bit to handle some difficult situations
@@ -179,5 +180,18 @@ public class Json {
 	 */
 	protected String toJsonGson(Object obj) {
 		return gson.toJson(obj);
+	}
+
+	/**
+	 * Check whether the supplied identifier is a valid one
+	 *
+	 * True for anything that can be used as a JSON property name
+	 *
+	 * @param identifier String identifier to check
+	 *
+	 * @return boolean true if the identifier is valid, else false
+	 */
+	public static boolean isValidJsonIdentifier(String identifier) {
+		return Pattern.matches("[A-Za-z]+[A-Za-z0-9_]*", identifier);
 	}
 }
