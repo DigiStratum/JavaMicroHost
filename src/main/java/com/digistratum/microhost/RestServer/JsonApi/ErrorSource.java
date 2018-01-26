@@ -1,6 +1,6 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
-import com.digistratum.microhost.Json.JsonBuilder;
+import com.digistratum.microhost.Json.Json;
 import com.digistratum.microhost.Json.JsonClass;
 
 /**
@@ -10,7 +10,7 @@ import com.digistratum.microhost.Json.JsonClass;
  */
 public class ErrorSource implements JsonClass {
 	protected Properties properties;
-	protected JsonBuilder jsonBuilder;
+	protected Json json;
 
 	/**
 	 * Our properties data structure
@@ -61,7 +61,7 @@ public class ErrorSource implements JsonClass {
 
 	@Override
 	public String toJson() {
-		if (null == jsonBuilder) jsonBuilder = new JsonBuilder();
-		return jsonBuilder.toJson(properties);
+		if (null == json) json = new Json();
+		return json.toJson(properties);
 	}
 }

@@ -1,6 +1,6 @@
 package com.digistratum.microhost;
 
-import com.digistratum.microhost.Json.JsonBuilder;
+import com.digistratum.microhost.Json.Json;
 import com.digistratum.microhost.Json.JsonClass;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,14 +12,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JsonBuilderTest {
+public class JsonTest {
 	private Gson gson;
 
-	private JsonBuilder sut;
+	private Json sut;
 
 	@BeforeEach
 	public void setup() throws Exception {
-		sut = new JsonBuilder();
+		sut = new Json();
 		gson = new Gson();
 	}
 

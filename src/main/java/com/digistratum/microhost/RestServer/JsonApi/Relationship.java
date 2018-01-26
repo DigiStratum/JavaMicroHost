@@ -1,7 +1,7 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
 import com.digistratum.microhost.Json.Exception.JsonException;
-import com.digistratum.microhost.Json.JsonBuilder;
+import com.digistratum.microhost.Json.Json;
 import com.digistratum.microhost.Json.JsonClass;
 import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.Links;
 import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.Meta;
@@ -9,7 +9,7 @@ import com.digistratum.microhost.Validation.Validatable;
 
 public class Relationship implements JsonClass, Validatable {
 	protected Properties properties;
-	protected JsonBuilder jsonBuilder;
+	protected Json json;
 
 	/**
 	 * Our properties data structure
@@ -96,8 +96,8 @@ public class Relationship implements JsonClass, Validatable {
 		if (! isValid()) {
 			throw new JsonException("Relationship instance is invalid - cannot serialize to JSON");
 		}
-		if (null == jsonBuilder) jsonBuilder = new JsonBuilder();
-		return jsonBuilder.toJson(properties);
+		if (null == json) json = new Json();
+		return json.toJson(properties);
 	}
 
 	@Override

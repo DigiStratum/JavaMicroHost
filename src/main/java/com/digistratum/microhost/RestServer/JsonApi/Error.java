@@ -1,13 +1,13 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
-import com.digistratum.microhost.Json.JsonBuilder;
+import com.digistratum.microhost.Json.Json;
 import com.digistratum.microhost.Json.JsonClass;
 import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.Links;
 import com.digistratum.microhost.RestServer.JsonApi.DynamicClass.Meta;
 
 public class Error implements JsonClass {
 	protected Properties properties;
-	protected JsonBuilder jsonBuilder;
+	protected Json json;
 
 	/**
 	 * Our properties data structure
@@ -171,8 +171,8 @@ public class Error implements JsonClass {
 
 	@Override
 	public String toJson() {
-		if (null == jsonBuilder) jsonBuilder = new JsonBuilder();
+		if (null == json) json = new Json();
 		//jsonBuilder.setVerbose(true);
-		return jsonBuilder.toJson(properties);
+		return json.toJson(properties);
 	}
 }

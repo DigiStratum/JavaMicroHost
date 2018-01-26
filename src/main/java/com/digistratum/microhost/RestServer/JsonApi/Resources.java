@@ -1,6 +1,6 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
-import com.digistratum.microhost.Json.JsonBuilder;
+import com.digistratum.microhost.Json.Json;
 import com.digistratum.microhost.Json.JsonClass;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class Resources implements JsonClass {
 	protected boolean forceCollection = false;
 	protected boolean nullable = true;
 
-	protected JsonBuilder jsonBuilder;
+	protected Json json;
 
 	/**
 	 * Default constructor
@@ -74,15 +74,15 @@ public class Resources implements JsonClass {
 		// Empty set? Return a null if we are nullable
 		if (resources.isEmpty() && (nullable)) return "null";
 
-		if (null == jsonBuilder) jsonBuilder = new JsonBuilder();
+		if (null == json) json = new Json();
 
 		// Set of one? // Return only a single resource if we are NOT forcing a collection
 		if ((resources.size() == 1) && (! forceCollection)) {
-			jsonBuilder.setVerbose(true);
-			return jsonBuilder.toJson(resources.get(0));
+			json.setVerbose(true);
+			return json.toJson(resources.get(0));
 		}
 
 		// Everything else is represented as a collection of resource objects (including empty set)
-		return jsonBuilder.toJson(resources);
+		return json.toJson(resources);
 	}
 }

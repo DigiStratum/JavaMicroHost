@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Expand upon Gson's capabilities a bit to handle some difficult situations
  */
-public class JsonBuilder {
+public class Json {
 	protected static Logger log;
 	protected Gson gson;
 	protected boolean verbose = false;
@@ -22,14 +22,14 @@ public class JsonBuilder {
 	/**
 	 * Default Cosntructor
 	 */
-	public JsonBuilder() {
+	public Json() {
 		gson = new Gson();
 	}
 
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
 		if (! verbose) return;
-		log = Logger.getLogger(JsonBuilder.class);
+		log = Logger.getLogger(Json.class);
 	}
 
 	public void verboseLog(String msg) {

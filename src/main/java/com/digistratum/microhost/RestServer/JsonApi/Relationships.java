@@ -1,15 +1,14 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
-import com.digistratum.microhost.Json.JsonBuilder;
+import com.digistratum.microhost.Json.Json;
 import com.digistratum.microhost.Json.JsonClass;
-import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Relationships implements JsonClass {
 	protected Map<String, Relationship> relationships = new HashMap<>();
-	protected JsonBuilder jsonBuilder;
+	protected Json json;
 
 	/**
 	 * Get the named relationship's value
@@ -37,8 +36,8 @@ public class Relationships implements JsonClass {
 
 	@Override
 	public String toJson() {
-		if (null == jsonBuilder) jsonBuilder = new JsonBuilder();
+		if (null == json) json = new Json();
 		//jsonBuilder.setVerbose(true);
-		return jsonBuilder.toJson(relationships);
+		return json.toJson(relationships);
 	}
 }
