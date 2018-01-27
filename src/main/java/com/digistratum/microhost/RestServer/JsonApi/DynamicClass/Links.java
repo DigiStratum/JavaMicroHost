@@ -10,6 +10,13 @@ import java.util.List;
 public class Links extends DynamicClass {
 
 	/**
+	 * Default Constructor
+	 */
+	public Links() {
+		super();
+	}
+
+	/**
 	 * Alternative Constructor
 	 *
 	 * @param requiredKeys

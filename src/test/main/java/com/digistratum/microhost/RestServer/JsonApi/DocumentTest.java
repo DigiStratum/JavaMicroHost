@@ -1,9 +1,11 @@
 package com.digistratum.microhost.RestServer.JsonApi;
 
+import com.digistratum.microhost.RestServer.JsonApi.Exception.JsonApiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DocumentTest {
@@ -15,33 +17,24 @@ public class DocumentTest {
 	}
 
 	@Test
-	public void testThat_setJsonApi_doesItsThing() {
-		TestableJsonApi jsonApi = new TestableJsonApi();
-		String version = "3.3.3";
-		jsonApi.setVersion(version);
-		TestableDocument res = (TestableDocument) sut.setJsonApi(jsonApi);
-		assertTrue(sut.equals(res));
-		assertEquals(version, jsonApi.getVersion());
+	public void testThat_isValid_rejectsByDefault() {
+		assertThrows(
+				JsonApiException.class,
+				() -> {
+					sut.toJson();
+				}
+		);
 	}
 
 	@Test
-	public void testThat_toJson_returnsCorrectJson() {
-		TestableJsonApi jsonApi = new TestableJsonApi();
-		jsonApi.setVersion("3.3.3");
-		sut.setJsonApi(jsonApi);
-		String json = sut.toJson();
-		// FIXME @Here - need to implement toJson for the Document, using JsonBuilder in particular
+	public void testThat_setJsonApiVersion_doesItsThing() {
+		TestableDocument res = (TestableDocument) sut
+				.setJsonApiVersion("3.3.3")
+				.setMetadata("name", "value");
+		assertTrue(sut.equals(res));
+		assertEquals("{\"meta\":{\"name\":\"value\"},\"jsonapi\":{\"version\":\"3.3.3\"}}", sut.toJson());
 	}
 
 	private class TestableDocument extends Document {
-		public JsonApi getJsonApi() {
-			return jsonapi;
-		}
-	}
-
-	private class TestableJsonApi extends JsonApi {
-		public String getVersion() {
-			return properties.version;
-		}
 	}
 }

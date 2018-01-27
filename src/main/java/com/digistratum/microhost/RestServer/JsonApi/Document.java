@@ -22,7 +22,7 @@ public class Document implements JsonSerializeable, Validatable {
 	/**
 	 * Our set of properties
 	 */
-	class Properties {
+	public class Properties {
 
 		// At least one of data, errors, or meta must be present to be valid.
 		// The members data and errors MUST NOT coexist in the same document.
@@ -75,24 +75,10 @@ public class Document implements JsonSerializeable, Validatable {
 	/**
 	 * Set the jsonapi version info for this document
 	 *
-	 * @param jsonApi JsonApi instance
-	 *
-	 * @return this for chaining...
+	 * @param version@return this for chaining...
 	 */
-	public Document setJsonApi(JsonApi jsonApi) {
-		properties.jsonapi = jsonApi;
-		return this;
-	}
-
-	/**
-	 * Set the links for this document
-	 *
-	 * @param links Links instance
-	 *
-	 * @return this for chaining...
-	 */
-	public Document setLinks(Links links) {
-		properties.links = links;
+	public Document setJsonApiVersion(String version) {
+		properties.jsonapi = new JsonApi(version);
 		return this;
 	}
 
@@ -188,6 +174,7 @@ public class Document implements JsonSerializeable, Validatable {
 			throw new JsonApiException("Invalid state, cannot serialize");
 		}
 		if (null == json) json = new Json();
+		json.setVerbose(true);
 		return json.toJson(properties);
 	}
 

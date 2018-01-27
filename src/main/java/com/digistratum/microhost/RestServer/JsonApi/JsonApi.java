@@ -16,6 +16,19 @@ public class JsonApi implements JsonSerializeable {
 	}
 
 	/**
+	 * Basic Constructor
+	 *
+	 * This one actually sets the version to the provided string.
+	 * This is the most common use case and purpose of the class
+	 *
+	 * @param version String JsonApi version
+	 */
+	public JsonApi(String version) {
+		this();
+		properties.version = version;
+	}
+
+	/**
 	 * A JSON serializable class with all our properties without exposing access
 	 */
 	protected class Properties {
