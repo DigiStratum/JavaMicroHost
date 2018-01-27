@@ -5,8 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>GroupId</groupId>
-    <artifactId>ArtifactId</artifactId>
+    <artifactId>JavaMicroHost</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>JavaMicroHost</module>
+    </modules>
     <dependencies>
         <dependency>
             <groupId>commons-io</groupId>
