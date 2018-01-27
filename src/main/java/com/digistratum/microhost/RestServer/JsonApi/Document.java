@@ -8,6 +8,7 @@ import com.digistratum.microhost.RestServer.JsonApi.Exception.JsonApiException;
 import com.digistratum.microhost.Validation.Validatable;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -93,7 +94,7 @@ public class Document implements JsonSerializeable, Validatable {
 	 * @return this for chaining...
 	 */
 	public Document setLink(String name, URL link) {
-		if (null == link) {
+		if ((null == link) || (null == name)) {
 			throw new JsonApiException("Link cannot be null");
 		}
 		String[] optionalLinks = new String[] {"self", "related", "first", "last", "prev", "next"};
@@ -139,6 +140,9 @@ public class Document implements JsonSerializeable, Validatable {
 	 * @return this for chaining...
 	 */
 	public Document includeResource(Resource resource) {
+		if (null == properties.data) {
+			throw new JsonApiException("Cannot include resources without primary data");
+		}
 		if (null == resource) {
 			throw new JsonApiException("Resource cannot be null");
 		}
@@ -161,10 +165,24 @@ public class Document implements JsonSerializeable, Validatable {
 	 * @return this for chaining...
 	 */
 	public Document setMetadata(String name, String value) {
-		if (null == properties.meta) {
-			properties.meta = new Meta();
-		}
+		if (null == properties.meta) properties.meta = new Meta();
 		properties.meta.set(name, value);
+		return this;
+	}
+
+	/**
+	 * Add an Error to the errors output
+	 *
+	 * @param error Error instance to add
+	 *
+	 * @return this for chaining...
+	 */
+	public Document addError(Error error) {
+		if (null != properties.data) {
+			throw new JsonApiException("Errors cannot coexist with primary resource data");
+		}
+		if (null == properties.errors) properties.errors = new ArrayList<>();
+		properties.errors.add(error);
 		return this;
 	}
 
@@ -174,7 +192,7 @@ public class Document implements JsonSerializeable, Validatable {
 			throw new JsonApiException("Invalid state, cannot serialize");
 		}
 		if (null == json) json = new Json();
-		json.setVerbose(true);
+		//json.setVerbose(true);
 		return json.toJson(properties);
 	}
 
