@@ -4,21 +4,26 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>DigiStratum</groupId>
+    <groupId>com.DigiStratum</groupId>
     <artifactId>JavaMicroHost</artifactId>
     <version>0.0.1</version>
 
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
-            <groupId>com.github.DigiStratum</groupId>
+            <groupId>com.DigiStratum</groupId>
             <artifactId>JavaValidation</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.DigiStratum</groupId>
+            <artifactId>JavaJson</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.DigiStratum</groupId>
+            <artifactId>JavaJsonApi</artifactId>
             <version>0.0.1</version>
         </dependency>
 
