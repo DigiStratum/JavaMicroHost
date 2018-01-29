@@ -1,6 +1,6 @@
 package com.digistratum.microhost.RestServer;
 
-import com.digistratum.microhost.Config.Config;
+import com.digistratum.Config.Config;
 import com.digistratum.microhost.Exception.MHException;
 import com.digistratum.microhost.RestServer.Controller.Controller;
 import com.digistratum.microhost.RestServer.Http.HttpServerFactory;

@@ -1,6 +1,6 @@
 package com.digistratum.microhost.Database.Mysql.Connection;
 
-import com.digistratum.microhost.Config.Config;
+import com.digistratum.Config.Config;
 import com.digistratum.microhost.Database.Exception.MHDatabaseException;
 
 import org.apache.commons.pool.ObjectPool;
