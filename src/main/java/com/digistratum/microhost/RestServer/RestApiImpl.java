@@ -1,6 +1,6 @@
 package com.digistratum.microhost.RestServer;
 
-import com.digistratum.microhost.Process.MHRunnableImpl;
+import com.digistratum.Process.MHRunnableImpl;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

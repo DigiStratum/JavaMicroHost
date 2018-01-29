@@ -1,6 +1,6 @@
 package com.digistratum.microhost;
 
-import com.digistratum.microhost.Process.MHRunnable;
+import com.digistratum.Process.MHRunnable;
 
 /**
  * TODO Add support for receiving, starting, and monitoring multiple MHRunnable's
