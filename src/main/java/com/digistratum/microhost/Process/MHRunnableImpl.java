@@ -25,6 +25,7 @@ public class MHRunnableImpl implements MHRunnable {
 		amRunning = true;
 		while (amRunning) {
 			try {
+				// TODO: Add support for real work to execute here as a callable of some sort (Closure?)
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				// Restore the interrupted status
