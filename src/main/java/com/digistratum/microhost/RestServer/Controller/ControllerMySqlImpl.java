@@ -1,9 +1,9 @@
 package com.digistratum.microhost.RestServer.Controller;
 
-import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionImpl;
-import com.digistratum.microhost.Database.Mysql.Connection.MySqlConnectionPoolImpl;
-import com.digistratum.microhost.Database.Mysql.Model.MySqlModelFactory;
-import com.digistratum.microhost.Database.Exception.MHDatabaseException;
+import com.digistratum.Database.Mysql.Connection.MySqlConnectionImpl;
+import com.digistratum.Database.Mysql.Connection.MySqlConnectionPoolImpl;
+import com.digistratum.Database.Mysql.Model.MySqlModelFactory;
+import com.digistratum.Database.Exception.MHDatabaseException;
 import com.sun.net.httpserver.HttpExchange;
 
 import javax.inject.Inject;
