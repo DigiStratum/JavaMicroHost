@@ -1,12 +1,12 @@
 package com.digistratum.microhost.RestServer;
 
-import com.digistratum.Process.MHRunnableImpl;
+import com.digistratum.Process.RunnableProcessImpl;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class RestApiImpl extends MHRunnableImpl {
+public class RestApiImpl extends RunnableProcessImpl {
 	protected RestServer server;
 
 	@Inject

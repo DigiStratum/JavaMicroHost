@@ -6,7 +6,7 @@
 
     <groupId>com.DigiStratum</groupId>
     <artifactId>JavaMicroHost</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 
     <dependencies>
         <dependency>
@@ -42,7 +42,7 @@
         <dependency>
             <groupId>com.DigiStratum</groupId>
             <artifactId>JavaProcess</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.2</version>
         </dependency>
 
         <dependency>
